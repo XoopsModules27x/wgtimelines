@@ -1,0 +1,35 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    XOOPS Project https://xoops.org/
+ * @license      GNU GPL 2 or later (http://www.gnu.org/licenses/gpl-2.0.html)
+ * @package
+ * @since
+ * @author       XOOPS Development Team
+ */
+
+/**
+ * @param $val
+ * @return float|int
+ */
+function wgtimelinesReturnBytes($val): float|int
+{
+    return match (mb_substr($val, -1)) {
+        'K', 'k' => (int)$val * 1024,
+        'M', 'm' => (int)$val * 1048576,
+        'G', 'g' => (int)$val * 1073741824,
+        default => $val,
+    };
+}
