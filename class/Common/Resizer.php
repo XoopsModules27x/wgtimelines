@@ -12,14 +12,14 @@ namespace XoopsModules\Wgtimelines\Common;
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
+
 /**
  * Image resizer class for xoops
  *
  * @copyright      module for xoops
  * @license        GPL 2.0 or later
  * @package        XOOPS common
- * @since          1.0
- * @min_xoops      2.5.9
  * @author         Goffy - Wedega - Email:<webmaster@wedega.com> - Website:<https://wedega.com>
  * @version        $Id: 1.0 Resizer.php 1 Mon 2019-02-09 10:04:49Z XOOPS Project (www.xoops.org) $
  */
@@ -40,7 +40,7 @@ class Resizer
      * resize image if size exceed given width/height
      * @return string|bool
      */
-    public function resizeImage(): bool|string
+    public function resizeImage()
     {
         // check file extension
         switch ($this->imageMimetype) {
@@ -91,7 +91,9 @@ class Resizer
             // Copy and resize old image into new image.
             \imagecopyresampled($tmpimg, $img, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
 
-            \unlink($this->endFile);
+            if (\is_file($this->endFile)) {
+                \unlink($this->endFile);
+            }
             //compressing the file
             switch ($this->imageMimetype) {
                 case 'image/png':
@@ -104,13 +106,9 @@ class Resizer
                     \imagegif($tmpimg, $this->endFile);
                     break;
             }
-
-            // release the memory
-            \imagedestroy($tmpimg);
         } else {
             return 'copy';
         }
-        \imagedestroy($img);
 
         return true;
     }
@@ -118,7 +116,7 @@ class Resizer
     /**
      * @return bool|string
      */
-    public function resizeAndCrop(): bool|string
+    public function resizeAndCrop()
     {
         // check file extension
         switch ($this->imageMimetype) {
@@ -184,7 +182,7 @@ class Resizer
         return true;
     }
 
-    public function mergeImage(): void
+    public function mergeImage()
     {
         $dest = \imagecreatefromjpeg($this->endFile);
         $src  = \imagecreatefromjpeg($this->sourceFile);
@@ -238,14 +236,12 @@ class Resizer
         }
         \imagejpeg($dest, $this->endFile);
 
-        \imagedestroy($src);
-        \imagedestroy($dest);
     }
 
     /**
      * @return bool|string
      */
-    public function rotateImage(): bool|string
+    public function rotateImage()
     {
         // check file extension
         switch ($this->imageMimetype) {
@@ -268,7 +264,9 @@ class Resizer
         // Rotate
         $tmpimg = \imagerotate($original, $this->degrees, 0);
 
-        \unlink($this->endFile);
+        if (\is_file($this->endFile)) {
+            \unlink($this->endFile);
+        }
         //compressing the file
         switch ($this->imageMimetype) {
             case 'image/png':
@@ -287,9 +285,6 @@ class Resizer
                 }
                 break;
         }
-
-        // release the memory
-        \imagedestroy($tmpimg);
 
         return true;
     }

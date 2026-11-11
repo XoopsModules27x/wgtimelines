@@ -53,7 +53,7 @@
                             <{/if}>
                             <{if $showreads|default:false}>
                                 <span class="timeline-item-reads pull-right">
-                                    <i class="glyphicon glyphicon-eye-open"> <{$smarty.const._MA_WGTIMELINES_ITEM_READS}>: <{$item.reads}></i>
+                                    <i class="glyphicon glyphicon-eye-open"> <{$smarty.const._MD_WGTIMELINES_ITEM_READS}>: <{$item.reads}></i>
                                 </span>
                             <{/if}>    
                         </h4>
@@ -74,7 +74,7 @@
                         <p><{$item.content|default:false}></p>
                         <{if $item.readmore|default:false}>
                             <div class="col-sm-12 timeline-item-readmore right">
-                                <a href="items.php?op=read&amp;item_id=<{$item.id}>" title="<{$smarty.const._MA_WGTIMELINES_READMORE}>"><{$smarty.const._MA_WGTIMELINES_READMORE}>...</a>
+                                <a href="items.php?op=read&amp;item_id=<{$item.id}>" title="<{$smarty.const._MD_WGTIMELINES_READMORE}>"><{$smarty.const._MD_WGTIMELINES_READMORE}>...</a>
                             </div>
                         <{/if}>
                         <{if $rating|default:false}>

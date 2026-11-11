@@ -229,7 +229,7 @@ if ($timelinesCount > 0) {
                     $GLOBALS['xoopsTpl']->assign('pagenav', $pagenav->renderNav());
                 }
             } else {
-                $GLOBALS['xoopsTpl']->assign('error', \_MA_WGTIMELINES_THEREARENT_ITEMS);
+                $GLOBALS['xoopsTpl']->assign('error', \_MD_WGTIMELINES_THEREARENT_ITEMS);
             }
             if ($helper->getConfig('tl_name') == 1) {
                 $GLOBALS['xoopsTpl']->assign('timeline_name', $tl_name);
@@ -285,11 +285,11 @@ if ($timelinesCount > 0) {
 } else {
     $GLOBALS['xoopsOption']['template_main'] = 'wgtimelines_index.tpl';
     include_once \XOOPS_ROOT_PATH .'/header.php';
-    $GLOBALS['xoopsTpl']->assign('error', \_MA_WGTIMELINES_THEREARENT_TIMELINES);
+    $GLOBALS['xoopsTpl']->assign('error', \_MD_WGTIMELINES_THEREARENT_TIMELINES);
 }
 
 // Description
-wgtimelinesMetaDescription(\_MA_WGTIMELINES_DESC);
+wgtimelinesMetaDescription(\_MD_WGTIMELINES_DESC);
 $GLOBALS['xoopsTpl']->assign('xoops_mpageurl', \WGTIMELINES_URL.'/timelines.php');
 $GLOBALS['xoopsTpl']->assign('wgtimelines_upload_url', \WGTIMELINES_UPLOAD_URL);
 include __DIR__ . '/footer.php';

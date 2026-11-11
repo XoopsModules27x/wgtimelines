@@ -54,7 +54,7 @@ switch ($op) {
         }
 
         if (!$rate_allowed) {
-            \redirect_header(\WGTIMELINES_URL . '/index.php?tl_id=' . $tl_id . '#item' . $itemid, 2, \_MA_WGTIMELINES_RATING_NOPERM);
+            \redirect_header(\WGTIMELINES_URL . '/index.php?tl_id=' . $tl_id . '#item' . $itemid, 2, \_MD_WGTIMELINES_RATING_NOPERM);
         }
 
         $redir = $_SERVER['HTTP_REFERER'];
@@ -63,14 +63,14 @@ switch ($op) {
         }
 
         if ($rating > 5 || $rating < 1) {
-            \redirect_header($redir, 2, \_MA_WGTIMELINES_RATING_VOTE_BAD);
+            \redirect_header($redir, 2, \_MD_WGTIMELINES_RATING_VOTE_BAD);
             exit();
         }
 
         $itemrating = $ratingsHandler->getItemRating($itemid);
 
         if ($itemrating['voted']) {
-            \redirect_header($redir, 2, \_MA_WGTIMELINES_RATING_VOTE_ALREADY);
+            \redirect_header($redir, 2, \_MD_WGTIMELINES_RATING_VOTE_ALREADY);
         }
 
         $ratingsObj = $ratingsHandler->create();
@@ -81,7 +81,7 @@ switch ($op) {
         $ratingsObj->setVar('rate_date', \time());
         // Insert Data
         if ($ratingsHandler->insert($ratingsObj)) {
-            \redirect_header($redir, 2, \_MA_WGTIMELINES_RATING_VOTE_THANKS);
+            \redirect_header($redir, 2, \_MD_WGTIMELINES_RATING_VOTE_THANKS);
         }
         echo '<br>error:' . $ratingsObj->getHtmlErrors();
 
@@ -89,6 +89,6 @@ switch ($op) {
 
     case 'default':
     default:
-        echo \_MA_WGTIMELINES_RATING_VOTE_BAD . ' (invalid parameter)';
+        echo \_MD_WGTIMELINES_RATING_VOTE_BAD . ' (invalid parameter)';
         break;
 }

@@ -30,10 +30,10 @@ $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 
 // ------------------- Informations ------------------- //
 $modversion['name']                = \_MI_WGTIMELINES_NAME;
-$modversion['version']             = '1.2.2';
+$modversion['version']             = '1.3.0';
 $modversion['module_status']       = 'Beta';
-$modversion['release']             = '27.11.2025';
-$modversion['release_date']        = '2025/11/27'; // yyyy/mm/dd
+$modversion['release']             = '11.11.2026';
+$modversion['release_date']        = '2026/11/11'; // yyyy/mm/dd
 $modversion['description']         = \_MI_WGTIMELINES_DESC;
 $modversion['author']              = 'goffy (wedega.com)';
 $modversion['author_mail']         = 'webmaster@wedega.com';
@@ -48,7 +48,7 @@ $modversion['release_file']        = \XOOPS_URL . '/modules/wgtimelines/docs/rel
 $modversion['manual']              = 'link to manual file';
 $modversion['manual_file']         = \XOOPS_URL . '/modules/wgtimelines/docs/install.txt';
 $modversion['min_php']             = '8.4';
-$modversion['min_xoops']           = '2.5.12';
+$modversion['min_xoops']           = '2.7.4';
 $modversion['min_admin']           = '1.2';
 $modversion['min_db']              = ['mysql' => '5.7.8'];
 $modversion['image']               = 'assets/images/wgtimelines_logo.png';
@@ -160,8 +160,8 @@ unset($b);
 // Keywords
 $modversion['config'][] = [
     'name'        => 'keywords',
-    'title'       => '\_MI_WGTIMELINES_KEYWORDS',
-    'description' => '\_MI_WGTIMELINES_KEYWORDS_DESC',
+    'title'       => \_MI_WGTIMELINES_KEYWORDS,
+    'description' => \_MI_WGTIMELINES_KEYWORDS_DESC,
     'formtype'    => 'textbox',
     'valuetype'   => 'text',
     'default'     => \_MI_WGTIMELINES_KEYWORDS_DEFAULT
@@ -172,8 +172,8 @@ $modversion['config'][] = [
 $editorHandler            = XoopsEditorHandler::getInstance();
 $modversion['config'][] = [
     'name'        => 'wgtimelines_editor',
-    'title'       => '\_MI_WGTIMELINES_EDITOR',
-    'description' => '\_MI_WGTIMELINES_EDITOR_DESC',
+    'title'       => \_MI_WGTIMELINES_EDITOR,
+    'description' => \_MI_WGTIMELINES_EDITOR_DESC,
     'formtype'    => 'select',
     'valuetype'   => 'text',
     'options'     => \array_flip($editorHandler->getList()),
@@ -183,8 +183,8 @@ $modversion['config'][] = [
 // Welcome text
 $modversion['config'][] = [
     'name'        => 'welcome',
-    'title'       => '\_MI_WGTIMELINES_WELCOME',
-    'description' => '\_MI_WGTIMELINES_WELCOME_DESC',
+    'title'       => \_MI_WGTIMELINES_WELCOME,
+    'description' => \_MI_WGTIMELINES_WELCOME_DESC,
     'formtype'    => 'textarea',
     'valuetype'   => 'text',
     'default'     => \_MI_WGTIMELINES_WELCOME_DEFAULT
@@ -193,8 +193,8 @@ $modversion['config'][] = [
 // Admin pager
 $modversion['config'][] = [
     'name'        => 'adminpager',
-    'title'       => '\_MI_WGTIMELINES_ADMIN_PAGER',
-    'description' => '\_MI_WGTIMELINES_ADMIN_PAGER_DESC',
+    'title'       => \_MI_WGTIMELINES_ADMIN_PAGER,
+    'description' => \_MI_WGTIMELINES_ADMIN_PAGER_DESC,
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 10
@@ -203,8 +203,8 @@ $modversion['config'][] = [
 // User pager
 $modversion['config'][] = [
     'name'        => 'userpager',
-    'title'       => '\_MI_WGTIMELINES_USER_PAGER',
-    'description' => '\_MI_WGTIMELINES_USER_PAGER_DESC',
+    'title'       => \_MI_WGTIMELINES_USER_PAGER,
+    'description' => \_MI_WGTIMELINES_USER_PAGER_DESC,
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 10
@@ -213,8 +213,8 @@ $modversion['config'][] = [
 // Breadcrumbs
 $modversion['config'][] = [
     'name'        => 'breadcrumbs',
-    'title'       => '\_MI_WGTIMELINES_BREADCRUMBS',
-    'description' => '\_MI_WGTIMELINES_BREADCRUMBS_DESC',
+    'title'       => \_MI_WGTIMELINES_BREADCRUMBS,
+    'description' => \_MI_WGTIMELINES_BREADCRUMBS_DESC,
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1
@@ -223,8 +223,8 @@ $modversion['config'][] = [
 // Rating bar
 $modversion['config'][] = [
     'name'        => 'ratingbars',
-    'title'       => '\_MI_WGTIMELINES_RATINGBARS',
-    'description' => '\_MI_WGTIMELINES_RATINGBARS_DESC',
+    'title'       => \_MI_WGTIMELINES_RATINGBARS,
+    'description' => \_MI_WGTIMELINES_RATINGBARS_DESC,
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1
@@ -238,8 +238,8 @@ foreach (\array_keys($group_arr) as $i) {
 }
 $modversion['config'][] = [
     'name'        => 'ratingbar_groups',
-    'title'       => '\_MI_WGTIMELINES_RATINGBAR_GROUPS',
-    'description' => '\_MI_WGTIMELINES_RATINGBAR_GROUPS_DESC',
+    'title'       => \_MI_WGTIMELINES_RATINGBAR_GROUPS,
+    'description' => \_MI_WGTIMELINES_RATINGBAR_GROUPS_DESC,
     'formtype'    => 'select',
     'valuetype'   => 'array',
     'default'     => ['1'],
@@ -249,8 +249,8 @@ $modversion['config'][] = [
 // Timeline name
 $modversion['config'][] = [
     'name'        => 'tl_name',
-    'title'       => '\_MI_WGTIMELINES_TIMELINE_NAME',
-    'description' => '\_MI_WGTIMELINES_TIMELINE_NAME_DESC',
+    'title'       => \_MI_WGTIMELINES_TIMELINE_NAME,
+    'description' => \_MI_WGTIMELINES_TIMELINE_NAME_DESC,
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1
@@ -259,8 +259,8 @@ $modversion['config'][] = [
 // show timeline description
 $modversion['config'][] = [
     'name'        => 'tl_description',
-    'title'       => '\_MI_WGTIMELINES_TLDESC',
-    'description' => '\_MI_WGTIMELINES_TLDESC_DESC',
+    'title'       => \_MI_WGTIMELINES_TLDESC,
+    'description' => \_MI_WGTIMELINES_TLDESC_DESC,
     'formtype'    => 'select',
     'valuetype'   => 'int',
     'default'     => 1,
@@ -306,20 +306,20 @@ while ($i* 1048576 <= $maxSize) {
     $i += $increment;
 }
 $modversion['config'][] = [
-    'name' => 'maxsize',
-    'title' => '\_MI_WGTIMELINES_MAXSIZE',
-    'description' => '\_MI_WGTIMELINES_MAXSIZE_DESC',
-    'formtype' => 'select',
-    'valuetype' => 'int',
-    'default' => 3145728,
-    'options' => $optionMaxsize,
+    'name'        => 'maxsize',
+    'title'       => \_MI_WGTIMELINES_MAXSIZE,
+    'description' => \_MI_WGTIMELINES_MAXSIZE_DESC,
+    'formtype'    => 'select',
+    'valuetype'   => 'int',
+    'default'     => 3145728,
+    'options'     => $optionMaxsize,
 ];
 
 //Uploads : mimetypes of images
 $modversion['config'][] = [
     'name'        => 'mimetypes',
-    'title'       => '\_MI_WGTIMELINES_MIMETYPES',
-    'description' => '\_MI_WGTIMELINES_MIMETYPES_DESC',
+    'title'       => \_MI_WGTIMELINES_MIMETYPES,
+    'description' => \_MI_WGTIMELINES_MIMETYPES_DESC,
     'formtype'    => 'select_multi',
     'valuetype'   => 'array',
     'default'     => ['image/gif', 'image/jpeg', 'image/png', 'image/jpg'],
@@ -337,8 +337,8 @@ $modversion['config'][] = [
 // Uploads : max width of images for upload
 $modversion['config'][] = [
     'name'        => 'maxwidth',
-    'title'       => '\_MI_WGTIMELINES_MAXWIDTH',
-    'description' => '\_MI_WGTIMELINES_MAXWIDTH_DESC',
+    'title'       => \_MI_WGTIMELINES_MAXWIDTH,
+    'description' => \_MI_WGTIMELINES_MAXWIDTH_DESC,
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 5000,
@@ -347,8 +347,8 @@ $modversion['config'][] = [
 // Uploads : max height of images for upload
 $modversion['config'][] = [
     'name'        => 'maxheight',
-    'title'       => '\_MI_WGTIMELINES_MAXHEIGHT',
-    'description' => '\_MI_WGTIMELINES_MAXHEIGHT_DESC',
+    'title'       => \_MI_WGTIMELINES_MAXHEIGHT,
+    'description' => \_MI_WGTIMELINES_MAXHEIGHT_DESC,
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 5000,
@@ -356,8 +356,8 @@ $modversion['config'][] = [
 // Uploads : max width of images for upload
 $modversion['config'][] = [
     'name'        => 'maxwidth_imgeditor',
-    'title'       => '\_MI_WGTIMELINES_MAXWIDTH_IMGEDITOR',
-    'description' => '\_MI_WGTIMELINES_MAXWIDTH_IMGEDITOR_DESC',
+    'title'       => \_MI_WGTIMELINES_MAXWIDTH_IMGEDITOR,
+    'description' => \_MI_WGTIMELINES_MAXWIDTH_IMGEDITOR_DESC,
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 400,
@@ -366,8 +366,8 @@ $modversion['config'][] = [
 // Uploads : max height of images for upload
 $modversion['config'][] = [
     'name'        => 'maxheight_imgeditor',
-    'title'       => '\_MI_WGTIMELINES_MAXHEIGHT_IMGEDITOR',
-    'description' => '\_MI_WGTIMELINES_MAXHEIGHT_IMGEDITOR_DESC',
+    'title'       => \_MI_WGTIMELINES_MAXHEIGHT_IMGEDITOR,
+    'description' => \_MI_WGTIMELINES_MAXHEIGHT_IMGEDITOR_DESC,
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 400,
@@ -376,8 +376,8 @@ $modversion['config'][] = [
 // start page for module
 $modversion['config'][] = [
     'name'        => 'startpage',
-    'title'       => '\_MI_WGTIMELINES_STARTPAGE',
-    'description' => '\_MI_WGTIMELINES_STARTPAGE_DESC',
+    'title'       => \_MI_WGTIMELINES_STARTPAGE,
+    'description' => \_MI_WGTIMELINES_STARTPAGE_DESC,
     'formtype'    => 'select',
     'valuetype'   => 'int',
     'default'     => 1,
@@ -387,8 +387,8 @@ $modversion['config'][] = [
 // use js expander
 $modversion['config'][] = [
     'name'        => 'jsexpander',
-    'title'       => '\_MI_WGTIMELINES_JSEXPANDER',
-    'description' => '\_MI_WGTIMELINES_JSEXPANDER_DESC',
+    'title'       => \_MI_WGTIMELINES_JSEXPANDER,
+    'description' => \_MI_WGTIMELINES_JSEXPANDER_DESC,
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1
@@ -399,22 +399,9 @@ $modversion['config'][] = [
  */
 $modversion['config'][] = [
     'name'        => 'displaySampleButton',
-    'title'       => 'CO_' . $moduleDirNameUpper . '_' . 'SHOW_SAMPLE_BUTTON',
-    'description' => 'CO_' . $moduleDirNameUpper . '_' . 'SHOW_SAMPLE_BUTTON_DESC',
+    'title'       => \_CO_WGTIMELINES_SHOW_SAMPLE_BUTTON,
+    'description' => \_CO_WGTIMELINES_SHOW_SAMPLE_BUTTON_DESC,
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1,
 ];
-
-/**
- * Show Developer Tools?
- */
-/* $modversion['config'][] = [
-    'name'        => 'displayDeveloperTools',
-    'title'       => 'CO_' . $moduleDirNameUpper . '_' . 'SHOW_DEV_TOOLS',
-    'description' => 'CO_' . $moduleDirNameUpper . '_' . 'SHOW_DEV_TOOLS_DESC',
-    'formtype'    => 'yesno',
-    'valuetype'   => 'int',
-    'default'     => 0,
-]; */
-

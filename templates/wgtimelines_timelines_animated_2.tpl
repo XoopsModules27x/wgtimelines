@@ -55,7 +55,7 @@
                         <p><{$item.content|default:false}></p>
                         <{if $item.readmore|default:false}>
                             <p class="timeline-item-readmore right">
-                                <a href="items.php?op=read&amp;item_id=<{$item.id}>" title="<{$smarty.const._MA_WGTIMELINES_READMORE}>"><{$smarty.const._MA_WGTIMELINES_READMORE}>...</a>
+                                <a href="items.php?op=read&amp;item_id=<{$item.id}>" title="<{$smarty.const._MD_WGTIMELINES_READMORE}>"><{$smarty.const._MD_WGTIMELINES_READMORE}>...</a>
                             </p>
                         <{/if}>
                         <{if $panel_imgpos|default:'' == 'bottom' && $item.image|default:false}>
@@ -67,7 +67,7 @@
                         <{/if}>
                         <{if $showreads|default:false}>
                             <span class="col-xs-12 col-sm-6 timeline-item-reads pull-left">
-                                <i class="glyphicon glyphicon-eye-open"> <{$smarty.const._MA_WGTIMELINES_ITEM_READS}>: <{$item.reads}></i>
+                                <i class="glyphicon glyphicon-eye-open"> <{$smarty.const._MD_WGTIMELINES_ITEM_READS}>: <{$item.reads}></i>
                             </span><br>
                         <{/if}>    
                         <{if $isAdmin|default:false}>
@@ -89,19 +89,19 @@
                                             <span id="unit_ul<{$item.id}>" class="timelines_unit-rating col-xs-12 col-sm-12 rating-left">
                                                 <span class="wgtimelines_current-rating col-xs-12 col-sm-12" style="width:<{$item.rating.size}>;"></span>
                                                 <span>
-                                                    <a class="timelines_r1-unit rater" href="rate.php?op=<{$save}>&item_id=<{$item.id}>&rating=1&tl_id=<{$item.tl_id}>" title="<{$smarty.const._MA_WGTIMELINES_RATING1}>" rel="nofollow">1</a>
+                                                    <a class="timelines_r1-unit rater" href="rate.php?op=<{$save}>&item_id=<{$item.id}>&rating=1&tl_id=<{$item.tl_id}>" title="<{$smarty.const._MD_WGTIMELINES_RATING1}>" rel="nofollow">1</a>
                                                 </span>
                                                 <span>
-                                                    <a class="timelines_r2-unit rater" href="rate.php?op=<{$save}>&item_id=<{$item.id}>&rating=2&tl_id=<{$item.tl_id}>" title="<{$smarty.const._MA_WGTIMELINES_RATING2}>" rel="nofollow">2</a>
+                                                    <a class="timelines_r2-unit rater" href="rate.php?op=<{$save}>&item_id=<{$item.id}>&rating=2&tl_id=<{$item.tl_id}>" title="<{$smarty.const._MD_WGTIMELINES_RATING2}>" rel="nofollow">2</a>
                                                 </span>
                                                 <span>
-                                                    <a class="timelines_r3-unit rater" href="rate.php?op=<{$save}>&item_id=<{$item.id}>&rating=3&tl_id=<{$item.tl_id}>" title="<{$smarty.const._MA_WGTIMELINES_RATING3}>" rel="nofollow">3</a>
+                                                    <a class="timelines_r3-unit rater" href="rate.php?op=<{$save}>&item_id=<{$item.id}>&rating=3&tl_id=<{$item.tl_id}>" title="<{$smarty.const._MD_WGTIMELINES_RATING3}>" rel="nofollow">3</a>
                                                 </span>
                                                 <span>
-                                                    <a class="timelines_r4-unit rater" href="rate.php?op=<{$save}>&item_id=<{$item.id}>&rating=4&tl_id=<{$item.tl_id}>" title="<{$smarty.const._MA_WGTIMELINES_RATING4}>" rel="nofollow">4</a>
+                                                    <a class="timelines_r4-unit rater" href="rate.php?op=<{$save}>&item_id=<{$item.id}>&rating=4&tl_id=<{$item.tl_id}>" title="<{$smarty.const._MD_WGTIMELINES_RATING4}>" rel="nofollow">4</a>
                                                 </span>
                                                 <span>
-                                                    <a class="timelines_r5-unit rater" href="rate.php?op=<{$save}>&item_id=<{$item.id}>&rating=5&tl_id=<{$item.tl_id}>" title="<{$smarty.const._MA_WGTIMELINES_RATING5}>" rel="nofollow">5</a>
+                                                    <a class="timelines_r5-unit rater" href="rate.php?op=<{$save}>&item_id=<{$item.id}>&rating=5&tl_id=<{$item.tl_id}>" title="<{$smarty.const._MD_WGTIMELINES_RATING5}>" rel="nofollow">5</a>
                                                 </span>
                                             </span>
                                             <span class="col-xs-12 col-sm-12 rating-left">

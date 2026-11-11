@@ -36,7 +36,7 @@
                             <div class='col-sm-12 tl-table-item-content'><{$item.content|default:false}></div>
                             <{if $item.readmore|default:false}>
                                 <div class='col-sm-12 timeline-item-readmore right'>
-                                    <a href="items.php?op=read&amp;item_id=<{$item.id}>&amp;tpltype=table" title="<{$smarty.const._MA_WGTIMELINES_READMORE}>"><{$smarty.const._MA_WGTIMELINES_READMORE}>...</a>
+                                    <a href="items.php?op=read&amp;item_id=<{$item.id}>&amp;tpltype=table" title="<{$smarty.const._MD_WGTIMELINES_READMORE}>"><{$smarty.const._MD_WGTIMELINES_READMORE}>...</a>
                                 </div>
                             <{/if}>
                         </td>
@@ -45,7 +45,7 @@
                             <span class='col-sm-12 right'><img class='img-responsive <{$imgstyle|default:''}>' src='<{$wgtimelines_upload_url}>/images/items/<{$item.image}>' alt='items' /></span>
                             <{if $showreads|default:false}>
                                 <span class='timeline-item-reads pull-right'>
-                                    <i class='glyphicon glyphicon-eye-open'> <{$smarty.const._MA_WGTIMELINES_ITEM_READS}>: <{$item.reads}></i>
+                                    <i class='glyphicon glyphicon-eye-open'> <{$smarty.const._MD_WGTIMELINES_ITEM_READS}>: <{$item.reads}></i>
                                 </span>
                             <{/if}>    
                             <{if $rating|default:false}>
@@ -79,12 +79,12 @@
                             <div class='col-sm-12 tl-table-item-content'><{$item.content|default:false}></div>
                             <{if $item.readmore|default:false}>
                                 <div class='col-sm-12 timeline-item-readmore right'>
-                                    <a href="items.php?op=read&amp;item_id=<{$item.id}>&amp;tpltype=table" title="<{$smarty.const._MA_WGTIMELINES_READMORE}>"><{$smarty.const._MA_WGTIMELINES_READMORE}>...</a>
+                                    <a href="items.php?op=read&amp;item_id=<{$item.id}>&amp;tpltype=table" title="<{$smarty.const._MD_WGTIMELINES_READMORE}>"><{$smarty.const._MD_WGTIMELINES_READMORE}>...</a>
                                 </div>
                             <{/if}>
                             <{if $showreads|default:false}>
                                 <span class='timeline-item-reads pull-right'>
-                                    <i class='glyphicon glyphicon-eye-open'> <{$smarty.const._MA_WGTIMELINES_ITEM_READS}>: <{$item.reads}></i>
+                                    <i class='glyphicon glyphicon-eye-open'> <{$smarty.const._MD_WGTIMELINES_ITEM_READS}>: <{$item.reads}></i>
                                 </span>
                             <{/if}>    
                             <{if $rating|default:false}>

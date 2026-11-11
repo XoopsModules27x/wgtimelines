@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Wgtimelines\Common;
 
@@ -15,18 +15,17 @@ namespace XoopsModules\Wgtimelines\Common;
 /**
  * Feedback plugin for xoops modules
  *
- * @copyright      XOOPS Project  (https://xoops.org)
- * @license        GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
- * @author         Michael Beck <mambax7@gmailc.com>
+ * @copyright      2000-2026 XOOPS Project (https://xoops.org)
+ * @license        GNU GPL 2.0 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @author         Michael Beck <mambax7@gmail.com>
  */
 trait ModuleStats
 {
     /**
      * @param \XoopsModules\Wgtimelines\Common\Configurator $configurator
-     * @param array $moduleStats
-     * @return array
+     * @param array                                    $moduleStats
      */
-    public static function getModuleStats(Configurator $configurator, array $moduleStats): array
+    public static function getModuleStats($configurator, $moduleStats): array
     {
         if (\count($configurator->moduleStats) > 0) {
             foreach (\array_keys($configurator->moduleStats) as $i) {

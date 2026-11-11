@@ -23,10 +23,10 @@
         $(document).ready(function() {
             var opts = {
                 slicePoint: <{$user_maxchar|default:100}>,
-                    expandText:'<{$smarty.const._MA_WGTIMELINES_READMORE}>',
+                    expandText:'<{$smarty.const._MD_WGTIMELINES_READMORE}>',
                         moreLinkClass:'btn btn-success btn-sm pull-right',
                         expandSpeed: 500,
-                        userCollapseText:'<{$smarty.const._MA_WGTIMELINES_READLESS}>',
+                        userCollapseText:'<{$smarty.const._MD_WGTIMELINES_READLESS}>',
                             lessLinkClass:'btn btn-success btn-sm pull-right',
                             expandEffect: 'slideDown',
                             collapseEffect: 'slideUp',
