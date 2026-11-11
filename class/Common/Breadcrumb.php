@@ -15,17 +15,23 @@ namespace XoopsModules\Wgtimelines\Common;
 /**
  * Breadcrumb Class
  *
- * @copyright   2000-2026 XOOPS Project (https://xoops.org)
- * @license     GNU GPL 2.0 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @copyright   XOOPS Project (https://xoops.org)
+ * @license     https://www.fsf.org/copyleft/gpl.html GNU public license
  * @author      lucio <lucio.rota@gmail.com>
+ * @package     Wgtimelines
  *
  * Example:
- * $breadcrumb = new Breadcrumb();
+ * $breadcrumb = new Common\Breadcrumb();
  * $breadcrumb->addLink( 'bread 1', 'index1.php' );
  * $breadcrumb->addLink( 'bread 2', '' );
  * $breadcrumb->addLink( 'bread 3', 'index3.php' );
  * echo $breadcrumb->render();
  */
+
+use XoopsModules\Wgtimelines;
+use XoopsModules\Wgtimelines\Common;
+
+\defined('XOOPS_ROOT_PATH') || exit('XOOPS Root Path not defined');
 
 /**
  * Class Breadcrumb
@@ -34,12 +40,10 @@ class Breadcrumb
 {
     public string $dirname;
     private array $bread = [];
-    private string $template;
 
-    public function __construct(?string $dirname = null, ?string $template = null)
+    public function __construct()
     {
-        $this->dirname  = $dirname ? basename($dirname) : \basename(\dirname(__DIR__, 2));
-        $this->template = $template ?: $this->dirname . '_common_breadcrumb.tpl';
+        $this->dirname = \basename(\dirname(__DIR__, 2));
     }
 
     /**
@@ -48,7 +52,7 @@ class Breadcrumb
      * @param string $title
      * @param string $link
      */
-    public function addLink($title = '', $link = ''): void
+    public function addLink(string $title = '', string $link = ''): void
     {
         $this->bread[] = [
             'link'  => $link,
@@ -58,9 +62,8 @@ class Breadcrumb
 
     /**
      * Render BreadCrumb
-     * @return array|bool|mixed|string|string[]|void
      */
-    public function render()
+    public function render(): false|string
     {
         if (!isset($GLOBALS['xoTheme']) || !\is_object($GLOBALS['xoTheme'])) {
             require $GLOBALS['xoops']->path('class/theme.php');
@@ -70,7 +73,7 @@ class Breadcrumb
         require $GLOBALS['xoops']->path('class/template.php');
         $breadcrumbTpl = new \XoopsTpl();
         $breadcrumbTpl->assign('breadcrumb', $this->bread);
-        $html = $breadcrumbTpl->fetch('db:' . $this->template);
+        $html = $breadcrumbTpl->fetch('db:' . $this->dirname . '_common_breadcrumb.tpl');
         unset($breadcrumbTpl);
 
         return $html;

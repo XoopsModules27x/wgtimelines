@@ -15,10 +15,20 @@ namespace XoopsModules\Wgtimelines\Common;
 /**
  * Wgtimelines module
  *
- * @copyright       2000-2026 XOOPS Project (https://xoops.org)
+ * @copyright       XOOPS Project (https://xoops.org)
  * @license         GNU GPL 2.0 or later (https://www.gnu.org/licenses/gpl-2.0.html)
  * @author          Xoops Development Team
  */
+
+use Xmf\Request;
+use XoopsModules\Wgtimelines;
+
+//\defined('XOOPS_ROOT_PATH') || die('XOOPS root path not defined');
+
+require_once \dirname(__DIR__, 4) . '/mainfile.php';
+$moduleDirName      = \basename(\dirname(__DIR__, 2));
+$moduleDirNameUpper = \mb_strtoupper($moduleDirName);
+\xoops_loadLanguage('filechecker', $moduleDirName);
 
 /**
  * Class FileChecker
@@ -27,35 +37,46 @@ namespace XoopsModules\Wgtimelines\Common;
 class FileChecker
 {
     /**
-     * @param string      $file_path
+     * @param string $file_path
+     * @param string $redirectFile
      * @param string|null $original_file_path
-     * @param string|null $redirectFile
+     *
      * @return bool|string
      */
-    public static function getFileStatus($file_path, $original_file_path = null, $redirectFile = null)
+    public static function getFileStatus(string $file_path, string $redirectFile, ?string $original_file_path = null): bool|string
     {
-        global $pathIcon16;
+        $pathIcon16 = \Xmf\Module\Admin::iconUrl('', '16');
 
         if (empty($file_path)) {
             return false;
         }
-        $filePath = self::escape((string)$file_path);
-
+        if (null === $redirectFile) {
+            $redirectFile = $_SERVER['SCRIPT_NAME'];
+        }
+        $moduleDirName      = \basename(\dirname(__DIR__, 2));
+        $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
         if (null === $original_file_path) {
             if (self::fileExists($file_path)) {
                 $path_status = "<img src='$pathIcon16/1.png' >";
-                $path_status .= "$filePath (" . self::message('FC_AVAILABLE', 'available') . ') ';
+                $path_status .= "$file_path (" . \constant('_CO_WGTIMELINES_FC_AVAILABLE') . ') ';
             } else {
                 $path_status = "<img src='$pathIcon16/0.png' >";
-                $path_status .= "$filePath (" . self::message('FC_NOTAVAILABLE', 'not available') . ') ';
+                $path_status .= "$file_path (" . \constant('_CO_WGTIMELINES_FC_NOTAVAILABLE') . ') ';
             }
         } else {
             if (self::compareFiles($file_path, $original_file_path)) {
                 $path_status = "<img src='$pathIcon16/1.png' >";
-                $path_status .= "$filePath (" . self::message('FC_AVAILABLE', 'available') . ') ';
+                $path_status .= "$file_path (" . \constant('_CO_WGTIMELINES_FC_AVAILABLE') . ') ';
             } else {
                 $path_status = "<img src='$pathIcon16/0.png' >";
-                $path_status .= "$filePath (" . self::message('FC_NOTAVAILABLE', 'not available') . ') ';
+                $path_status .= "$file_path (" . \constant('_CO_WGTIMELINES_FC_NOTAVAILABLE') . ') ';
+                $path_status .= "<form action='" . $_SERVER['SCRIPT_NAME'] . "' method='post'>";
+                $path_status .= "<input type='hidden' name='op' value='copyfile'>";
+                $path_status .= "<input type='hidden' name='file_path' value='$file_path'>";
+                $path_status .= "<input type='hidden' name='original_file_path' value='$original_file_path'>";
+                $path_status .= "<input type='hidden' name='redirect' value='$redirectFile'>";
+                $path_status .= "<button class='submit' onClick='this.form.submit();'>" . \constant('_CO_WGTIMELINES_FC_CREATETHEFILE') . '</button>';
+                $path_status .= '</form>';
             }
         }
 
@@ -65,13 +86,13 @@ class FileChecker
     /**
      * @param   $source_path
      * @param   $destination_path
+     *
+     * @return bool
      */
-    public static function copyFile($source_path, $destination_path, ?string $allowedBasePath = null): bool
+    public static function copyFile($source_path, $destination_path): bool
     {
-        if (!self::isAllowedPath((string)$source_path, $allowedBasePath)
-            || !self::isAllowedPath((string)$destination_path, $allowedBasePath)) {
-            return false;
-        }
+        $source_path      = \str_replace('..', '', $source_path);
+        $destination_path = \str_replace('..', '', $destination_path);
 
         return @\copy($source_path, $destination_path);
     }
@@ -79,6 +100,8 @@ class FileChecker
     /**
      * @param   $file1_path
      * @param   $file2_path
+     *
+     * @return bool
      */
     public static function compareFiles($file1_path, $file2_path): bool
     {
@@ -91,15 +114,16 @@ class FileChecker
         if (\filesize($file1_path) !== \filesize($file2_path)) {
             return false;
         }
+        $crc1 = \mb_strtoupper(\dechex(\crc32(\file_get_contents($file1_path))));
+        $crc2 = \mb_strtoupper(\dechex(\crc32(\file_get_contents($file2_path))));
 
-        $crc1 = \hash_file('crc32b', $file1_path);
-        $crc2 = \hash_file('crc32b', $file2_path);
-
-        return false !== $crc1 && false !== $crc2 && $crc1 === $crc2;
+        return !($crc1 !== $crc2);
     }
 
     /**
      * @param   $file_path
+     *
+     * @return bool
      */
     public static function fileExists($file_path): bool
     {
@@ -109,97 +133,27 @@ class FileChecker
     /**
      * @param     $target
      * @param int $mode
+     *
+     * @return bool
      */
-    public static function setFilePermissions($target, $mode = 0644, ?string $allowedBasePath = null): bool
+    public static function setFilePermissions($target, int $mode = 0777): bool
     {
-        if (!self::isAllowedPath((string)$target, $allowedBasePath)) {
-            return false;
+        $target = \str_replace('..', '', $target);
+
+        return @\chmod($target, (int)$mode);
+    }
+}
+
+$op = Request::getString('op', '', 'POST');
+if ($op == 'copyfile') {
+    if (!\Xmf\Request::hasVar('original_file_path', 'POST')
+        || !\Xmf\Request::hasVar('file_path', 'POST')
+        || !\Xmf\Request::hasVar('redirect', 'POST')) {
+            return;
         }
-
-        return @\chmod($target, self::normalizeMode($mode, 0644));
-    }
-
-    private static function isAllowedPath(string $path, ?string $allowedBasePath): bool
-    {
-        if ('' === $path || str_contains($path, "\0") || str_contains($path, '://')) {
-            return false;
-        }
-
-        if (null === $allowedBasePath) {
-            return self::isUnderKnownBase($path);
-        }
-
-        $base = realpath($allowedBasePath);
-        $target = self::resolveExistingPath($path);
-
-        return false !== $base
-            && false !== $target
-            && self::isContainedPath($target, $base);
-    }
-
-    private static function isUnderKnownBase(string $path): bool
-    {
-        if (str_contains($path, '..')) {
-            return false;
-        }
-
-        $target = self::resolveExistingPath($path);
-        if (false === $target) {
-            return false;
-        }
-
-        foreach (['XOOPS_ROOT_PATH', 'XOOPS_UPLOAD_PATH'] as $constant) {
-            if (!defined($constant)) {
-                continue;
-            }
-
-            $base = realpath((string)constant($constant));
-            if (false !== $base && self::isContainedPath($target, $base)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static function isContainedPath(string $target, string $base): bool
-    {
-        $base = rtrim($base, DIRECTORY_SEPARATOR);
-
-        return $target === $base || str_starts_with($target, $base . DIRECTORY_SEPARATOR);
-    }
-
-    private static function resolveExistingPath(string $path): string|false
-    {
-        $current = $path;
-        while ('' !== $current && $current !== \dirname($current)) {
-            $resolved = realpath($current);
-            if (false !== $resolved) {
-                return $resolved;
-            }
-            $current = \dirname($current);
-        }
-
-        return realpath($current);
-    }
-
-    private static function normalizeMode($mode, int $fallback): int
-    {
-        $mode = (int)$mode;
-        $allowedModes = [0644, 0664, 0755, 0775];
-
-        return in_array($mode, $allowedModes, true) ? $mode : $fallback;
-    }
-
-    private static function message(string $suffix, string $fallback): string
-    {
-        $constant = '_CO_WGTIMELINES_' . $suffix;
-
-        return defined($constant) ? (string)constant($constant) : $fallback;
-    }
-
-    private static function escape(string $value): string
-    {
-        return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-    }
+    $original_file_path = \Xmf\Request::getString('original_file_path');
+    $file_path = \Xmf\Request::getString('file_path');
+    $redirect =\Xmf\Request::getString('redirect');
+    $msg = FileChecker::copyFile($original_file_path, $file_path) ? \constant('_CO_WGTIMELINES_FC_FILECOPIED') : \constant('_CO_WGTIMELINES_FC_FILENOTCOPIED');
+    \redirect_header($redirect, 2, $msg . ': ' . $file_path);
 }

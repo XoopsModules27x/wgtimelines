@@ -12,79 +12,69 @@ namespace XoopsModules\Wgtimelines\Common;
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
+
 /**
- * @copyright   2000-2026 XOOPS Project (https://xoops.org)
- * @license     GNU GPL 2.0 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @copyright   XOOPS Project (https://xoops.org)
+ * @license     https://www.fsf.org/copyleft/gpl.html GNU public license
  * @author      mamba <mambax7@gmail.com>
  */
 trait ServerStats
 {
     /**
      * serverStats()
+     *
+     * @return string
      */
     public static function getServerStats(): string
     {
-        $moduleDirName      = self::consumerDirnameForStats();
-        //$moduleDirNameUpper = \mb_strtoupper($moduleDirName);
+        $moduleDirName      = \basename(\dirname(__DIR__, 2));
+        $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
         \xoops_loadLanguage('common', $moduleDirName);
         $html = '';
         //        $sql   = 'SELECT metavalue';
         //        $sql   .= ' FROM ' . $GLOBALS['xoopsDB']->prefix('wfdownloads_meta');
         //        $sql   .= " WHERE metakey='version' LIMIT 1";
         //        $query = $GLOBALS['xoopsDB']->query($sql);
-        //        list($meta) = (($GLOBALS['xoopsDB']->isResultSet($query) && ($query instanceof \mysqli_result)) ? $GLOBALS['xoopsDB']->fetchRow($query) : false);
+        //        list($meta) = $GLOBALS['xoopsDB']->fetchRow($query);
         $html .= '<fieldset>';
         $html .= "<legend style='font-weight: bold; color: #900;'>" . \constant('_CO_WGTIMELINES_IMAGEINFO') . '</legend>';
         $html .= "<div style='padding: 8px;'>";
-        //        $html .= '<div>' . constant('_CO_WGTIMELINES_METAVERSION') . $meta . "</div>";
+        //        $html .= '<div>' . \constant('_CO_WGTIMELINES_METAVERSION') . $meta . "</div>";
         //        $html .= "<br>";
         //        $html .= "<br>";
         $html .= '<div>' . \constant('_CO_WGTIMELINES_SPHPINI') . '</div>';
         $html .= '<ul>';
 
+        $gdlib = \function_exists('gd_info') ? '<span style="color: #008000;">' . \constant('_CO_WGTIMELINES_GDON') . '</span>' : '<span style="color: #ff0000;">' . \constant('_CO_WGTIMELINES_GDOFF') . '</span>';
+        $html  .= '<li>' . \constant('_CO_WGTIMELINES_GDLIBSTATUS') . $gdlib;
         if (\function_exists('gd_info')) {
-            $html  .= '<li>' . \constant('_CO_WGTIMELINES_GDLIBSTATUS') . '<span style="color: #008000;">' . \constant('_CO_WGTIMELINES_GDON') . '</span>';
-            $gdlib = \gd_info();
-            if (!empty(($gdlib))) {
+            if (true === ($gdlib = gd_info())) {
                 $html .= '<li>' . \constant('_CO_WGTIMELINES_GDLIBVERSION') . '<b>' . $gdlib['GD Version'] . '</b>';
             }
-        } else {
-            $html .= '<li>' . \constant('_CO_WGTIMELINES_GDLIBSTATUS') . '<span style="color: #ff0000;">' . \constant('_CO_WGTIMELINES_GDOFF') . '</span>';
         }
 
-        //    $safemode = ini_get('safe_mode') ? constant('_CO_WGTIMELINES_ON') . constant('_CO_WGTIMELINES_SAFEMODEPROBLEMS : constant('_CO_WGTIMELINES_OFF');
-        //    $html .= '<li>' . constant('_CO_WGTIMELINES_SAFEMODESTATUS . $safemode;
+        //    $safemode = \ini_get('safe_mode') ? \constant('_CO_WGTIMELINES_ON') . \constant('_CO_WGTIMELINES_SAFEMODEPROBLEMS : \constant('_CO_WGTIMELINES_OFF');
+        //    $html .= '<li>' . \constant('_CO_WGTIMELINES_SAFEMODESTATUS . $safemode;
 
-        //    $registerglobals = (!ini_get('register_globals')) ? "<span style=\"color: #008000;\">" . constant('_CO_WGTIMELINES_OFF') . '</span>' : "<span style=\"color: #ff0000;\">" . constant('_CO_WGTIMELINES_ON') . '</span>';
-        //    $html .= '<li>' . constant('_CO_WGTIMELINES_REGISTERGLOBALS . $registerglobals;
+        //    $registerglobals = (!\ini_get('register_globals')) ? "<span style=\"color: #008000;\">" . \constant('_CO_WGTIMELINES_OFF') . '</span>' : "<span style=\"color: #ff0000;\">" . \constant('_CO_WGTIMELINES_ON') . '</span>';
+        //    $html .= '<li>' . \constant('_CO_WGTIMELINES_REGISTERGLOBALS . $registerglobals;
 
         $downloads = \ini_get('file_uploads') ? '<span style="color: #008000;">' . \constant('_CO_WGTIMELINES_ON') . '</span>' : '<span style="color: #ff0000;">' . \constant('_CO_WGTIMELINES_OFF') . '</span>';
-        $html      .= '<li>' . \constant('_CO_WGTIMELINES_' . 'SERVERUPLOADSTATUS') . $downloads;
+        $html      .= '<li>' . \constant('_CO_WGTIMELINES_SERVERUPLOADSTATUS') . $downloads;
 
-        $html .= '<li>' . \constant('_CO_WGTIMELINES_' . 'MAXUPLOADSIZE') . ' <b><span style="color: #0000ff;">' . \ini_get('upload_max_filesize') . '</span></b>';
-        $html .= '<li>' . \constant('_CO_WGTIMELINES_' . 'MAXPOSTSIZE') . ' <b><span style="color: #0000ff;">' . \ini_get('post_max_size') . '</span></b>';
-        $html .= '<li>' . \constant('_CO_WGTIMELINES_' . 'MEMORYLIMIT') . ' <b><span style="color: #0000ff;">' . \ini_get('memory_limit') . '</span></b>';
+        $html .= '<li>' . \constant('_CO_WGTIMELINES_MAXUPLOADSIZE') . ' <b><span style="color: #0000ff;">' . \ini_get('upload_max_filesize') . '</span></b>';
+        $html .= '<li>' . \constant('_CO_WGTIMELINES_MAXPOSTSIZE') . ' <b><span style="color: #0000ff;">' . \ini_get('post_max_size') . '</span></b>';
+        $html .= '<li>' . \constant('_CO_WGTIMELINES_MEMORYLIMIT') . ' <b><span style="color: #0000ff;">' . \ini_get('memory_limit') . '</span></b>';
         $html .= '</ul>';
         $html .= '<ul>';
-        $html .= '<li>' . \constant('_CO_WGTIMELINES_' . 'SERVERPATH') . ' <b>' . XOOPS_ROOT_PATH . '</b>';
+        $html .= '<li>' . \constant('_CO_WGTIMELINES_SERVERPATH') . ' <b>' . \XOOPS_ROOT_PATH . '</b>';
         $html .= '</ul>';
         $html .= '<br>';
-        $html .= \constant('_CO_WGTIMELINES_' . 'UPLOADPATHDSC') . '';
+        $html .= \constant('_CO_WGTIMELINES_UPLOADPATHDSC') . '';
         $html .= '</div>';
         $html .= '</fieldset><br>';
 
         return $html;
-    }
-
-    private static function consumerDirnameForStats(): string
-    {
-        $calledClass = static::class;
-        if (preg_match('/^XoopsModules\\\\([^\\\\]+)/', $calledClass, $matches)) {
-            return strtolower($matches[1]);
-        }
-
-        return isset($GLOBALS['xoopsModule']) && $GLOBALS['xoopsModule'] instanceof \XoopsModule
-            ? (string)$GLOBALS['xoopsModule']->getVar('dirname')
-            : 'wgtimelines';
     }
 }

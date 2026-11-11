@@ -14,12 +14,13 @@ namespace XoopsModules\Wgtimelines\Common;
 /**
  * Configurator Class
  *
- * @copyright   2000-2026 XOOPS Project (https://xoops.org)
- * @license     GNU GPL 2.0 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @copyright   XOOPS Project (https://xoops.org)
+ * @license     https://www.fsf.org/copyleft/gpl.html GNU public license
  * @author      XOOPS Development Team
+ * @since       1.05
  */
 
-// require_once \dirname(__DIR__, 2) . '/include/common.php';
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
 
 /**
  * Class Configurator
@@ -27,90 +28,34 @@ namespace XoopsModules\Wgtimelines\Common;
 class Configurator
 {
     public string $name;
-    /** @var array<string, mixed> */
-    public array $paths = [];
-    /** @var list<string> */
-    public array $uploadFolders = [];
-    /** @var list<string> */
-    public array $copyBlankFiles = [];
-    /** @var list<array{0: string, 1: string}> */
+    public array $paths           = [];
+    public array $uploadFolders   = [];
+    public array $copyBlankFiles  = [];
     public array $copyTestFolders = [];
-    /** @var list<string> */
     public array $templateFolders = [];
-    /** @var list<string> */
-    public array $oldFiles = [];
-    /** @var list<string> */
-    public array $oldFolders = [];
-    /** @var array<string, string> */
-    public array $renameTables = [];
-    /** @var array<string, mixed> */
-    public array $renameColumns = [];
-    /** @var array<string, mixed> */
-    public array $moduleStats = [];
+    public array $oldFiles        = [];
+    public array $oldFolders      = [];
+    public array $renameTables    = [];
+    public array $moduleStats     = [];
     public string $modCopyright;
-    /** @var array<string, mixed> */
-    public array $icons = [];
-    private string $baseDir;
 
     /**
      * Configurator constructor.
-     * @param $dir
      */
-    public function __construct($dir = null)
+    public function __construct()
     {
-        $dir = rtrim((string)$dir, '/\\');
-        $resolvedBaseDir = '' !== $dir ? $dir : \dirname(__DIR__, 2);
-        $this->baseDir = $resolvedBaseDir;
+        $config = require \dirname(__DIR__, 2) . '/config/config.php';
 
-        $configFile = $this->baseDir . '/config/config.php';
-        if (!\is_file($configFile)) {
-            throw new \RuntimeException('Missing config file: ' . $configFile);
-        }
-        $config = require $configFile;
-        if (!\is_object($config)) {
-            throw new \RuntimeException(
-                \sprintf(
-                    'Invalid config format in %s: expected object, got %s',
-                    $configFile,
-                    \gettype($config)
-                )
-            );
-        }
-
-        $this->name            = (string)$config->name;
-        // $this->paths           = $config->paths;
-        $this->uploadFolders   = (array)$config->uploadFolders;
-        $this->copyBlankFiles  = (array)$config->copyBlankFiles;
-        $this->copyTestFolders = (array)$config->copyTestFolders;
-        $this->templateFolders = (array)$config->templateFolders;
-        $this->oldFiles        = (array)$config->oldFiles;
-        $this->oldFolders      = (array)$config->oldFolders;
-        $this->renameTables    = (array)$config->renameTables;
-        $this->renameColumns   = (array)$config->renameColumns;
-        $this->moduleStats     = (array)$config->moduleStats;
-        $this->modCopyright    = (string)$config->modCopyright;
-
-        $iconsFile = $this->baseDir . '/config/icons.php';
-        $pathsFile = $this->baseDir . '/config/paths.php';
-        if (!\is_file($iconsFile)) {
-            throw new \RuntimeException('Missing icons config file: ' . $iconsFile);
-        }
-        if (!\is_file($pathsFile)) {
-            throw new \RuntimeException('Missing paths config file: ' . $pathsFile);
-        }
-        $this->icons = (array)require $iconsFile;
-        $this->paths = (array)require $pathsFile;
-    }
-
-    public function getPath(string $key): ?string
-    {
-        $value = $this->paths[$key] ?? null;
-
-        return is_string($value) ? $value : null;
-    }
-
-    public function baseDir(): string
-    {
-        return $this->baseDir;
+        $this->name            = $config->name;
+        $this->paths           = $config->paths;
+        $this->uploadFolders   = $config->uploadFolders;
+        $this->copyBlankFiles  = $config->copyBlankFiles;
+        $this->copyTestFolders = $config->copyTestFolders;
+        $this->templateFolders = $config->templateFolders;
+        $this->oldFiles        = $config->oldFiles;
+        $this->oldFolders      = $config->oldFolders;
+        $this->renameTables    = $config->renameTables;
+        $this->moduleStats     = $config->moduleStats;
+        $this->modCopyright    = $config->modCopyright;
     }
 }

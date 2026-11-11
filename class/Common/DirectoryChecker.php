@@ -15,10 +15,18 @@ namespace XoopsModules\Wgtimelines\Common;
 /**
  * Wgtimelines module
  *
- * @copyright       2000-2026 XOOPS Project (https://xoops.org)
+ * @copyright       XOOPS Project (https://xoops.org)
  * @license         GNU GPL 2.0 or later (https://www.gnu.org/licenses/gpl-2.0.html)
  * @author          Xoops Development Team
  */
+
+use Xmf\Request;
+use XoopsModules\Wgtimelines;
+
+require_once \dirname(__DIR__, 4) . '/mainfile.php';
+$moduleDirName      = \basename(\dirname(__DIR__, 2));
+$moduleDirNameUpper = \mb_strtoupper($moduleDirName);
+\xoops_loadLanguage('directorychecker', $moduleDirName);
 
 /**
  * Class DirectoryChecker
@@ -33,38 +41,53 @@ class DirectoryChecker
      *
      * @return bool|string
      */
-    public static function getDirectoryStatus($path, $mode = 0755, $redirectFile = null)
+    public static function getDirectoryStatus($path, int $mode = 0777, $redirectFile = null): bool|string
     {
         $pathIcon16 = \Xmf\Module\Admin::iconUrl('', '16');
 
         if (empty($path)) {
             return false;
         }
-        $displayPath = self::escape((string)$path);
-
+        if (null === $redirectFile) {
+            $redirectFile = $_SERVER['SCRIPT_NAME'];
+        }
+        $moduleDirName      = \basename(\dirname(__DIR__, 2));
+        $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
         if (!@\is_dir($path)) {
             $path_status = "<img src='$pathIcon16/0.png' >";
-            $path_status .= "$displayPath (" . self::message('DC_NOTAVAILABLE', 'not available') . ') ';
+            $path_status .= "$path (" . \constant('_CO_WGTIMELINES_DC_NOTAVAILABLE') . ') ';
+            $path_status .= "<form action='" . $_SERVER['SCRIPT_NAME'] . "' method='post'>";
+            $path_status .= "<input type='hidden' name='op' value='createdir'>";
+            $path_status .= "<input type='hidden' name='path' value='$path'>";
+            $path_status .= "<input type='hidden' name='redirect' value='$redirectFile'>";
+            $path_status .= "<button class='submit' onClick='this.form.submit();'>" . \constant('_CO_WGTIMELINES_DC_CREATETHEDIR') . '</button>';
+            $path_status .= '</form>';
         } elseif (@\is_writable($path)) {
             $path_status = "<img src='$pathIcon16/1.png' >";
-            $path_status .= "$displayPath (" . self::message('DC_AVAILABLE', 'available') . ') ';
-            $currentMode = mb_substr(\decoct(\fileperms($path)), 2);
+            $path_status .= "$path (" . \constant('_CO_WGTIMELINES_DC_AVAILABLE') . ') ';
+            $currentMode = \mb_substr(\decoct(\fileperms($path)), 2);
             if ($currentMode != \decoct($mode)) {
                 $path_status = "<img src='$pathIcon16/0.png' >";
-                $path_status .= $displayPath . sprintf(
-                    self::message('DC_NOTWRITABLE', ' should be writable as %s; current mode is %s'),
-                    \decoct($mode),
-                    $currentMode
-                );
+                $path_status .= $path . \sprintf(\constant('_CO_WGTIMELINES_DC_NOTWRITABLE'), \decoct($mode), $currentMode);
+                $path_status .= "<form action='" . $_SERVER['SCRIPT_NAME'] . "' method='post'>";
+                $path_status .= "<input type='hidden' name='op' value='setdirperm'>";
+                $path_status .= "<input type='hidden' name='mode' value='$mode'>";
+                $path_status .= "<input type='hidden' name='path' value='$path'>";
+                $path_status .= "<input type='hidden' name='redirect' value='$redirectFile'>";
+                $path_status .= "<button class='submit' onClick='this.form.submit();'>" . \constant('_CO_WGTIMELINES_DC_SETMPERM') . '</button>';
+                $path_status .= '</form>';
             }
         } else {
-            $currentMode = mb_substr(\decoct(\fileperms($path)), 2);
+            $currentMode = \mb_substr(\decoct(\fileperms($path)), 2);
             $path_status = "<img src='$pathIcon16/0.png' >";
-            $path_status .= $displayPath . sprintf(
-                self::message('DC_NOTWRITABLE', ' should be writable as %s; current mode is %s'),
-                \decoct($mode),
-                $currentMode
-            );
+            $path_status .= $path . \sprintf(\constant('_CO_WGTIMELINES_DC_NOTWRITABLE'), \decoct($mode), $currentMode);
+            $path_status .= "<form action='" . $_SERVER['SCRIPT_NAME'] . "' method='post'>";
+            $path_status .= "<input type='hidden' name='op' value='setdirperm'>";
+            $path_status .= "<input type='hidden' name='mode' value='$mode'>";
+            $path_status .= "<input type='hidden' name='path' value='$path'>";
+            $path_status .= "<input type='hidden' name='redirect' value='$redirectFile'>";
+            $path_status .= "<button class='submit' onClick='this.form.submit();'>" . \constant('_CO_WGTIMELINES_DC_SETMPERM') . '</button>';
+            $path_status .= '</form>';
         }
 
         return $path_status;
@@ -73,121 +96,65 @@ class DirectoryChecker
     /**
      * @param     $target
      * @param int $mode
+     *
+     * @return bool
      */
-    public static function createDirectory($target, $mode = 0755, ?string $allowedBasePath = null): bool
+    public static function createDirectory($target, int $mode = 0777): bool
     {
-        if (!self::isAllowedPath((string)$target, $allowedBasePath)) {
-            return false;
-        }
+        $target = \str_replace('..', '', $target);
 
         // https://www.php.net/manual/en/function.mkdir.php
         return \is_dir($target)
-            || (self::createDirectory(\dirname($target), $mode, $allowedBasePath)
-                && (@\mkdir($target, self::normalizeMode($mode, 0755)) || \is_dir($target)));
+                    || (
+                        self::createDirectory(\dirname($target), $mode)
+                        && (\mkdir($target, $mode) || \is_dir($target))
+                    );
     }
 
     /**
      * @param     $target
      * @param int $mode
+     *
+     * @return bool
      */
-    public static function setDirectoryPermissions($target, $mode = 0755, ?string $allowedBasePath = null): bool
+    public static function setDirectoryPermissions($target, int $mode = 0777): bool
     {
-        if (!self::isAllowedPath((string)$target, $allowedBasePath)) {
-            return false;
-        }
+        $target = \str_replace('..', '', $target);
 
-        return @\chmod($target, self::normalizeMode($mode, 0755));
+        return @\chmod($target, (int)$mode);
     }
 
     /**
      * @param   $dir_path
+     *
+     * @return bool
      */
     public static function dirExists($dir_path): bool
     {
         return \is_dir($dir_path);
     }
+}
 
-    private static function isAllowedPath(string $path, ?string $allowedBasePath): bool
-    {
-        if ('' === $path || str_contains($path, "\0") || str_contains($path, '://')) {
-            return false;
+$op = Request::getString('op', '', 'POST');
+switch ($op) {
+    case 'createdir':
+        if (!\Xmf\Request::hasVar('path', 'POST') || !\Xmf\Request::hasVar('redirect', 'POST')) {
+            break;
         }
-
-        if (null === $allowedBasePath) {
-            return self::isUnderKnownBase($path);
+        $path = \Xmf\Request::getString('path','', 'POST');
+        $redirect = \Xmf\Request::getString('redirect','', 'POST');
+        $msg = DirectoryChecker::createDirectory($path) ? \constant('_CO_WGTIMELINES_DC_DIRCREATED') : \constant('_CO_WGTIMELINES_DC_DIRNOTCREATED');
+        \redirect_header($redirect, 2, $msg . ': ' . $path);
+        break;
+    case 'setdirperm':
+        if (!\Xmf\Request::hasVar('path', 'POST') || !\Xmf\Request::hasVar('redirect', 'POST') || !\Xmf\Request::hasVar('mode', 'POST')) {
+            break;
         }
+        $path = \Xmf\Request::getString('path','', 'POST');
+        $redirect = \Xmf\Request::getString('redirect','', 'POST');
+        $mode = \Xmf\Request::getInt('mode',0 , 'POST');
+        $msg = DirectoryChecker::setDirectoryPermissions($path, $mode) ? \constant('_CO_WGTIMELINES_DC_PERMSET') : \constant('_CO_WGTIMELINES_DC_PERMNOTSET');
 
-        $base = realpath($allowedBasePath);
-        $target = self::resolveExistingPath($path);
-
-        return false !== $base
-            && false !== $target
-            && self::isContainedPath($target, $base);
-    }
-
-    private static function isUnderKnownBase(string $path): bool
-    {
-        if (str_contains($path, '..')) {
-            return false;
-        }
-
-        $target = self::resolveExistingPath($path);
-        if (false === $target) {
-            return false;
-        }
-
-        foreach (['XOOPS_ROOT_PATH', 'XOOPS_UPLOAD_PATH'] as $constant) {
-            if (!defined($constant)) {
-                continue;
-            }
-
-            $base = realpath((string)constant($constant));
-            if (false !== $base && self::isContainedPath($target, $base)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static function isContainedPath(string $target, string $base): bool
-    {
-        $base = rtrim($base, DIRECTORY_SEPARATOR);
-
-        return $target === $base || str_starts_with($target, $base . DIRECTORY_SEPARATOR);
-    }
-
-    private static function resolveExistingPath(string $path): string|false
-    {
-        $current = $path;
-        while ('' !== $current && $current !== \dirname($current)) {
-            $resolved = realpath($current);
-            if (false !== $resolved) {
-                return $resolved;
-            }
-            $current = \dirname($current);
-        }
-
-        return realpath($current);
-    }
-
-    private static function normalizeMode($mode, int $fallback): int
-    {
-        $mode = (int)$mode;
-        $allowedModes = [0644, 0664, 0755, 0775];
-
-        return in_array($mode, $allowedModes, true) ? $mode : $fallback;
-    }
-
-    private static function message(string $suffix, string $fallback): string
-    {
-        $constant = '_CO_WGTIMELINES_' . $suffix;
-
-        return defined($constant) ? (string)constant($constant) : $fallback;
-    }
-
-    private static function escape(string $value): string
-    {
-        return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-    }
+        \redirect_header($redirect, 2, $msg . ': ' . $path);
+        break;
 }

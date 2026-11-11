@@ -12,50 +12,45 @@ namespace XoopsModules\Wgtimelines\Common;
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
+
 /**
- * @copyright   2000-2026 XOOPS Project (https://xoops.org)
- * @license     GNU GPL 2.0 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @copyright   XOOPS Project (https://xoops.org)
+ * @license     https://www.fsf.org/copyleft/gpl.html GNU public license
  * @author      mamba <mambax7@gmail.com>
  */
 trait FilesManagement
 {
     /**
-     * Function responsible for checking if a directory exists, we can also write in and create an index.html file
+     * Function responsible for checking if a directory exists, we can also write in and create an index.php file
      *
      * @param string $folder The full path of the directory to check
      *
+     * @return void
      * @throws \RuntimeException
      */
-    public static function createFolder($folder): void
+    public static function createFolder(string $folder): void
     {
-        $folder = (string)$folder;
-        if (!self::isSafeFilesystemPath($folder)) {
-            throw new \RuntimeException(\sprintf('Refusing unsafe directory path: %s', $folder));
-        }
+        try {
+            if (!\file_exists($folder)) {
+                if (!\is_dir($folder) && !\mkdir($folder) && !\is_dir($folder)) {
+                    throw new \RuntimeException(\sprintf('Unable to create the %s directory', $folder));
+                }
 
-        if (!\is_dir($folder)) {
-            if (!@\mkdir($folder, 0755, true) && !\is_dir($folder)) {
-                throw new \RuntimeException(\sprintf('Unable to create the %s directory', $folder));
+                \file_put_contents($folder . '/index.php', "<?php\nheader('HTTP/1.0 404 Not Found');");
             }
-        }
-
-        $indexFile = rtrim($folder, '/\\') . '/index.html';
-        if (!is_file($indexFile)) {
-            file_put_contents($indexFile, '<script>history.go(-1);</script>');
+        } catch (\Exception $e) {
+            echo 'Caught exception: ', $e->getMessage(), '<br>';
         }
     }
 
     /**
-     * @param $file
-     * @param $folder
+     * @param string $file
+     * @param string $folder
      * @return bool
      */
     public static function copyFile(string $file, string $folder): bool
     {
-        if (!self::isSafeFilesystemPath($file) || !self::isSafeFilesystemPath($folder)) {
-            return false;
-        }
-
         return \copy($file, $folder);
     }
 
@@ -65,19 +60,11 @@ trait FilesManagement
      */
     public static function recurseCopy($src, $dst): void
     {
-        if (!self::isSafeFilesystemPath((string)$src) || !self::isSafeFilesystemPath((string)$dst)) {
-            throw new \RuntimeException('Refusing unsafe copy path.');
-        }
-
         $dir = \opendir($src);
-        if (false === $dir) {
-            throw new \RuntimeException('The directory ' . $src . ' could not be opened.');
-        }
-
-        if (!\is_dir($dst) && !@\mkdir($dst, 0755, true) && !\is_dir($dst)) {
+        //        @\mkdir($dst);
+        if (!@\mkdir($dst) && !\is_dir($dst)) {
             throw new \RuntimeException('The directory ' . $dst . ' could not be created.');
         }
-
         while (false !== ($file = \readdir($dir))) {
             if (('.' !== $file) && ('..' !== $file)) {
                 if (\is_dir($src . '/' . $file)) {
@@ -99,16 +86,11 @@ trait FilesManagement
      * @version     1.0.1
      * @link        https://aidanlister.com/2004/04/recursively-copying-directories-in-php/
      */
-    public static function xcopy($source, $dest): bool
+    public static function xcopy(string $source, string $dest): bool
     {
-        if (!self::isSafeFilesystemPath((string)$source) || !self::isSafeFilesystemPath((string)$dest)) {
-            return false;
-        }
-
         // Check for symlinks
         if (\is_link($source)) {
-            $target = \readlink($source);
-            return false !== $target && \symlink($target, $dest);
+            return \symlink(\readlink($source), $dest);
         }
 
         // Simple copy for a file
@@ -117,14 +99,15 @@ trait FilesManagement
         }
 
         // Make destination directory
-        if (!\is_dir($dest) && !@\mkdir($dest, 0755, true) && !\is_dir($dest)) {
-            throw new \RuntimeException(\sprintf('Directory "%s" was not created', $dest));
+        if (!\is_dir($dest)) {
+            if (!\mkdir($dest) && !\is_dir($dest)) {
+                throw new \RuntimeException(\sprintf('Directory "%s" was not created', $dest));
+            }
         }
 
-        if (@\is_dir($source)) {
-            // Loop through the folder
-            /** @var \Directory $dir */
-            $dir = \dir($source);
+        // Loop through the folder
+        $dir = \dir($source);
+        if (@\is_dir($dir)) {
             while (false !== $entry = $dir->read()) {
                 // Skip pointers
                 if ('.' === $entry || '..' === $entry) {
@@ -150,12 +133,8 @@ trait FilesManagement
      *
      * @uses \Xmf\Module\Helper::getHelper()
      */
-    public static function deleteDirectory($src): bool
+    public static function deleteDirectory(string $src): bool
     {
-        if (!self::isSafeFilesystemPath((string)$src)) {
-            return false;
-        }
-
         // Only continue if user is a 'global' Admin
         if (!($GLOBALS['xoopsUser'] instanceof \XoopsUser) || !$GLOBALS['xoopsUser']->isAdmin()) {
             return false;
@@ -168,14 +147,19 @@ trait FilesManagement
         if ($dirInfo->isDir()) {
             $fileList = \array_diff(\scandir($src, \SCANDIR_SORT_NONE), ['..', '.']);
             foreach ($fileList as $k => $v) {
-                $fileInfo = new \SplFileInfo("{$src}/{$v}");
+                $fileInfo = new \SplFileInfo("$src/$v");
                 if ($fileInfo->isDir()) {
                     // recursively handle subdirectories
                     if (!$success = self::deleteDirectory($fileInfo->getRealPath())) {
                         break;
                     }
-                } elseif (!($success = \unlink($fileInfo->getRealPath()))) {
-                    break;
+                } else {
+                    // delete the file
+                    if (\file_exists($fileInfo->getRealPath()) && is_file($fileInfo->getRealPath())) {
+                        if (!($success = \unlink($fileInfo->getRealPath()))) {
+                            break;
+                        }
+                    }
                 }
             }
             // now delete this (sub)directory if all the files are gone
@@ -199,12 +183,8 @@ trait FilesManagement
      *
      * @return bool true on success
      */
-    public static function rrmdir($src): bool
+    public static function rrmdir(string $src): bool
     {
-        if (!self::isSafeFilesystemPath((string)$src)) {
-            return false;
-        }
-
         // Only continue if user is a 'global' Admin
         if (!($GLOBALS['xoopsUser'] instanceof \XoopsUser) || !$GLOBALS['xoopsUser']->isAdmin()) {
             return false;
@@ -244,12 +224,8 @@ trait FilesManagement
      *
      * @return bool true on success
      */
-    public static function rmove($src, $dest): bool
+    public static function rmove(string $src, string $dest): bool
     {
-        if (!self::isSafeFilesystemPath((string)$src) || !self::isSafeFilesystemPath((string)$dest)) {
-            return false;
-        }
-
         // Only continue if user is a 'global' Admin
         if (!($GLOBALS['xoopsUser'] instanceof \XoopsUser) || !$GLOBALS['xoopsUser']->isAdmin()) {
             return false;
@@ -261,7 +237,7 @@ trait FilesManagement
         }
 
         // If the destination directory does not exist and could not be created stop processing
-        if (!\is_dir($dest) && !@\mkdir($dest, 0755, true) && !\is_dir($dest)) {
+        if (!\is_dir($dest) && !\mkdir($dest) && !\is_dir($dest)) {
             return false;
         }
 
@@ -269,11 +245,11 @@ trait FilesManagement
         $iterator = new \DirectoryIterator($src);
         foreach ($iterator as $fObj) {
             if ($fObj->isFile()) {
-                \rename($fObj->getPathname(), "{$dest}/" . $fObj->getFilename());
+                \rename($fObj->getPathname(), "$dest/" . $fObj->getFilename());
             } elseif (!$fObj->isDot() && $fObj->isDir()) {
                 // Try recursively on directory
-                self::rmove($fObj->getPathname(), "{$dest}/" . $fObj->getFilename());
-                //                rmdir($fObj->getPath()); // now delete the directory
+                self::rmove($fObj->getPathname(), "$dest/" . $fObj->getFilename());
+                //                \rmdir($fObj->getPath()); // now delete the directory
             }
         }
         $iterator = null;   // clear iterator Obj to close file/directory
@@ -292,12 +268,8 @@ trait FilesManagement
      *
      * @uses \Xmf\Module\Helper::getHelper()
      */
-    public static function rcopy($src, $dest): bool
+    public static function rcopy(string $src, string $dest): bool
     {
-        if (!self::isSafeFilesystemPath((string)$src) || !self::isSafeFilesystemPath((string)$dest)) {
-            return false;
-        }
-
         // Only continue if user is a 'global' Admin
         if (!($GLOBALS['xoopsUser'] instanceof \XoopsUser) || !$GLOBALS['xoopsUser']->isAdmin()) {
             return false;
@@ -309,7 +281,7 @@ trait FilesManagement
         }
 
         // If the destination directory does not exist and could not be created stop processing
-        if (!\is_dir($dest) && !@\mkdir($dest, 0755, true) && !\is_dir($dest)) {
+        if (!\is_dir($dest) && !\mkdir($dest) && !\is_dir($dest)) {
             return false;
         }
 
@@ -317,20 +289,12 @@ trait FilesManagement
         $iterator = new \DirectoryIterator($src);
         foreach ($iterator as $fObj) {
             if ($fObj->isFile()) {
-                \copy($fObj->getPathname(), "{$dest}/" . $fObj->getFilename());
+                \copy($fObj->getPathname(), "$dest/" . $fObj->getFilename());
             } elseif (!$fObj->isDot() && $fObj->isDir()) {
-                self::rcopy($fObj->getPathname(), "{$dest}/" . $fObj->getFilename());
+                self::rcopy($fObj->getPathname(), "$dest/" . $fObj->getFilename());
             }
         }
 
         return true;
-    }
-
-    private static function isSafeFilesystemPath(string $path): bool
-    {
-        return '' !== $path
-            && !str_contains($path, "\0")
-            && !str_contains($path, '://')
-            && !str_contains($path, '..');
     }
 }
