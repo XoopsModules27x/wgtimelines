@@ -22,6 +22,8 @@ namespace XoopsModules\Wgtimelines\Common;
  * @link      https://xoops.org
  */
 
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
+
 class MigrateHelper
 {
 
@@ -53,7 +55,7 @@ class MigrateHelper
      */
     public function createSchemaFromSqlfile(): bool
     {
-        if (!\file_exists($this->fileSql)) {
+        if (!\is_file($this->fileSql) || !\is_readable($this->fileSql)) {
             \xoops_error('Error: Sql file not found!');
             return false;
         }
@@ -64,6 +66,10 @@ class MigrateHelper
 
         // read sql file
         $lines = \file($this->fileSql);
+        if (false === $lines) {
+            \xoops_error('Error: Unable to read sql file!');
+            return false;
+        }
 
         // remove unnecessary lines
         foreach ($lines as $key => $value) {
@@ -163,7 +169,7 @@ class MigrateHelper
 
         // create new file and write schema array into this file
         $myfile = \fopen($this->fileYaml, "w");
-        if (!$myfile || \is_null($myfile)) {
+        if (!$myfile) {
             \xoops_error('Error: Unable to open sql file!');
             return false;
         }
@@ -218,12 +224,12 @@ class MigrateHelper
         }
         $columns['name'] = $name;
         // update quotes
-        if (\strpos($attributes, "''") > 0) {
-            $attributes = \trim(\str_replace("''", "''''''''" , $attributes));
-        } elseif (\strpos($attributes, "'") > 0) {
-            $attributes = \trim(\str_replace("'", "''" , $attributes));
+        $attributes = \trim($attributes);
+        if (\strpos($attributes, "'") > 0) {
+            $columns['attributes'] = '" ' . $attributes . ' "';
+        } else {
+            $columns['attributes'] = "' " . $attributes . " '";
         }
-        $columns['attributes'] = "' " . $attributes . " '";
 
         return $columns;
 

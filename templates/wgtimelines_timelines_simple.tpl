@@ -40,7 +40,7 @@
                         <p><{$item.content|default:false}></p>
                         <{if $item.readmore|default:false}>
                             <p class="timeline-item-readmore right">
-                                <a href="items.php?op=read&amp;item_id=<{$item.id}>" title="<{$smarty.const._MA_WGTIMELINES_READMORE}>"><{$smarty.const._MA_WGTIMELINES_READMORE}>...</a>
+                                <a href="items.php?op=read&amp;item_id=<{$item.id}>" title="<{$smarty.const._MD_WGTIMELINES_READMORE}>"><{$smarty.const._MD_WGTIMELINES_READMORE}>...</a>
                             </p>
                         <{/if}>
                         <{if $panel_imgpos|default:'' == 'bottom' && $item.image|default:false}>
@@ -54,7 +54,7 @@
                     </div>
                     <{if $showreads|default:false}>
                         <div class="col-xs-12 col-sm-6 timeline-footer timeline-item-reads left">
-                            <i class="glyphicon glyphicon-eye-open"> <{$smarty.const._MA_WGTIMELINES_ITEM_READS}>: <{$item.reads}></i>
+                            <i class="glyphicon glyphicon-eye-open"> <{$smarty.const._MD_WGTIMELINES_ITEM_READS}>: <{$item.reads}></i>
                         </div>
                     <{/if}>
                     <{if $panel_imgpos|default:'' == 'top' && $item.date|default:false}>

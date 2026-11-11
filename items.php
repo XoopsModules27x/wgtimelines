@@ -131,7 +131,7 @@ $GLOBALS['xoopsTpl']->assign('welcome', $helper->getConfig('welcome'));
 wgtimelinesMetaKeywords($helper->getConfig('keywords').', '. \implode(',', $keywords));
 unset($keywords);
 // Description
-wgtimelinesMetaDescription(\_MA_WGTIMELINES_DESC);
+wgtimelinesMetaDescription(\_MD_WGTIMELINES_DESC);
 $GLOBALS['xoopsTpl']->assign('xoops_mpageurl', \WGTIMELINES_URL.'/timelines.php');
 $GLOBALS['xoopsTpl']->assign('wgtimelines_upload_url', \WGTIMELINES_UPLOAD_URL);
 include __DIR__ . '/footer.php';

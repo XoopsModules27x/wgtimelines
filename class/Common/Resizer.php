@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Wgtimelines\Common;
 
@@ -12,12 +12,13 @@ namespace XoopsModules\Wgtimelines\Common;
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
+
 /**
  * Image resizer class for xoops
  *
  * @copyright      module for xoops
- * @license        GPL 2.0 or later
- * @package        XOOPS common
+ * @license         GNU GPL 2.0 or later (https://www.gnu.org/licenses/gpl-2.0.html)
  * @since          1.0
  * @min_xoops      2.5.9
  * @author         Goffy - Wedega - Email:<webmaster@wedega.com> - Website:<https://wedega.com>
@@ -46,15 +47,24 @@ class Resizer
         switch ($this->imageMimetype) {
             case 'image/png':
                 $img = \imagecreatefrompng($this->sourceFile);
+                if (!$img) {
+                    return false;
+                }
                 break;
             case 'image/jpeg':
                 $img = \imagecreatefromjpeg($this->sourceFile);
                 if (!$img) {
-                    $img = \imagecreatefromstring(\file_get_contents($this->sourceFile));
+                    $img = \imagecreatefromstring(file_get_contents($this->sourceFile));
+                }
+                if (!$img) {
+                    return false;
                 }
                 break;
             case 'image/gif':
                 $img = \imagecreatefromgif($this->sourceFile);
+                if (!$img) {
+                    return false;
+                }
                 break;
             default:
                 return 'Unsupported format';
@@ -84,14 +94,16 @@ class Resizer
             }
 
             // Create a new temporary image.
-            $tmpimg = \imagecreatetruecolor($new_width, $new_height);
+            $tmpimg = \imagecreatetruecolor((int)$new_width, (int)$new_height);
             \imagealphablending($tmpimg, false);
             \imagesavealpha($tmpimg, true);
 
             // Copy and resize old image into new image.
-            \imagecopyresampled($tmpimg, $img, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+            \imagecopyresampled($tmpimg, $img, 0, 0, 0, 0, (int)$new_width, (int)$new_height, (int)$width, (int)$height);
 
-            \unlink($this->endFile);
+            if (\is_file($this->endFile)) {
+                \unlink($this->endFile);
+            }
             //compressing the file
             switch ($this->imageMimetype) {
                 case 'image/png':
@@ -104,13 +116,9 @@ class Resizer
                     \imagegif($tmpimg, $this->endFile);
                     break;
             }
-
-            // release the memory
-            \imagedestroy($tmpimg);
         } else {
             return 'copy';
         }
-        \imagedestroy($img);
 
         return true;
     }
@@ -186,8 +194,25 @@ class Resizer
 
     public function mergeImage(): void
     {
-        $dest = \imagecreatefromjpeg($this->endFile);
-        $src  = \imagecreatefromjpeg($this->sourceFile);
+        switch ($this->imageMimetype) {
+            case 'image/png':
+                $dest = \imagecreatefrompng($this->endFile);
+                $src = \imagecreatefrompng($this->sourceFile);
+                break;
+            case 'image/jpeg':
+                $dest = \imagecreatefromjpeg($this->endFile);
+                $src = \imagecreatefromjpeg($this->sourceFile);
+                break;
+            case 'image/gif':
+                $dest = \imagecreatefromgif($this->endFile);
+                $src = \imagecreatefromgif($this->sourceFile);
+                break;
+            default:
+                return;
+         }
+        if (!$dest || !$src) {
+            return;
+        }
         if (4 == $this->mergeType) {
             $imgWidth  = (int)\round($this->maxWidth / 2 - 1);
             $imgHeight = (int)\round($this->maxHeight / 2 - 1);
@@ -236,10 +261,18 @@ class Resizer
                     break;
             }
         }
-        \imagejpeg($dest, $this->endFile);
-
-        \imagedestroy($src);
-        \imagedestroy($dest);
+        // image output
+        switch ($this->imageMimetype) {
+            case 'image/png':
+                \imagepng($dest, $this->endFile, 0);
+                break;
+            case 'image/jpeg':
+                \imagejpeg($dest, $this->endFile, $this->jpgQuality);
+                break;
+            case 'image/gif':
+                \imagegif($dest, $this->endFile);
+                break;
+        }
     }
 
     /**
@@ -268,7 +301,9 @@ class Resizer
         // Rotate
         $tmpimg = \imagerotate($original, $this->degrees, 0);
 
-        \unlink($this->endFile);
+        if (\file_exists($this->endFile) && is_file($this->endFile)) {
+            \unlink($this->endFile);
+        }
         //compressing the file
         switch ($this->imageMimetype) {
             case 'image/png':
@@ -287,9 +322,6 @@ class Resizer
                 }
                 break;
         }
-
-        // release the memory
-        \imagedestroy($tmpimg);
 
         return true;
     }

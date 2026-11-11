@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Wgtimelines\Common;
 
@@ -16,17 +16,14 @@ namespace XoopsModules\Wgtimelines\Common;
  */
 
 /**
- *
  * @license      https://www.fsf.org/copyleft/gpl.html GNU public license
  * @copyright    https://xoops.org 2000-2020 &copy; XOOPS Project
  * @author       ZySpec <zyspec@yahoo.com>
  * @author       Mamba <mambax7@gmail.com>
  */
 
-use MyTextSanitizer;
-use XoopsFormDhtmlTextArea;
-use XoopsFormTextArea;
-use XoopsModules\Wgtimelines;
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
+
 use XoopsModules\Wgtimelines\Helper;
 
 /**
@@ -50,7 +47,6 @@ class SysUtility
      * Access the only instance of this class
      *
      * @return object
-     *
      */
     public static function getInstance(): object
     {
@@ -143,13 +139,13 @@ class SysUtility
             if (\mb_strlen($text) <= $length) {
                 return $text;
             }
-            $truncate = \mb_substr($text, 0, $length - \mb_strlen($ending));
+            $truncate = \mb_substr($text, 0, $length - mb_strlen($ending));
         }
         // if the words shouldn't be cut in the middle...
         if (!$exact) {
             // ...search the last occurance of a space...
             $spacepos = \mb_strrpos($truncate, ' ');
-            if (isset($spacepos)) {
+            if ($spacepos > 0) {
                 // ...and cut the text in this position
                 $truncate = \mb_substr($truncate, 0, $spacepos);
             }
@@ -171,7 +167,7 @@ class SysUtility
      * @param array|null $options
      * @return \XoopsFormDhtmlTextArea|\XoopsFormEditor
      */
-    public static function getEditor(\Xmf\Module\Helper $helper = null, array $options = null): XoopsFormDhtmlTextArea|\XoopsFormEditor
+    public static function getEditor(?\Xmf\Module\Helper $helper = null, ?array $options = null): \XoopsFormDhtmlTextArea|\XoopsFormEditor
     {
         /** @var Helper $helper */
         if (null === $options) {
@@ -190,7 +186,7 @@ class SysUtility
 
         $isAdmin = $helper->isUserAdmin();
 
-        if (\class_exists('\XoopsFormEditor')) {
+        if (\class_exists('XoopsFormEditor')) {
             if ($isAdmin) {
                 $descEditor = new \XoopsFormEditor(\ucfirst($options['name']), $helper->getConfig('editorAdmin'), $options, $nohtml = false, $onfailure = 'textarea');
             } else {
@@ -214,7 +210,7 @@ class SysUtility
     public function fieldExists($fieldname, $table): bool
     {
         global $xoopsDB;
-        $result = $xoopsDB->queryF("SHOW COLUMNS FROM   $table LIKE '$fieldname'");
+        $result = $xoopsDB->query("SHOW COLUMNS FROM   $table LIKE '$fieldname'");
 
         return ($xoopsDB->getRowsNum($result) > 0);
     }

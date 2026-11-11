@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Wgtimelines\Common;
 
@@ -16,7 +16,7 @@ namespace XoopsModules\Wgtimelines\Common;
  * Wgtimelines module
  *
  * @copyright       XOOPS Project (https://xoops.org)
- * @license         GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @license         GNU GPL 2.0 or later (https://www.gnu.org/licenses/gpl-2.0.html)
  * @author          Xoops Development Team
  */
 
@@ -38,11 +38,12 @@ class FileChecker
 {
     /**
      * @param string $file_path
-     * @param string|null $original_file_path
      * @param string $redirectFile
+     * @param string|null $original_file_path
+     *
      * @return bool|string
      */
-    public static function getFileStatus(string $file_path, string $redirectFile, string $original_file_path = null): bool|string
+    public static function getFileStatus(string $file_path, string $redirectFile, ?string $original_file_path = null): bool|string
     {
         $pathIcon16 = \Xmf\Module\Admin::iconUrl('', '16');
 
@@ -57,24 +58,24 @@ class FileChecker
         if (null === $original_file_path) {
             if (self::fileExists($file_path)) {
                 $path_status = "<img src='$pathIcon16/1.png' >";
-                $path_status .= "$file_path (" . \constant('CO_' . $moduleDirNameUpper . '_' . 'FC_AVAILABLE') . ') ';
+                $path_status .= "$file_path (" . \constant('_CO_WGTIMELINES_FC_AVAILABLE') . ') ';
             } else {
                 $path_status = "<img src='$pathIcon16/0.png' >";
-                $path_status .= "$file_path (" . \constant('CO_' . $moduleDirNameUpper . '_' . 'FC_NOTAVAILABLE') . ') ';
+                $path_status .= "$file_path (" . \constant('_CO_WGTIMELINES_FC_NOTAVAILABLE') . ') ';
             }
         } else {
             if (self::compareFiles($file_path, $original_file_path)) {
                 $path_status = "<img src='$pathIcon16/1.png' >";
-                $path_status .= "$file_path (" . \constant('CO_' . $moduleDirNameUpper . '_' . 'FC_AVAILABLE') . ') ';
+                $path_status .= "$file_path (" . \constant('_CO_WGTIMELINES_FC_AVAILABLE') . ') ';
             } else {
                 $path_status = "<img src='$pathIcon16/0.png' >";
-                $path_status .= "$file_path (" . \constant('CO_' . $moduleDirNameUpper . '_' . 'FC_NOTAVAILABLE') . ') ';
+                $path_status .= "$file_path (" . \constant('_CO_WGTIMELINES_FC_NOTAVAILABLE') . ') ';
                 $path_status .= "<form action='" . $_SERVER['SCRIPT_NAME'] . "' method='post'>";
                 $path_status .= "<input type='hidden' name='op' value='copyfile'>";
                 $path_status .= "<input type='hidden' name='file_path' value='$file_path'>";
                 $path_status .= "<input type='hidden' name='original_file_path' value='$original_file_path'>";
                 $path_status .= "<input type='hidden' name='redirect' value='$redirectFile'>";
-                $path_status .= "<button class='submit' onClick='this.form.submit();'>" . \constant('CO_' . $moduleDirNameUpper . '_' . 'FC_CREATETHEFILE') . '</button>';
+                $path_status .= "<button class='submit' onClick='this.form.submit();'>" . \constant('_CO_WGTIMELINES_FC_CREATETHEFILE') . '</button>';
                 $path_status .= '</form>';
             }
         }
@@ -139,21 +140,20 @@ class FileChecker
     {
         $target = \str_replace('..', '', $target);
 
-        return @\chmod($target, $mode);
+        return @\chmod($target, (int)$mode);
     }
 }
 
 $op = Request::getString('op', '', 'POST');
 if ($op == 'copyfile') {
-    if (\Xmf\Request::hasVar('original_file_path', 'POST')) {
-        $original_file_path = $_POST['original_file_path'];
-    }
-    if (\Xmf\Request::hasVar('file_path', 'POST')) {
-        $file_path = $_POST['file_path'];
-    }
-    if (\Xmf\Request::hasVar('redirect', 'POST')) {
-        $redirect = $_POST['redirect'];
-    }
-    $msg = FileChecker::copyFile($original_file_path, $file_path) ? \constant('CO_' . $moduleDirNameUpper . '_' . 'FC_FILECOPIED') : \constant('CO_' . $moduleDirNameUpper . '_' . 'FC_FILENOTCOPIED');
+    if (!\Xmf\Request::hasVar('original_file_path', 'POST')
+        || !\Xmf\Request::hasVar('file_path', 'POST')
+        || !\Xmf\Request::hasVar('redirect', 'POST')) {
+            return;
+        }
+    $original_file_path = \Xmf\Request::getString('original_file_path');
+    $file_path = \Xmf\Request::getString('file_path');
+    $redirect =\Xmf\Request::getString('redirect');
+    $msg = FileChecker::copyFile($original_file_path, $file_path) ? \constant('_CO_WGTIMELINES_FC_FILECOPIED') : \constant('_CO_WGTIMELINES_FC_FILENOTCOPIED');
     \redirect_header($redirect, 2, $msg . ': ' . $file_path);
 }

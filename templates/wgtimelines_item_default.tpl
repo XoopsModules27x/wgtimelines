@@ -51,7 +51,7 @@
                             <{/if}>
                             <{if $showreads|default:false}>
                                 <span class='timeline-item-reads pull-right'>
-                                    <i class='glyphicon glyphicon-eye-open'> <{$smarty.const._MA_WGTIMELINES_ITEM_READS}>: <{$item.reads}></i>
+                                    <i class='glyphicon glyphicon-eye-open'> <{$smarty.const._MD_WGTIMELINES_ITEM_READS}>: <{$item.reads}></i>
                                 </span>
                             <{/if}>    
                         </h4>

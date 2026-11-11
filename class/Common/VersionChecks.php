@@ -1,7 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Wgtimelines\Common;
-
 
 /*
  You may not change or alter any portion of this comment or credits
@@ -13,9 +12,11 @@ namespace XoopsModules\Wgtimelines\Common;
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
+
 /**
  * @copyright   XOOPS Project (https://xoops.org)
- * @license     http://www.fsf.org/copyleft/gpl.html GNU public license
+ * @license     https://www.fsf.org/copyleft/gpl.html GNU public license
  * @author      mamba <mambax7@gmail.com>
  */
 trait VersionChecks
@@ -25,10 +26,10 @@ trait VersionChecks
      * @static
      *
      * @param \XoopsModule|null $module
-     * @param null|string $requiredVer
+     * @param string|null $requiredVer
      * @return bool true if meets requirements, false if not
      */
-    public static function checkVerXoops(?\XoopsModule $module = null, $requiredVer = null)
+    public static function checkVerXoops(?\XoopsModule $module = null, ?string $requiredVer = null): bool
     {
         $moduleDirName      = \basename(\dirname(__DIR__, 2));
         $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
@@ -45,9 +46,9 @@ trait VersionChecks
         }
         $success = true;
 
-        if ($module->versionCompare($currentVer, $requiredVer, '<')) {
+        if ($module->versionCompare($currentVer, $requiredVer)) {
             $success = false;
-            $module->setErrors(\sprintf(\constant('CO_' . $moduleDirNameUpper . '_ERROR_BAD_XOOPS'), $requiredVer, $currentVer));
+            $module->setErrors(\sprintf(\constant('_CO_WGTIMELINES_ERROR_BAD_XOOPS'), $requiredVer, $currentVer));
         }
 
         return $success;
@@ -68,7 +69,6 @@ trait VersionChecks
             $module = \XoopsModule::getByDirname($moduleDirName);
         }
         \xoops_loadLanguage('admin', $moduleDirName);
-        \xoops_loadLanguage('common', $moduleDirName);
         // check for minimum PHP version
         $success = true;
 
@@ -77,7 +77,7 @@ trait VersionChecks
 
         if (false !== $reqVer && '' !== $reqVer) {
             if (\version_compare($verNum, $reqVer, '<')) {
-                $module->setErrors(\sprintf(\constant('CO_' . $moduleDirNameUpper . '_ERROR_BAD_PHP'), $reqVer, $verNum));
+                $module->setErrors(\sprintf(\constant('_CO_WGTIMELINES_ERROR_BAD_PHP'), $reqVer, $verNum));
                 $success = false;
             }
         }
@@ -112,7 +112,7 @@ trait VersionChecks
                 $curlReturn = \curl_exec($curlHandle);
                 if (false === $curlReturn) {
                     \trigger_error(\curl_error($curlHandle));
-                } elseif (\mb_strpos($curlReturn, 'Not Found')) {
+                } elseif (mb_strpos($curlReturn, 'Not Found')) {
                     \trigger_error('Repository Not Found: ' . $infoReleasesUrl);
                 } else {
                     $file              = \json_decode($curlReturn, false);
@@ -120,11 +120,11 @@ trait VersionChecks
                     $latestVersion     = $file[0]->tag_name;
                     $prerelease        = $file[0]->prerelease;
                     if ('master' !== $latestVersionLink) {
-                        $update = \constant('CO_' . $moduleDirNameUpper . '_' . 'NEW_VERSION') . $latestVersion;
+                        $update = \constant('_CO_WGTIMELINES_NEW_VERSION') . $latestVersion;
                     }
                     //"PHP-standardized" version
                     $latestVersion = \mb_strtolower($latestVersion);
-                    if (false !== \mb_strpos($latestVersion, 'final')) {
+                    if (false !== mb_strpos($latestVersion, 'final')) {
                         $latestVersion = \str_replace('_', '', \mb_strtolower($latestVersion));
                         $latestVersion = \str_replace('final', '', \mb_strtolower($latestVersion));
                     }
@@ -139,7 +139,6 @@ trait VersionChecks
                         $ret[] = $latestVersionLink;
                     }
                 }
-                \curl_close($curlHandle);
             }
         }
 

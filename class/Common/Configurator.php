@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Wgtimelines\Common;
 
@@ -15,19 +15,19 @@ namespace XoopsModules\Wgtimelines\Common;
  * Configurator Class
  *
  * @copyright   XOOPS Project (https://xoops.org)
- * @license     http://www.fsf.org/copyleft/gpl.html GNU public license
+ * @license     https://www.fsf.org/copyleft/gpl.html GNU public license
  * @author      XOOPS Development Team
- * @package     Publisher
  * @since       1.05
  */
 
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
 
 /**
  * Class Configurator
  */
 class Configurator
 {
-    public $name;
+    public string $name;
     public array $paths           = [];
     public array $uploadFolders   = [];
     public array $copyBlankFiles  = [];
@@ -36,9 +36,8 @@ class Configurator
     public array $oldFiles        = [];
     public array $oldFolders      = [];
     public array $renameTables    = [];
-    public array $renameColumns   = [];
     public array $moduleStats     = [];
-    public $modCopyright;
+    public string $modCopyright;
 
     /**
      * Configurator constructor.
@@ -56,7 +55,6 @@ class Configurator
         $this->oldFiles        = $config->oldFiles;
         $this->oldFolders      = $config->oldFolders;
         $this->renameTables    = $config->renameTables;
-        $this->renameColumns   = $config->renameColumns;
         $this->moduleStats     = $config->moduleStats;
         $this->modCopyright    = $config->modCopyright;
     }

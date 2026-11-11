@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Wgtimelines\Common;
 
@@ -12,9 +12,11 @@ namespace XoopsModules\Wgtimelines\Common;
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
+
 /**
  * @copyright   XOOPS Project (https://xoops.org)
- * @license     http://www.fsf.org/copyleft/gpl.html GNU public license
+ * @license     https://www.fsf.org/copyleft/gpl.html GNU public license
  * @author      mamba <mambax7@gmail.com>
  */
 trait FilesManagement
@@ -25,7 +27,7 @@ trait FilesManagement
      * @param string $folder The full path of the directory to check
      *
      * @return void
-     *@throws \RuntimeException
+     * @throws \RuntimeException
      */
     public static function createFolder(string $folder): void
     {
@@ -53,10 +55,10 @@ trait FilesManagement
     }
 
     /**
-     * @param string $src
-     * @param string $dst
+     * @param $src
+     * @param $dst
      */
-    public static function recurseCopy(string $src, string $dst): void
+    public static function recurseCopy($src, $dst): void
     {
         $dir = \opendir($src);
         //        @\mkdir($dst);
@@ -82,7 +84,7 @@ trait FilesManagement
      * @return      bool     Returns true on success, false on failure
      * @author      Aidan Lister <aidan@php.net>
      * @version     1.0.1
-     * @link        http://aidanlister.com/2004/04/recursively-copying-directories-in-php/
+     * @link        https://aidanlister.com/2004/04/recursively-copying-directories-in-php/
      */
     public static function xcopy(string $source, string $dest): bool
     {
@@ -97,9 +99,11 @@ trait FilesManagement
         }
 
         // Make destination directory
-        if (!\is_dir($dest) && !\mkdir($dest) && !\is_dir($dest)) {
+        if (!\is_dir($dest)) {
+            if (!\mkdir($dest) && !\is_dir($dest)) {
                 throw new \RuntimeException(\sprintf('Directory "%s" was not created', $dest));
             }
+        }
 
         // Loop through the folder
         $dir = \dir($source);
@@ -149,11 +153,15 @@ trait FilesManagement
                     if (!$success = self::deleteDirectory($fileInfo->getRealPath())) {
                         break;
                     }
+                } else {
                     // delete the file
-                } elseif (!($success = \unlink($fileInfo->getRealPath()))) {
-                        break;
+                    if (\file_exists($fileInfo->getRealPath()) && is_file($fileInfo->getRealPath())) {
+                        if (!($success = \unlink($fileInfo->getRealPath()))) {
+                            break;
+                        }
                     }
                 }
+            }
             // now delete this (sub)directory if all the files are gone
             if ($success) {
                 $success = \rmdir($dirInfo->getRealPath());
@@ -204,6 +212,7 @@ trait FilesManagement
             }
         }
         $iterator = null;   // clear iterator Obj to close file/directory
+
         return \rmdir($src); // remove the directory & return results
     }
 
@@ -244,6 +253,7 @@ trait FilesManagement
             }
         }
         $iterator = null;   // clear iterator Obj to close file/directory
+
         return \rmdir($src); // remove the directory & return results
     }
 
