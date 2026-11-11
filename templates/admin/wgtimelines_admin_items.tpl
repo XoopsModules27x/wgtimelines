@@ -16,7 +16,7 @@
         
     }
     .toggle-buttons label i.glyphicon {
-        padding:0px;
+        padding:0;
         width:150px;
     }
     .toggle-buttons input:checked + label {

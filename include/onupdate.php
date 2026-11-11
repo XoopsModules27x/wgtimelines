@@ -215,7 +215,7 @@ function update_tplsetsdefault($module): bool
     } else {
         // delete existing table
         $sql = 'DROP TABLE IF EXISTS `' . $db->prefix('wgtimelines_tplsetsdefault') . '`;';
-        if (!$db->queryF($sql)) {
+        if (!$db->exec($sql)) {
             $module->setErrors($db->error());
             return false;
         } else {
@@ -229,7 +229,7 @@ function update_tplsetsdefault($module): bool
                     $module->setErrors("error: invalid sql in file 'update.sql' found");
                     return false;
                 }
-                if (!$db->queryF($prefixed_query[0])) {
+                if (!$db->exec($prefixed_query[0])) {
                     $module->setErrors($db->error());
                     return false;
                 }
@@ -288,7 +288,7 @@ function update_wgtimelines_v108(&$module): bool
 function update_wgtimelines_v107($module): bool
 {
     $sql = "UPDATE `" . $GLOBALS['xoopsDB']->prefix('wgtimelines_items') . "` SET `item_year` = '' WHERE `" . $GLOBALS['xoopsDB']->prefix('wgtimelines_items') . "`.`item_year` = 0;";
-    if (!$result = $GLOBALS['xoopsDB']->queryF($sql)) {
+    if (!$GLOBALS['xoopsDB']->exec($sql)) {
         xoops_error($GLOBALS['xoopsDB']->error() . '<br>' . $sql);
         $module->setErrors('error when changing fieldtype of item_year to varchar');
         return false;

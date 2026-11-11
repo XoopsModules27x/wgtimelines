@@ -28,7 +28,7 @@ use XoopsModules\Wgtimelines;
 use XoopsModules\Wgtimelines\Constants;
 use Xmf\Request;
 
-include __DIR__ . '/header.php';
+include_once __DIR__ . '/header.php';
 // get timeline id
 $tl_id = Request::getInt('tl_id');
 $start = Request::getInt('start');
@@ -292,4 +292,4 @@ if ($timelinesCount > 0) {
 wgtimelinesMetaDescription(\_MD_WGTIMELINES_DESC);
 $GLOBALS['xoopsTpl']->assign('xoops_mpageurl', \WGTIMELINES_URL.'/timelines.php');
 $GLOBALS['xoopsTpl']->assign('wgtimelines_upload_url', \WGTIMELINES_UPLOAD_URL);
-include __DIR__ . '/footer.php';
+include_once __DIR__ . '/footer.php';

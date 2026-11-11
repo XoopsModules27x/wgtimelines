@@ -26,6 +26,8 @@ namespace XoopsModules\Wgtimelines;
  * @version        $Id: 1.0 templates.php 13070 Sat 2016-10-01 05:42:15Z XOOPS Development Team $
  */
 
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
+
 use XoopsModules\Wgtimelines;
 
 /**
@@ -46,14 +48,14 @@ class TplsetsdefaultHandler extends \XoopsPersistableObjectHandler
     /**
      * retrieve a field
      *
-     * @param $i field id
+     * @param $id
      * @param $fields
      * @return mixed reference to the <a href='psi_element://Get'>Get</a> object
      *                object
      */
-    public function get($i = null, $fields = null): mixed
+    public function get($id = null, $fields = null): mixed
     {
-        return parent::get($i, $fields);
+        return parent::get($id, $fields);
     }
 
     /**
@@ -124,7 +126,7 @@ class TplsetsdefaultHandler extends \XoopsPersistableObjectHandler
             }
         } else {
             $sql = 'UPDATE `' . $GLOBALS['xoopsDB']->prefix('wgtimelines_tplsetsdefault') . '` SET `' . $GLOBALS['xoopsDB']->prefix('wgtimelines_tplsetsdefault') . '`.`tpl_date_create` = ' . \time();
-            if (!$result = $GLOBALS['xoopsDB']->queryF($sql)) {
+            if (!$GLOBALS['xoopsDB']->exec($sql)) {
                 echo 'Error updating date for wgtimelines_tplsetsdefault in checkTplsetsdefault:';
                 return false;
             }
@@ -134,7 +136,7 @@ class TplsetsdefaultHandler extends \XoopsPersistableObjectHandler
         if ($tplsetsdefaultCount > $templatesCount) {
             $db = $GLOBALS['xoopsDB'];
             $sql = 'INSERT INTO `' . $db->prefix('wgtimelines_templates') . '` SELECT `' . $db->prefix('wgtimelines_tplsetsdefault') . '`.* FROM `' . $db->prefix('wgtimelines_tplsetsdefault') . '` LEFT JOIN `' . $db->prefix('wgtimelines_templates') . '` ON `' . $db->prefix('wgtimelines_tplsetsdefault') . '`.tpl_id = `' . $db->prefix('wgtimelines_templates') . '`.tpl_id WHERE (((`' . $db->prefix('wgtimelines_templates') . '`.tpl_id) Is Null));';
-            if (!$db->queryF($sql)) {
+            if (!$db->exec($sql)) {
                 echo 'Error insert default templates to templates table in checkTplsetsdefault:';
                 return false;
             }

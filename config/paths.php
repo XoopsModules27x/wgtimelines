@@ -1,9 +1,14 @@
 <?php
+/**
+ * @copyright   XOOPS Project (https://xoops.org)
+ * @license     GPL-2.0-or-later (https://www.gnu.org/licenses/gpl-2.0.html)
+ */
+
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
 
 function getPaths(): object
 {
     $moduleDirName      = \basename(\dirname(__DIR__));
-    $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 
     return (object)[
         'name'          => \mb_strtoupper($moduleDirName) . ' PathConfigurator',

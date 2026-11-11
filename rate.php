@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 use Xmf\Request;
 
-include __DIR__ . '/header.php';
+include_once __DIR__ . '/header.php';
 $op = Request::getString('op', 'default');
 
 switch ($op) {
@@ -44,7 +44,7 @@ switch ($op) {
         // Checking permissions
         $rate_allowed = false;
         if ($helper->getConfig('ratingbars')) {
-            $groups = (isset($GLOBALS['xoopsUser']) && \is_object($GLOBALS['xoopsUser'])) ? $GLOBALS['xoopsUser']->getGroups() : \XOOPS_GROUP_ANONYMOUS;
+            $groups = (isset($GLOBALS['xoopsUser']) && \is_object($GLOBALS['xoopsUser'])) ? $GLOBALS['xoopsUser']->getGroups() : [\XOOPS_GROUP_ANONYMOUS];
             foreach ($groups as $group) {
                 if (\XOOPS_GROUP_ADMIN == $group || \in_array($group, $helper->getConfig('ratingbar_groups'))) {
                     $rate_allowed = true;

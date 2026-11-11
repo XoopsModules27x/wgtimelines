@@ -78,7 +78,6 @@ class Templates extends \XoopsObject
      */
     public function getFormTemplates(mixed $action = false): \XoopsThemeForm
     {
-        $helper = \XoopsModules\Wgtimelines\Helper::getInstance();
         if ($action === false) {
             $action = $_SERVER['REQUEST_URI'];
         }
@@ -96,8 +95,7 @@ class Templates extends \XoopsObject
         $form->addElement(new \XoopsFormText(\_AM_WGTIMELINES_TEMPLATE_FILE, 'tpl_file', 50, 255, $this->getVar('tpl_file')), true);
         // Form Text Area TplOptions
         $tpl_options = $this->getVar('tpl_options', 'N');
-        $options = unserialize($tpl_options);
-        $eletray = [];
+        $options = unserialize($tpl_options, ['allowed_classes' => false]);
 
         foreach ($options as $option) {
             switch ($option['name']) {
@@ -161,7 +159,7 @@ class Templates extends \XoopsObject
                     break;
                 case 'badgecolor':
                     if ($option['valid'] > 0) {
-                        $form->addElement(new \XoopsFormColorPicker(\_AM_WGTIMELINES_TEMPLATE_BADGECOLOR, 'badgecolor', $option['value']), false);
+                        $form->addElement(new \XoopsFormColorPicker(\_AM_WGTIMELINES_TEMPLATE_BADGECOLOR, 'badgecolor', $option['value']));
                     }
                     break;
                 case 'badgefontcolor':
@@ -316,7 +314,7 @@ class Templates extends \XoopsObject
                 case 'autoplay':
                     if ($option['valid'] > 0) {
                         $autoplay = $option['value'] === 'true' ? 1 : 0;
-                        $form->addElement(new \XoopsFormRadioYN(\_AM_WGTIMELINES_TEMPLATE_AUTOPLAY, 'autoplay', $autoplay, _YES, _NO), false);
+                        $form->addElement(new \XoopsFormRadioYN(\_AM_WGTIMELINES_TEMPLATE_AUTOPLAY, 'autoplay', $autoplay, _YES, _NO));
                     }
                     break;
                 case 'autoplaydirection':
@@ -346,7 +344,7 @@ class Templates extends \XoopsObject
                 case 'arrowkeys':
                     if ($option['valid'] > 0) {
                         $arrowkeys = $option['value'] === 'true' ? 1 : 0;
-                        $form->addElement(new \XoopsFormRadioYN(\_AM_WGTIMELINES_TEMPLATE_ARROWKEYS, 'arrowkeys', $arrowkeys, _YES, _NO), false);
+                        $form->addElement(new \XoopsFormRadioYN(\_AM_WGTIMELINES_TEMPLATE_ARROWKEYS, 'arrowkeys', $arrowkeys, _YES, _NO));
                     }
                     break;
                 case 'startat':
@@ -475,7 +473,7 @@ class Templates extends \XoopsObject
         $form->addElement(new \XoopsFormText(\_AM_WGTIMELINES_TEMPLATE_FILE, 'tpl_file', 50, 255, $this->getVar('tpl_file')), true);
         // load options
         $tpl_options = $this->getVar('tpl_options', 'N');
-        $options = unserialize($tpl_options);
+        $options = unserialize($tpl_options, ['allowed_classes' => false]);
         $eletray = [];
         $i = 0;
         $form->addElement(new \XoopsFormLabel(\_AM_WGTIMELINES_TEMPLATE_OPTIONS, $this->getVar('tpl_options', 'N')));
@@ -483,19 +481,19 @@ class Templates extends \XoopsObject
             $i++;
             $eletray[$i] = new \XoopsFormElementTray('', '&nbsp;');
             $eletray[$i]->addElement(new \XoopsFormText('', 'name_'.$i, 20, 255, $option['name']), true);
-            $eletray[$i]->addElement(new \XoopsFormRadioYN(\_AM_WGTIMELINES_TEMPLATE_VALID, 'valid_'.$i, $option['valid'], _YES, _NO), false);
-            $eletray[$i]->addElement(new \XoopsFormText('', 'value_'.$i, 20, 255, $option['value']), false);
+            $eletray[$i]->addElement(new \XoopsFormRadioYN(\_AM_WGTIMELINES_TEMPLATE_VALID, 'valid_'.$i, $option['valid'], _YES, _NO));
+            $eletray[$i]->addElement(new \XoopsFormText('', 'value_'.$i, 20, 255, $option['value']));
             $eletray[$i]->addElement(new \XoopsFormHidden('type_'.$i, $option['type']));
-            $form->addElement($eletray[$i], false);
+            $form->addElement($eletray[$i]);
         }
         $i++;
         $stop = $i + 5;
         for (; $i < $stop; $i++) {
             $eletray[$i] = new \XoopsFormElementTray('', '&nbsp;');
-            $eletray[$i]->addElement(new \XoopsFormText('', 'name_'.$i, 20, 255, ''), false);
-            $eletray[$i]->addElement(new \XoopsFormRadioYN(\_AM_WGTIMELINES_TEMPLATE_VALID, 'valid_'.$i, 0, _YES, _NO), false);
-            $eletray[$i]->addElement(new \XoopsFormText('', 'value_'.$i, 20, 255, ''), false);
-            $form->addElement($eletray[$i], false);
+            $eletray[$i]->addElement(new \XoopsFormText('', 'name_'.$i, 20, 255, ''));
+            $eletray[$i]->addElement(new \XoopsFormRadioYN(\_AM_WGTIMELINES_TEMPLATE_VALID, 'valid_'.$i, 0, _YES, _NO));
+            $eletray[$i]->addElement(new \XoopsFormText('', 'value_'.$i, 20, 255, ''));
+            $form->addElement($eletray[$i]);
         }
 
         // Form label tpl_version
@@ -506,7 +504,7 @@ class Templates extends \XoopsObject
         $tplDate_create = $this->isNew() ? \time() : $this->getVar('tpl_date_create');
         $form->addElement(new \XoopsFormTextDateSelect(\_AM_WGTIMELINES_DATE_CREATE, 'tpl_date_create', '', $tplDate_create));
 
-        $form->addElement(new \XoopsFormRadioYN(\_AM_WGTIMELINES_TEMPLATE_ADDOPT, 'addopt', 0, _YES, _NO), false);
+        $form->addElement(new \XoopsFormRadioYN(\_AM_WGTIMELINES_TEMPLATE_ADDOPT, 'addopt', 0, _YES, _NO));
         // To Save
         $form->addElement(new \XoopsFormHidden('counter', $i));
         $form->addElement(new \XoopsFormHidden('tpl_id', $this->getVar('tpl_id')));
@@ -530,7 +528,7 @@ class Templates extends \XoopsObject
         $ret['desc'] = $this->getVar('tpl_desc', 'n');
         $ret['file'] = $this->getVar('tpl_file');
         $tpl_options = $this->getVar('tpl_options', 'N');
-        $options = unserialize($tpl_options);
+        $options = unserialize($tpl_options, ['allowed_classes' => false]);
         foreach ($options as $option) {
             $ret[$option['name']] = $option['value'];
         }
@@ -574,13 +572,13 @@ class Templates extends \XoopsObject
         $desc_show = $this->convertTplDesc($this->getVar('tpl_desc', 'n'));
         $ret['desc'] = $desc_show;
         $ret['file'] = $this->getVar('tpl_file');
-        $options = unserialize($this->getVar('tpl_options', 'N'));
+        $options = unserialize($this->getVar('tpl_options', 'N'), ['allowed_classes' => false]);
         $ret_options = [];
 
         foreach ($options as $option) {
             // get proper option name
             $title = match ($option['name']) {
-                'panel_pos' => \_AM_WGTIMELINES_TEMPLATE_IMGPOS,
+                'panel_pos', 'panel_imgpos' => \_AM_WGTIMELINES_TEMPLATE_IMGPOS,
                 'tabletype' => \_AM_WGTIMELINES_TEMPLATE_TABLETYPE,
                 'imgstyle' => \_AM_WGTIMELINES_TEMPLATE_IMGSTYLE,
                 'bgcolor' => \_AM_WGTIMELINES_TEMPLATE_BGCOLOR,
@@ -591,7 +589,6 @@ class Templates extends \XoopsObject
                 'fontcolor2' => \_AM_WGTIMELINES_TEMPLATE_FONTCOLOR2,
                 'fontcolor3' => \_AM_WGTIMELINES_TEMPLATE_FONTCOLOR3,
                 'fontcolor4' => \_AM_WGTIMELINES_TEMPLATE_FONTCOLOR4,
-                'panel_imgpos' => \_AM_WGTIMELINES_TEMPLATE_IMGPOS,
                 'badgecolor' => \_AM_WGTIMELINES_TEMPLATE_BADGECOLOR,
                 'badgefontcolor' => \_AM_WGTIMELINES_TEMPLATE_BADGEFONTCOLOR,
                 'badgestyle' => \_AM_WGTIMELINES_TEMPLATE_BADGESTYLE,

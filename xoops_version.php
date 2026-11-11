@@ -110,7 +110,6 @@ $modversion['templates'][] = ['file' => 'wgtimelines_timelines_single.tpl', 'des
 $modversion['templates'][] = ['file' => 'wgtimelines_breadcrumbs.tpl', 'description' => ''];
 $modversion['templates'][] = ['file' => 'wgtimelines_ratingbar.tpl', 'description' => ''];
 $modversion['templates'][] = ['file' => 'wgtimelines_rss.tpl', 'description' => ''];
-$modversion['templates'][] = ['file' => 'wgtimelines_search.tpl', 'description' => ''];
 $modversion['templates'][] = ['file' => 'wgtimelines_footer.tpl', 'description' => ''];
 // ------------------- Mysql ------------------- //
 $modversion['sqlfile']['mysql'] = 'sql/mysql.sql';

@@ -27,7 +27,7 @@ declare(strict_types=1);
 use XoopsModules\Wgtimelines;
 
 require_once \dirname(__DIR__) . '/preloads/autoloader.php';
-include __DIR__ . '/header.php';
+include_once __DIR__ . '/header.php';
 // Count elements
 $countTimelines = $timelinesHandler->getCount();
 $countItems     = $itemsHandler->getCount();
@@ -58,7 +58,7 @@ foreach(\array_keys($folder) as $i) {
     $adminObject->addConfigBoxLine(array($folder[$i], '777'), 'chmod');
 }
 // Render Index
-$GLOBALS['xoopsTpl']->assign('navigation', $adminObject->displayNavigation('index.php'));
+$GLOBALS['xoopsTpl']->assign('navigation', $adminObject->renderNavigation('index.php'));
 
 //------------- Test Data ----------------------------
 
@@ -77,5 +77,5 @@ if ($helper->getConfig('displaySampleButton')) {
 
 //------------- End Test Data ----------------------------
 
-$GLOBALS['xoopsTpl']->assign('index', $adminObject->displayIndex());
-include __DIR__ . '/footer.php';
+$GLOBALS['xoopsTpl']->assign('index', $adminObject->renderIndex());
+include_once __DIR__ . '/footer.php';

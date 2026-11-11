@@ -54,7 +54,7 @@ class Items extends \XoopsObject
         $this->initVar('item_reads', \XOBJ_DTYPE_INT);
         $this->initVar('item_submitter', \XOBJ_DTYPE_INT);
         $this->initVar('item_date_create', \XOBJ_DTYPE_INT);
-        $this->initVar('dohtml', \XOBJ_DTYPE_INT, 1, false);
+        $this->initVar('dohtml', \XOBJ_DTYPE_INT, 1);
     }
 
 
@@ -126,7 +126,7 @@ class Items extends \XoopsObject
                 $imageSelect->addOption("$image1", $image1);
             }
             $imageSelect->setExtra("onchange='showImgSelected(\"image1\", \"item_image\", \"".$imageDirectory . '", "", "' . \XOOPS_URL . "\")'");
-            $imageTray->addElement($imageSelect, false);
+            $imageTray->addElement($imageSelect);
             $imageTray->addElement(new \XoopsFormLabel('', "<br><img src='".\XOOPS_URL . "$imageDirectory/$itemImage' name='image1' id='image1' alt='$itemImage' style='max-width:100px;' />"));
             // Form File
             $fileSelectTray = new \XoopsFormElementTray('', '<br>');
@@ -135,8 +135,6 @@ class Items extends \XoopsObject
             $imageTray->addElement($fileSelectTray);
             $form->addElement($imageTray);
         } else {
-            $itemID = $this->getVar('item_id');
-            //$imgButton = "<input type='button' value='...' onclick='window.location.href=\"" . \XOOPS_URL . "/modules/wgtimelines/admin/image_editor.php?op=edit_item&item_id=$itemID\"'>";
             $itemImage = (string)$this->getVar('item_image');
             $form->addElement(new \XoopsFormHidden('item_image', $itemImage));
             if ('blank.gif' !== $itemImage) {
@@ -144,8 +142,8 @@ class Items extends \XoopsObject
                 $imageTray->addElement(new \XoopsFormLabel('', "<img src='" . \XOOPS_URL . "$imageDirectory/$itemImage' name='image1' id='image1' alt='$itemImage' style='max-width:100px;' />"));
                 $imageRemove = new \XoopsFormCheckBox('', 'item_remove', 0);
                 $imageRemove->addOption(1, \_AM_WGTIMELINES_ITEM_IMAGE_REMOVE);
-                $imageTray->addElement($imageRemove, false);
-                $form->addElement($imageTray, false);
+                $imageTray->addElement($imageRemove);
+                $form->addElement($imageTray);
             }
         }
 

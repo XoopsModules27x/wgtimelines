@@ -38,7 +38,6 @@ switch ($op) {
 function loadSampleData(): void
 {
     $moduleDirName      = \basename(\dirname(__DIR__));
-    $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
     $helper             = Wgtimelines\Helper::getInstance();
     $utility            = new Wgtimelines\Utility();
     $configurator       = new Common\Configurator();
@@ -66,7 +65,7 @@ function loadSampleData(): void
     loadTableFromArrayWithReplace($table, $tabledata, 'gperm_modid', $mid);
 
     //  ---  COPY test folder files ---------------
-    if (\is_array($configurator->copyTestFolders) && \count($configurator->copyTestFolders) > 0) {
+    if (\count($configurator->copyTestFolders) > 0) {
         //        $file =  \dirname(__DIR__) . '/testdata/images/';
         foreach (\array_keys($configurator->copyTestFolders) as $i) {
             $src  = $configurator->copyTestFolders[$i][0];
@@ -84,7 +83,6 @@ function saveSampleData(): void
     $configurator       = new Common\Configurator();
 
     $moduleDirName      = \basename(\dirname(__DIR__));
-    $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 
     $tables = \Xmf\Module\Helper::getHelper($moduleDirName)->getModule()->getInfo('tables');
 
@@ -99,7 +97,7 @@ function saveSampleData(): void
     unset($criteria);
 
     //  ---  COPY test folder files ---------------
-    if (\is_array($configurator->copyTestFolders) && \count($configurator->copyTestFolders) > 0) {
+    if (\count($configurator->copyTestFolders) > 0) {
         foreach (\array_keys($configurator->copyTestFolders) as $i) {
             $src  = $configurator->copyTestFolders[$i][1];
             $dest = $configurator->copyTestFolders[$i][0];
@@ -114,7 +112,6 @@ function exportSchema(): void
 {
     try {
         $moduleDirName      = \basename(\dirname(__DIR__));
-        $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 
         $migrate = new \Xmf\Database\Migrate($moduleDirName);
         $migrate->saveCurrentSchema();
@@ -129,18 +126,18 @@ function exportSchema(): void
 /**
  * loadTableFromArrayWithReplace
  *
- * @param string $table  value with should be used insead of original value of $search
+ * @param string $table value with should be used insead of original value of $search
  *
- * @param array $data   array of rows to insert
+ * @param array $data array of rows to insert
  *                       Each element of the outer array represents a single table row.
  *                       Each row is an associative array in 'column' => 'value' format.
  * @param string $search name of column for which the value should be replaced
  * @param        $replace
  * @return int number of rows inserted
+ * @throws Exception
  */
 function loadTableFromArrayWithReplace(string $table, array $data, string $search, $replace): int
 {
-    /** @var \XoopsDatabase $db */
     $db = \XoopsDatabaseFactory::getDatabaseConnection();
 
     $prefixedTable = $db->prefix($table);

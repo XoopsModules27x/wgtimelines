@@ -28,7 +28,7 @@ use XoopsModules\Wgtimelines;
 use XoopsModules\Wgtimelines\Constants;
 use Xmf\Request;
 
-include __DIR__ . '/header.php';
+include_once __DIR__ . '/header.php';
 // It recovered the value of argument op in URL$
 $op = Request::getString('op', 'list');
 // Request tl_id
@@ -40,7 +40,7 @@ switch($op) {
         $start = Request::getInt('start');
         $limit = Request::getInt('limit', $helper->getConfig('adminpager'));
         $templateMain = 'wgtimelines_admin_timelines.tpl';
-        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->displayNavigation('timelines.php'));
+        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->renderNavigation('timelines.php'));
         $adminObject->addItemButton(\_AM_WGTIMELINES_TIMELINE_ADD, 'timelines.php?op=new');
         $GLOBALS['xoopsTpl']->assign('buttons', $adminObject->renderButton());
         $timelinesCount = $timelinesHandler->getCountTimelines();
@@ -88,7 +88,7 @@ switch($op) {
     break;
     case 'new':
         $templateMain = 'wgtimelines_admin_timelines.tpl';
-        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->displayNavigation('timelines.php'));
+        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->renderNavigation('timelines.php'));
         $adminObject->addItemButton(\_AM_WGTIMELINES_TIMELINES_LIST, 'timelines.php', 'list');
         $GLOBALS['xoopsTpl']->assign('buttons', $adminObject->renderButton());
         // Get Form
@@ -110,17 +110,17 @@ switch($op) {
         $timelinesObj->setVar('tl_desc', \preg_replace('/<p><\/p>/', '<p>&nbsp;</p>', Request::getString('tl_desc')));
         // Set Var tl_image
         include_once \XOOPS_ROOT_PATH .'/class/uploader.php';
+        $uploadFile0    = Request::getArray('xoops_upload_file')[0];
         $fileName       = $_FILES['attachedfile']['name'];
         $imageMimetype  = $_FILES['attachedfile']['type'];
         $uploaderErrors = '';
         $uploader = new \XoopsMediaUploader(\WGTIMELINES_UPLOAD_IMAGE_PATH.'/timelines/',
                                             $helper->getConfig('mimetypes'),
                                             $helper->getConfig('maxsize'), null, null);
-        if ($uploader->fetchMedia($_POST['xoops_upload_file'][0])) {
+        if ($uploader->fetchMedia($uploadFile0)) {
             $extension = \preg_replace('/^.+\.([^.]+)$/sU', '', $fileName);
-            $imgName   = mb_substr(\str_replace(' ', '', $_POST['tl_name']), 0, 20) . '_' . $extension;
+            $imgName   = mb_substr(\str_replace(' ', '', Request::getString('tl_name')), 0, 20) . '_' . $extension;
             $uploader->setPrefix($imgName);
-            $uploader->fetchMedia($_POST['xoops_upload_file'][0]);
             if (!$uploader->upload()) {
                 $uploaderErrors = $uploader->getErrors();
             } else {
@@ -155,28 +155,28 @@ switch($op) {
         $timelinesObj->setVar('tl_showreads', Request::getInt('tl_showreads'));
         $timelinesObj->setVar('tl_online',    Request::getInt('tl_online'));
         $timelinesObj->setVar('tl_submitter', Request::getInt('tl_submitter'));
-        $timelineDate_create = date_create_from_format(_SHORTDATESTRING, $_POST['tl_date_create']);
+        $timelineDate_create = date_create_from_format(_SHORTDATESTRING, Request::getString('tl_date_create'));
         $timelinesObj->setVar('tl_date_create', $timelineDate_create->getTimestamp());
         // Insert Data
         if($timelinesHandler->insert($timelinesObj)) {
-            $newCatId = $timelinesObj->getNewInsertedIdTimelines();
-            $permId = isset($_REQUEST['tl_id']) ? $tlId : $newTlId;
+            $newTlId = $timelinesObj->getNewInsertedIdTimelines();
+            $permId = $tlId > 0 ? $tlId : $newTlId;
             $gpermHandler = \xoops_getHandler('groupperm');
             // Permission to view
-            if(isset($_POST['groups_view'])) {
-                foreach($_POST['groups_view'] as $onegroupId) {
+            if(Request::hasVar('groups_view', 'POST')) {
+                foreach(Request::getArray('groups_view', [], 'POST') as $onegroupId) {
                     $gpermHandler->addRight('wgtimelines_view', $permId, $onegroupId, $GLOBALS['xoopsModule']->getVar('mid'));
                 }
             }
             // Permission to submit
-            if(isset($_POST['groups_submit'])) {
-                foreach($_POST['groups_submit'] as $onegroupId) {
+            if(Request::hasVar('groups_submit', 'POST')) {
+                foreach(Request::getArray('groups_submit', [], 'POST') as $onegroupId) {
                     $gpermHandler->addRight('wgtimelines_submit', $permId, $onegroupId, $GLOBALS['xoopsModule']->getVar('mid'));
                 }
             }
             // Permission to approve
-            if(isset($_POST['groups_approve'])) {
-                foreach($_POST['groups_approve'] as $onegroupId) {
+            if(Request::hasVar('groups_approve', 'POST')) {
+                foreach(Request::getArray('groups_approve', [], 'POST') as $onegroupId) {
                     $gpermHandler->addRight('wgtimelines_approve', $permId, $onegroupId, $GLOBALS['xoopsModule']->getVar('mid'));
                 }
             }
@@ -190,7 +190,7 @@ switch($op) {
     break;
     case 'edit':
         $templateMain = 'wgtimelines_admin_timelines.tpl';
-        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->displayNavigation('timelines.php'));
+        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->renderNavigation('timelines.php'));
         $adminObject->addItemButton(\_AM_WGTIMELINES_TIMELINE_ADD, 'timelines.php?op=new');
         $adminObject->addItemButton(\_AM_WGTIMELINES_TIMELINES_LIST, 'timelines.php', 'list');
         $GLOBALS['xoopsTpl']->assign('buttons', $adminObject->renderButton());
@@ -203,7 +203,7 @@ switch($op) {
     break;
     case 'delete':
         $timelinesObj = $timelinesHandler->get($tlId);
-        if(isset($_REQUEST['ok']) && 1 == $_REQUEST['ok']) {
+        if(1 == Request::getString('ok')) {
             if(!$GLOBALS['xoopsSecurity']->check()) {
                 \redirect_header('timelines.php', 3, \implode(', ', $GLOBALS['xoopsSecurity']->getErrors()));
             }
@@ -213,7 +213,7 @@ switch($op) {
             $itemsCount = $itemsHandler->getCount($crit_items);
             if ($itemsCount > 0) {
                 if(!$itemsHandler->deleteAll($crit_items)) {
-                    $GLOBALS['xoopsTpl']->assign('error', $itemsHandler->getHtmlErrors());
+                    $GLOBALS['xoopsTpl']->assign('error', \_AM_WGTIMELINES_ERROR_DELETE);
                     break;
                 }
             }
@@ -253,4 +253,4 @@ switch($op) {
         }
         break;
 }
-include __DIR__ . '/footer.php';
+include_once __DIR__ . '/footer.php';

@@ -27,7 +27,6 @@ use XoopsModules\Wgtimelines;
 
 require_once \dirname(__DIR__, 4) . '/mainfile.php';
 $moduleDirName      = \basename(\dirname(__DIR__, 2));
-$moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 \xoops_loadLanguage('filechecker', $moduleDirName);
 
 /**
@@ -50,11 +49,10 @@ class FileChecker
         if (empty($file_path)) {
             return false;
         }
-        if (null === $redirectFile) {
+        if ('' === $redirectFile) {
             $redirectFile = $_SERVER['SCRIPT_NAME'];
         }
         $moduleDirName      = \basename(\dirname(__DIR__, 2));
-        $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
         if (null === $original_file_path) {
             if (self::fileExists($file_path)) {
                 $path_status = "<img src='$pathIcon16/1.png' >";
@@ -140,7 +138,7 @@ class FileChecker
     {
         $target = \str_replace('..', '', $target);
 
-        return @\chmod($target, (int)$mode);
+        return @\chmod($target, $mode);
     }
 }
 

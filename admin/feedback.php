@@ -1,7 +1,4 @@
 <?php
-
-declare(strict_types=1);
-
 /*
  You may not change or alter any portion of this comment or credits
  of supporting developers from this source code or any supporting source code
@@ -13,28 +10,30 @@ declare(strict_types=1);
 */
 
 /**
- * feedback plugin for xoops modules
+ * Feedback plugin for xoops modules
  *
- * @copyright      module for xoops
- * @license        GPL 2.0 or later
- * @package        general
- * @since          1.0
- * @min_xoops      2.5.9
- * @author         XOOPS - Website:<https://xoops.org>
+ * @copyright      XOOPS Project  (https://xoops.org)
+ * @license        GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @author         Michael Beck <mambax7@gmailc.com>
+ * @author         Wedega - Email:<webmaster@wedega.com>
+ * @author         Fernando Santos (topet05) <fernando@mastop.com.br>
  */
 
 use Xmf\Request;
 
-require __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 $adminObject = \Xmf\Module\Admin::getInstance();
 
-$feedback = new \XoopsModules\Wgtimelines\Common\ModuleFeedback();
+$feedback = new \XoopsModules\Wgsitenotice\Common\ModuleFeedback();
 
 // It recovered the value of argument op in URL$
-$op            = Request::getString('op', 'list');
-$moduleDirName = $GLOBALS['xoopsModule']->getVar('dirname');
+$op                 = Request::getString('op', 'list');
+$moduleDirName      = $GLOBALS['xoopsModule']->getVar('dirname');
+$moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 \xoops_loadLanguage('feedback', $moduleDirName);
+
+//xoops_cp_header();
 
 switch ($op) {
     case 'list':
@@ -44,7 +43,7 @@ switch ($op) {
         $feedback->email = $GLOBALS['xoopsUser']->getVar('email');
         $feedback->site  = \XOOPS_URL;
         $form            = $feedback->getFormFeedback();
-        echo $form->display();
+        $form->display();
         break;
     case 'send':
         // Security Check
@@ -61,12 +60,12 @@ switch ($op) {
         $fb_content = Request::getText('fb_content');
         $fb_content = \str_replace(["\r\n", "\n", "\r"], '<br>', $fb_content); //clean line break from dhtmltextarea
 
-        $title       = _FB_SEND_FOR . $GLOBALS['xoopsModule']->getVar('dirname');
-        $body        = _FB_NAME . ': ' . $your_name . '<br>';
-        $body        .= _FB_MAIL . ': ' . $your_mail . '<br>';
-        $body        .= _FB_SITE . ': ' . $your_site . '<br>';
-        $body        .= _FB_TYPE . ': ' . $fb_type . '<br><br>';
-        $body        .= _FB_TYPE_CONTENT . ':<br>';
+        $title       = \constant('_CO_WGSITENOTICE_FB_SEND_FOR') . $GLOBALS['xoopsModule']->getVar('dirname');
+        $body        = \constant('_CO_WGSITENOTICE_FB_NAME') . ': ' . $your_name . '<br>';
+        $body        .= \constant('_CO_WGSITENOTICE_FB_MAIL') . ': ' . $your_mail . '<br>';
+        $body        .= \constant('_CO_WGSITENOTICE_FB_SITE') . ': ' . $your_site . '<br>';
+        $body        .= \constant('_CO_WGSITENOTICE_FB_TYPE') . ': ' . $fb_type . '<br><br>';
+        $body        .= \constant('_CO_WGSITENOTICE_FB_TYPE_CONTENT') . ':<br>';
         $body        .= $fb_content;
         $xoopsMailer = xoops_getMailer();
         $xoopsMailer->useMail();
@@ -78,7 +77,7 @@ switch ($op) {
         $xoopsMailer->setBody($body);
         $ret = $xoopsMailer->send();
         if ($ret) {
-            \redirect_header('index.php', 3, _FB_SEND_SUCCESS);
+            \redirect_header('index.php', 3, \constant('_CO_WGSITENOTICE_FB_SEND_SUCCESS'));
         }
 
         // show form with content again
@@ -87,12 +86,12 @@ switch ($op) {
         $feedback->site    = $your_site;
         $feedback->type    = $fb_type;
         $feedback->content = $fb_content;
-        echo '<div style="text-align: center;width: 80%; padding: 10px; border: 2px solid #ff0000; color: #ff0000; margin-right:auto;margin-left:auto;">
-            <h3>' . _FB_SEND_ERROR . '</h3>
+        echo '<div style="text-align:center;width: 80%; padding: 10px; border: 2px solid #ff0000; color: #ff0000; margin-right:auto;margin-left:auto;">
+            <h3>' . \constant('_CO_WGSITENOTICE_FB_SEND_ERROR') . '</h3>
             </div>';
         $form = $feedback->getFormFeedback();
-        echo $form->display();
+        $form->display();
 
         break;
 }
-require __DIR__ . '/footer.php';
+require_once __DIR__ . '/footer.php';

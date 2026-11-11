@@ -26,6 +26,8 @@ namespace XoopsModules\Wgtimelines;
  * @version        $Id: 1.0 templates.php 13070 Sat 2016-10-01 05:42:15Z XOOPS Development Team $
  */
 
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
+
 use XoopsModules\Wgtimelines;
 
 
@@ -70,7 +72,6 @@ class Tplsetsdefault extends \XoopsObject
      */
     public function getValuesTplsetsdefault($keys = null, $format = null, $maxDepth = null): array
     {
-        $helper = \XoopsModules\Wgtimelines\Helper::getInstance();
         $ret = $this->getValues($keys, $format, $maxDepth);
         $ret['id'] = $this->getVar('tpl_id');
         $ret['name'] = $this->getVar('tpl_name');

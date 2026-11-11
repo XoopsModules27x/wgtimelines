@@ -25,7 +25,6 @@ use XoopsModules\Wgtimelines;
 
 require_once \dirname(__DIR__, 4) . '/mainfile.php';
 $moduleDirName      = \basename(\dirname(__DIR__, 2));
-$moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 \xoops_loadLanguage('directorychecker', $moduleDirName);
 
 /**
@@ -52,7 +51,6 @@ class DirectoryChecker
             $redirectFile = $_SERVER['SCRIPT_NAME'];
         }
         $moduleDirName      = \basename(\dirname(__DIR__, 2));
-        $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
         if (!@\is_dir($path)) {
             $path_status = "<img src='$pathIcon16/0.png' >";
             $path_status .= "$path (" . \constant('_CO_WGTIMELINES_DC_NOTAVAILABLE') . ') ';
@@ -121,7 +119,7 @@ class DirectoryChecker
     {
         $target = \str_replace('..', '', $target);
 
-        return @\chmod($target, (int)$mode);
+        return @\chmod($target, $mode);
     }
 
     /**

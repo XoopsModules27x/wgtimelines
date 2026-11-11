@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 use Xmf\Request;
 
-include __DIR__ . '/header.php';
+include_once __DIR__ . '/header.php';
 
 $item_id = Request::getInt('item_id');
 $tpltype = Request::getString('tpltype', 'default');
@@ -134,4 +134,4 @@ unset($keywords);
 wgtimelinesMetaDescription(\_MD_WGTIMELINES_DESC);
 $GLOBALS['xoopsTpl']->assign('xoops_mpageurl', \WGTIMELINES_URL.'/timelines.php');
 $GLOBALS['xoopsTpl']->assign('wgtimelines_upload_url', \WGTIMELINES_UPLOAD_URL);
-include __DIR__ . '/footer.php';
+include_once __DIR__ . '/footer.php';
