@@ -110,7 +110,7 @@ switch($op) {
             // Display Navigation
             if($itemsCount > $limit) {
                 include_once \XOOPS_ROOT_PATH .'/class/pagenav.php';
-                $pagenav = new \XoopsPageNav($itemsCount, $limit, $start, 'start', 'op=list&limit=' . $limit);
+                $pagenav = new \XoopsPageNav($itemsCount, $limit, $start, 'start', 'op=list&limit=' . $limit . '&tl_id=' . $tl_id);
                 $GLOBALS['xoopsTpl']->assign('pagenav', $pagenav->renderNav());
             }
         } else {
@@ -311,6 +311,7 @@ switch($op) {
         if (!$GLOBALS['xoopsSecurity']->check()) {
             \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
         }
+        $start = Request::getInt('start');
         $GLOBALS['xoopsTpl']->assign('wgtimelines_form_token', $GLOBALS['xoopsSecurity']->getTokenHTML());
         $GLOBALS['xoopsTpl']->assign('wgtimelines_btn_token', $GLOBALS['xoopsSecurity']->createToken());
         $iorder = Request::getArray('iorder');
@@ -319,7 +320,7 @@ switch($op) {
             if (!\is_object($itemsObj)) {
                 \redirect_header('items.php', 3, \_AM_WGTIMELINES_INVALID_PARAM);
             }
-            $itemsObj->setVar('item_weight',$i+1);
+            $itemsObj->setVar('item_weight',$start + $i + 1);
             $itemsHandler->insert($itemsObj);
         }
         break;

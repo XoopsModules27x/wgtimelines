@@ -131,7 +131,7 @@
             var list = element.sortable("serialize");
             var token = $("#xoopsSortToken").val();
 
-            $.post("items.php?op=order", list + "&XOOPS_TOKEN_REQUEST=" + encodeURIComponent(token))
+            $.post("items.php?op=order&start=<{$start}>", list + "&XOOPS_TOKEN_REQUEST=" + encodeURIComponent(token))
                 .fail(function (xhr) {
                     console.error("Error when sorting:", xhr.responseText);
                 });

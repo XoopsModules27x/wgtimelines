@@ -273,6 +273,7 @@ switch($op) {
         if(!$GLOBALS['xoopsSecurity']->check()) {
             \redirect_header('timelines.php', 3, \implode(', ', $GLOBALS['xoopsSecurity']->getErrors()));
         }
+        $start = Request::getInt('start');
         $GLOBALS['xoopsTpl']->assign('wgtimelines_form_token', $GLOBALS['xoopsSecurity']->getTokenHTML());
         $GLOBALS['xoopsTpl']->assign('wgtimelines_btn_token', $GLOBALS['xoopsSecurity']->createToken());
         $torder = Request::getArray('torder');
@@ -281,7 +282,7 @@ switch($op) {
             if (!\is_object($timelinesObj)) {
                 \redirect_header('timelines.php', 3, \_AM_WGTIMELINES_INVALID_PARAM);
             }
-            $timelinesObj->setVar('tl_weight',$i+1);
+            $timelinesObj->setVar('tl_weight',$start + $i + 1);
             $timelinesHandler->insert($timelinesObj);
         }
         break;
