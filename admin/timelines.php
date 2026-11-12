@@ -36,9 +36,14 @@ $tlId = Request::getInt('tl_id');
 switch($op) {
     case 'list':
     default:
-        $GLOBALS['xoTheme']->addScript(\WGTIMELINES_URL . '/assets/js/sortable-timelines.js');
+        $GLOBALS['xoopsTpl']->assign('wgtimelines_form_token', $GLOBALS['xoopsSecurity']->getTokenHTML());
+        $GLOBALS['xoopsTpl']->assign('wgtimelines_btn_token', $GLOBALS['xoopsSecurity']->createToken());
+
         $start = Request::getInt('start');
         $limit = Request::getInt('limit', $helper->getConfig('adminpager'));
+        $GLOBALS['xoopsTpl']->assign('start', $start);
+        $GLOBALS['xoopsTpl']->assign('limit', $limit);
+
         $templateMain = 'wgtimelines_admin_timelines.tpl';
         $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->renderNavigation('timelines.php'));
         $adminObject->addItemButton(\_AM_WGTIMELINES_TIMELINE_ADD, 'timelines.php?op=new');
@@ -99,6 +104,9 @@ switch($op) {
 
     break;
     case 'save':
+        if(!$GLOBALS['xoopsSecurity']->check()) {
+            \redirect_header('timelines.php', 3, \implode(', ', $GLOBALS['xoopsSecurity']->getErrors()));
+        }
         if(isset($tlId)) {
             $timelinesObj = $timelinesHandler->get($tlId);
         } else {
@@ -229,6 +237,10 @@ switch($op) {
 
     break;
     case 'set_onoff':
+        // Security Check
+        if (!$GLOBALS['xoopsSecurity']->check()) {
+            \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
+        }
         if ($tlId > 0) {
             $timelinesObj = $timelinesHandler->get($tlId);
             // get Var team_online
@@ -244,6 +256,9 @@ switch($op) {
         break;
 
     case 'order':
+        if(!$GLOBALS['xoopsSecurity']->check()) {
+            \redirect_header('timelines.php', 3, \implode(', ', $GLOBALS['xoopsSecurity']->getErrors()));
+        }
         $torder = Request::getArray('torder');
         echo "torder:$echo";
         for ($i = 0, $iMax = \count($torder); $i < $iMax; $i++){

@@ -267,6 +267,7 @@ $modversion['config'][] = [
 ];
 
 //Uploads : max size for image upload
+$increment = 0.5;
 include_once __DIR__ . '/include/xoops_version.inc.php';
 $iniPostMaxSize = wgtimelinesReturnBytes(\ini_get('post_max_size'));
 $iniUploadMaxFileSize = wgtimelinesReturnBytes(\ini_get('upload_max_filesize'));
@@ -294,9 +295,6 @@ if ($maxSize <= 100 * 1048576){
 }
 if ($maxSize <= 50 * 1048576){
     $increment = 1;
-}
-if ($maxSize <= 25 * 1048576){
-    $increment = 0.5;
 }
 $optionMaxsize = [];
 $i = $increment;

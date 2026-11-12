@@ -11,19 +11,22 @@
             <th class="center"><{$smarty.const._AM_WGTIMELINES_TEMPLATE_VERSION}></th>
             <th class="center"><{$smarty.const._AM_WGTIMELINES_TEMPLATE_AUTHOR}></th>
             <th class="center"><{$smarty.const._AM_WGTIMELINES_DATE_CREATE}></th>
-            <th class="center width5"><{$smarty.const._AM_WGTIMELINES_FORM_ACTION}></th>
+            <th class="center width-action"><{$smarty.const._AM_WGTIMELINES_FORM_ACTION}></th>
         </tr>
     </thead>
 <{if $templates_count|default:false}>
     <tbody><{foreach item=template from=$templates_list|default:null}>
         <tr class="<{cycle values='odd, even'}>">
             <td class="center">
-                <{if $template.notsupported|default:false}><img src="<{$wgtimelines_icons_url}>/32/notsupported.png" alt="<{$smarty.const._AM_WGTIMELINES_TEMPLATE_NOTSUPPORTED}>" title="<{$smarty.const._AM_WGTIMELINES_TEMPLATE_NOTSUPPORTED}>"/>&nbsp;<{/if}>
-                <{if $template.newversion|default:false}><a href="templates.php?op=update&amp;tpl_id=<{$template.id}>" title="<{$smarty.const._AM_WGTIMELINES_TEMPLATE_NEWVERSION}>"><img src="<{$wgtimelines_icons_url}>/32/newversion.png" alt="<{$smarty.const._AM_WGTIMELINES_TEMPLATE_NEWVERSION}>" /></a>&nbsp;<{/if}>
-                <{if $template.newtemplate|default:false}><img src="<{$wgtimelines_icons_url}>/32/newtemplate.png" width="32px" alt="<{$smarty.const._AM_WGTIMELINES_TEMPLATE_NEWTEMPLATE}>" title="<{$smarty.const._AM_WGTIMELINES_TEMPLATE_NEWTEMPLATE}>"/>&nbsp;<{/if}>
-                <br><{$template.name}>
+                <{$template.name}>
+                <{if $template.newtemplate|default:false}>
+                    <br><div class="info-box"><i class="fa-regular fa-square-plus"></i> <{$smarty.const._AM_WGTIMELINES_TEMPLATE_NEWTEMPLATE}></div>
+                <{/if}>
                 <{if $template.notsupported|default:false}>
-                    <br><span class="notsupported"><{$smarty.const._AM_WGTIMELINES_TEMPLATE_NOTSUPPORTED}></span>
+                    <br><div class="info-box"><i class="fa-regular fa-circle-xmark"></i> <{$smarty.const._AM_WGTIMELINES_TEMPLATE_NOTSUPPORTED}></div>
+                <{/if}>
+                <{if $template.newversion|default:false}>
+                    <br><div class="info-box"><i class="fa-solid fa-clock-rotate-left"></i> <{$smarty.const._AM_WGTIMELINES_TEMPLATE_NEWVERSION}></div>
                 <{/if}>
             </td>
             <td class="center"><{$template.desc}></td>
@@ -43,12 +46,14 @@
             <td class="center"><{$template.version}></td>
             <td class="center"><{$template.author}></td>
             <td class="center"><{$template.date_create_formatted}></td>
-            <td class="center  width10">
-                <a href="templates.php?op=edit&amp;tpl_id=<{$template.id}>" title="<{$smarty.const._EDIT}>">
-                    <img src="<{xoModuleIcons16 'edit.png'}>" alt="templates" /></a>
-                <a href="templates.php?op=reset&amp;tpl_id=<{$template.id}>" title="<{$smarty.const._AM_WGTIMELINES_TEMPLATE_RESETVERSION}>">
-                    <img src="<{$wgtimelines_icons_url}>/16/reset.png" alt="<{$smarty.const._AM_WGTIMELINES_TEMPLATE_RESETVERSION}>" /></a>
-                <{if $template.newversion|default:false}><a href="templates.php?op=update&amp;tpl_id=<{$template.id}>" title="<{$smarty.const._AM_WGTIMELINES_TEMPLATE_NEWVERSION}>"><img src="<{$wgtimelines_icons_url}>/16/newversion.png" alt="<{$smarty.const._AM_WGTIMELINES_TEMPLATE_NEWVERSION}>" /></a><{/if}>
+            <td class="center width-action xo-buttons">
+                <a href="templates.php?op=edit&amp;tpl_id=<{$template.id}>" title="<{$smarty.const._EDIT}>"><i class='fa fa-edit'></i></a>
+                <{if $template.notsupported|default:false == false}>
+                <a href="templates.php?op=reset&amp;tpl_id=<{$template.id}>" title="<{$smarty.const._AM_WGTIMELINES_TEMPLATE_RESETVERSION}>"><i class="fa-solid fa-arrows-spin"></i></a>
+                <{/if}>
+                <{if $template.newversion|default:false}>
+                    <a href="templates.php?op=update&amp;tpl_id=<{$template.id}>" title="<{$smarty.const._AM_WGTIMELINES_TEMPLATE_NEWVERSION}>"><i class="fa-solid fa-clock-rotate-left"></i></a>
+                <{/if}>
             </td>
         </tr>
 

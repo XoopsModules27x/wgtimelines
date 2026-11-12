@@ -29,9 +29,7 @@ use XoopsModules\Wgtimelines;
 use XoopsModules\Wgtimelines\Constants;
 
 include_once __DIR__ . '/header.php';
-$GLOBALS['xoopsOption']['template_main'] = 'wgtimelines_admin_image_editor.tpl';
-
-require_once \XOOPS_ROOT_PATH . '/header.php';
+$templateMain = 'wgtimelines_admin_image_editor.tpl';
 
 $utility = new \XoopsModules\Wgtimelines\Utility();
 
@@ -81,6 +79,7 @@ if ($imageClass === Constants::IMAGECLASS_ITEM) {
     $nameObj  = 'item_title';
     $fieldObj = 'item_image';
     $submObj  = 'item_submitter';
+    $imageInfo    = \sprintf(\_AM_WGTIMELINES_IMG_EDITOR_ITEM, "item");
 } else {
     $imgName  = 'timeline' . $imageId . '.jpg';
     $imageDir = '/uploads/wgtimelines/images/timelines/';
@@ -92,6 +91,7 @@ if ($imageClass === Constants::IMAGECLASS_ITEM) {
     $nameObj  = 'tl_name';
     $fieldObj = 'tl_image';
     $submObj  = 'tl_submitter';
+    $imageInfo    = \sprintf(\_AM_WGTIMELINES_IMG_EDITOR_TIMELINE, "timeline");
 }
 
 $imgCurrent['img_name'] = $imageObj->getVar($fieldObj);
@@ -128,9 +128,6 @@ $uid = $xoopsUser instanceof \XoopsUser ? $xoopsUser->id() : 0;
 $GLOBALS['xoTheme']->addStylesheet(\WGTIMELINES_URL . '/assets/css/style.css');
 $GLOBALS['xoTheme']->addStylesheet(\WGTIMELINES_URL . '/assets/css/imageeditor.css');
 
-// add scripts
-$GLOBALS['xoTheme']->addScript(\XOOPS_URL . '/modules/wgtimelines/assets/js/admin.js');
-
 // assign vars
 $GLOBALS['xoopsTpl']->assign('wgtimelines_url', \WGTIMELINES_URL);
 $GLOBALS['xoopsTpl']->assign('wgtimelines_icon_url_16', \WGTIMELINES_ICONS_URL . '/16');
@@ -144,6 +141,10 @@ $GLOBALS['xoopsTpl']->assign('imageId', $imageId);
 $GLOBALS['xoopsTpl']->assign('imageOrigin', $imageOrigin);
 $GLOBALS['xoopsTpl']->assign('start', $start);
 $GLOBALS['xoopsTpl']->assign('limit', $limit);
+$GLOBALS['xoopsTpl']->assign('image_info', $imageInfo);
+// create XOOPS tokens
+$GLOBALS['xoopsTpl']->assign('wgtimelines_form_token', $GLOBALS['xoopsSecurity']->getTokenHTML());
+$GLOBALS['xoopsTpl']->assign('wgtimelines_btn_token', $GLOBALS['xoopsSecurity']->createToken());
 
 // Breadcrumbs
 $GLOBALS['xoopsTpl']->assign('show_breadcrumbs', $helper->getConfig('show_breadcrumbs'));
@@ -156,8 +157,10 @@ $maxsize   = $helper->getConfig('maxsize');
 $mimetypes = $helper->getConfig('mimetypes');
 
 switch ($op) {
-
     case 'creategrid':
+        if (!$GLOBALS['xoopsSecurity']->check()) {
+            \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
+        }
         // create an image grid based on given sources
         $type   = Request::getInt('type', 4);
         $src[1] = Request::getString('src1');
@@ -245,10 +248,13 @@ switch ($op) {
                 }
             }
         }
-
         break; 
 
     case 'cropimage':
+        // Security Check
+        if (!$GLOBALS['xoopsSecurity']->check()) {
+            \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
+        }
         // save base64_image and resize to maxwidth/maxheight
         $base64_image_content = Request::getString('croppedImage');
         if (\preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_image_content, $result)) {
@@ -270,6 +276,10 @@ switch ($op) {
         break;
     case 'saveImageSelected':
         // save image selected from list of available images in upload folder
+        // Security Check
+        if (!$GLOBALS['xoopsSecurity']->check()) {
+            \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
+        }
         // Set Vars
         $image_id = Request::getString('image_id');
         // remove '_image' from id
@@ -284,6 +294,10 @@ switch ($op) {
         break;
         
     case 'saveGrid':
+        // Security Check
+        if (!$GLOBALS['xoopsSecurity']->check()) {
+            \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
+        }
         // save before created grid image
         $imgTempGrid = Request::getString('gridImgFinal');
         $ret = \rename($imgTempGrid, $imgFinal);
@@ -295,9 +309,13 @@ switch ($op) {
             \redirect_header($redir, 2, \_AM_WGTIMELINES_FORM_OK);
         }
         $GLOBALS['xoopsTpl']->assign('error', $imageObj->getHtmlErrors());
-
         break;
+
     case 'saveCrop':
+        // Security Check
+        if (!$GLOBALS['xoopsSecurity']->check()) {
+            \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
+        }
         // save before created grid image
         $ret = \rename($imgTemp, $imgFinal);
         // Set Vars
@@ -311,6 +329,9 @@ switch ($op) {
 
         break;
     case 'uploadImage':
+        if (!$GLOBALS['xoopsSecurity']->check()) {
+            \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
+        }
         // Set Vars
         require_once \XOOPS_ROOT_PATH . '/class/uploader.php';
         $uploadFile0    = Request::getArray('xoops_upload_file')[0];
@@ -362,8 +383,6 @@ switch ($op) {
     case 'imghandler':
     default:
         $GLOBALS['xoTheme']->addStylesheet(\WGTIMELINES_URL . '/assets/css/cropper.min.css');
-        $GLOBALS['xoTheme']->addScript(\WGTIMELINES_URL . '/assets/js/cropper.min.js');
-        $GLOBALS['xoTheme']->addScript(\WGTIMELINES_URL . '/assets/js/cropper-main.js');
 
         $GLOBALS['xoopsTpl']->assign('nbModals', [1, 2, 3, 4, 5, 6]);
         
