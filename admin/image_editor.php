@@ -49,10 +49,13 @@ if ('item_id' === $origin) {
 if ('tl_id' === $origin) {
     $timelineId = Request::getInt('imageIdCrop');
 }
-if ( 0 < $itemId ) {
+if ( $itemId > 0 ) {
     $imageId      = $itemId;
     $imageHandler = $itemsHandler;
     $imageObj     = $itemsHandler->get($imageId);
+    if (!\is_object($imageObj)) {
+        \redirect_header('items.php', 3, \_AM_WGTIMELINES_INVALID_PARAM);
+    }
     $imageTlId    = $itemsHandler->get($imageId)->getVar('item_tl_id');
     $imageClass   = Constants::IMAGECLASS_ITEM;
     $imageOrigin  = 'item_id';
@@ -60,6 +63,9 @@ if ( 0 < $itemId ) {
     if ($timelineId > 0) {
         $imageId      = $timelineId;
         $imageObj     = $timelinesHandler->get($imageId);
+        if (!\is_object($imageObj)) {
+            \redirect_header('items.php', 3, \_AM_WGTIMELINES_INVALID_PARAM);
+        }
         $imageHandler = $timelinesHandler;
         $imageClass   = Constants::IMAGECLASS_TIMELINE;
         $imageOrigin  = 'tl_id';
@@ -79,7 +85,7 @@ if ($imageClass === Constants::IMAGECLASS_ITEM) {
     $nameObj  = 'item_title';
     $fieldObj = 'item_image';
     $submObj  = 'item_submitter';
-    $imageInfo    = \sprintf(\_AM_WGTIMELINES_IMG_EDITOR_ITEM, "item");
+    $imageInfo    = \sprintf(\_AM_WGTIMELINES_IMG_EDITOR_ITEM, $imageObj->getVar('item_title'));
 } else {
     $imgName  = 'timeline' . $imageId . '.jpg';
     $imageDir = '/uploads/wgtimelines/images/timelines/';
@@ -91,7 +97,7 @@ if ($imageClass === Constants::IMAGECLASS_ITEM) {
     $nameObj  = 'tl_name';
     $fieldObj = 'tl_image';
     $submObj  = 'tl_submitter';
-    $imageInfo    = \sprintf(\_AM_WGTIMELINES_IMG_EDITOR_TIMELINE, "timeline");
+    $imageInfo    = \sprintf(\_AM_WGTIMELINES_IMG_EDITOR_TIMELINE, $imageObj->getVar('tl_name'));
 }
 
 $imgCurrent['img_name'] = $imageObj->getVar($fieldObj);

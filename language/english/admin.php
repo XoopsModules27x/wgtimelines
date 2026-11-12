@@ -244,3 +244,4 @@ require_once __DIR__ . '/common.php';
 \define('_AM_WGTIMELINES_FORM_ERROR_INVALID_ID', 'Invalid ID');
 \define('_AM_WGTIMELINES_FORM_UPLOAD_IMG', 'Upload new image');
 \define('_AM_WGTIMELINES_ERROR_DELETE', 'Error when deleting');
+\define('_AM_WGTIMELINES_INVALID_PARAM', 'Invalid parameter');

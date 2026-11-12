@@ -24,19 +24,13 @@ img {
 	max-width: 200px;
 }
 /* Sortable tables & fields */
-.icon-sortable, .icon-info {
+.icon-sortable {
     background: var(--primary) !important;
     color: var(--text-primary) !important;
     padding:5px;
     border-radius:5px;
     font-size:150%;
-}
-.icon-sortable {
     cursor: move;
-}
-.notsupported {
-	color:#ff0000;
-	font-size:80%;
 }
 .info-box {
     background: var(--primary) !important;
