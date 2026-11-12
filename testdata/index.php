@@ -74,7 +74,7 @@ function loadSampleData(): void
         }
     }
 
-    \redirect_header('../admin/index.php', 1, \constant('_CO_WGTIMELINES_SAMPLEDATA_SUCCESS'));
+    \redirect_header('../admin/index.php', 1, \_CO_WGTIMELINES_LOAD_SAMPLEDATA_SUCCESS);
 }
 
 function saveSampleData(): void
@@ -105,7 +105,7 @@ function saveSampleData(): void
         }
     }
 
-    \redirect_header('../admin/index.php', 1, \constant('_CO_WGTIMELINES_SAMPLEDATA_SUCCESS'));
+    \redirect_header('../admin/index.php', 1, \_CO_WGTIMELINES_SAVE_SAMPLEDATA_SUCCESS);
 }
 
 function exportSchema(): void
@@ -116,10 +116,10 @@ function exportSchema(): void
         $migrate = new \Xmf\Database\Migrate($moduleDirName);
         $migrate->saveCurrentSchema();
 
-        \redirect_header('../admin/index.php', 1, \constant('_CO_WGTIMELINES_EXPORT_SCHEMA_SUCCESS'));
+        \redirect_header('../admin/index.php', 1, \_CO_WGTIMELINES_EXPORT_SCHEMA_SUCCESS);
     }
     catch (\Exception $e) {
-        exit(\constant('_CO_WGTIMELINES_EXPORT_SCHEMA_ERROR'));
+        exit(\_CO_WGTIMELINES_EXPORT_SCHEMA_ERROR);
     }
 }
 

@@ -66,9 +66,9 @@ if ($helper->getConfig('displaySampleButton')) {
     \xoops_loadLanguage('admin/modulesadmin', 'system');
     require \dirname(__DIR__) . '/testdata/index.php';
 
-    $adminObject->addItemButton(\constant('_CO_WGTIMELINES_ADD_SAMPLEDATA'), '__DIR__ . /../../testdata/index.php?op=load');
+    $adminObject->addItemButton(\_CO_WGTIMELINES_LOAD_SAMPLEDATA, '__DIR__ . /../../testdata/index.php?op=load');
 
-    $adminObject->addItemButton(\constant('_CO_WGTIMELINES_SAVE_SAMPLEDATA'), '__DIR__ . /../../testdata/index.php?op=save');
+    $adminObject->addItemButton(\_CO_WGTIMELINES_SAVE_SAMPLEDATA, '__DIR__ . /../../testdata/index.php?op=save');
 
     //    $adminObject->addItemButton(\constant('_CO_WGTIMELINES_EXPORT_SCHEMA'), '__DIR__ . /../../testdata/index.php?op=exportschema', 'add');
 

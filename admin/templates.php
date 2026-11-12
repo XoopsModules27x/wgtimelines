@@ -110,123 +110,123 @@ switch ($op) {
         $options = [];
         $options[] = ['name' => 'tabletype',
                             'valid' => Request::hasVar('tabletype', 'POST') ? 1 : 0,
-                            'value' => Request::getString('tabletype') ?? '',
+                            'value' => Request::getString('tabletype'),
                             'type' => 'text'];
         $options[] = ['name' => 'panel_pos',
                             'valid' => Request::hasVar('panel_pos', 'POST') ? 1 : 0,
-                            'value' => Request::getString('panel_pos') ?? '',
+                            'value' => Request::getString('panel_pos'),
                             'type' => 'text'];
         $options[] = ['name' => 'panel_pos_single',
                             'valid' => Request::hasVar('panel_pos_single', 'POST') ? 1 : 0,
-                            'value' => Request::getString('panel_pos_single') ?? 'left',
+                            'value' => Request::getString('panel_pos_single', 'left'),
                             'type' => 'text'];
         $options[] = ['name' => 'panel_imgpos',
                             'valid' => Request::hasVar('panel_imgpos', 'POST') ? 1 : 0,
-                            'value' => Request::getString('panel_imgpos') ?? '',
+                            'value' => Request::getString('panel_imgpos'),
                             'type' => 'text'];
         $options[] = ['name' => 'imgstyle',
                             'valid' => Request::hasVar('imgstyle', 'POST') ? 1 : 0,
-                            'value' => Request::getString('imgstyle') ?? '',
+                            'value' => Request::getString('imgstyle'),
                             'type' => 'text'];
         $options[] = ['name' => 'bgcolor',
                             'valid' => Request::hasVar('bgcolor', 'POST') ? 1 : 0,
-                            'value' => Request::getString('bgcolor') ?? '',
+                            'value' => Request::getString('bgcolor'),
                             'type' => 'color'];
         $options[] = ['name' => 'fontcolor',
                             'valid' => Request::hasVar('fontcolor', 'POST') ? 1 : 0,
-                            'value' => Request::getString('fontcolor') ?? '',
+                            'value' => Request::getString('fontcolor'),
                             'type' => 'color'];
         $options[] = ['name' => 'bgcolor2',
                             'valid' => Request::hasVar('bgcolor2', 'POST') ? 1 : 0,
-                            'value' => Request::getString('bgcolor2') ?? '',
+                            'value' => Request::getString('bgcolor2'),
                             'type' => 'color'];
         $options[] = ['name' => 'fontcolor2',
                             'valid' => Request::hasVar('fontcolor2', 'POST') ? 1 : 0,
-                            'value' => Request::getString('fontcolor2') ?? '',
+                            'value' => Request::getString('fontcolor2'),
                             'type' => 'color'];
         $options[] = ['name' => 'bgcolor3',
                             'valid' => Request::hasVar('bgcolor3', 'POST') ? 1 : 0,
-                            'value' => Request::getString('bgcolor3') ?? '',
+                            'value' => Request::getString('bgcolor3'),
                             'type' => 'color'];
         $options[] = ['name' => 'fontcolor3',
                             'valid' => Request::hasVar('fontcolor3', 'POST') ? 1 : 0,
-                            'value' => Request::getString('fontcolor3') ?? '',
+                            'value' => Request::getString('fontcolor3'),
                             'type' => 'color'];
         $options[] = ['name' => 'bgcolor4',
                             'valid' => Request::hasVar('bgcolor4', 'POST') ? 1 : 0,
-                            'value' => Request::getString('bgcolor4') ?? '',
+                            'value' => Request::getString('bgcolor4'),
                             'type' => 'color'];
         $options[] = ['name' => 'fontcolor4',
                             'valid' => Request::hasVar('fontcolor4', 'POST') ? 1 : 0,
-                            'value' => Request::getString('fontcolor4') ?? '',
+                            'value' => Request::getString('fontcolor4'),
                             'type' => 'color'];
         $options[] = ['name' => 'badgestyle',
                             'valid' => Request::hasVar('badgestyle', 'POST') ? 1 : 0,
-                            'value' => Request::getString('badgestyle') ?? '',
+                            'value' => Request::getString('badgestyle'),
                             'type' => 'text'];
         $options[] = ['name' => 'badgecontent',
                             'valid' => Request::hasVar('badgecontent', 'POST') ? 1 : 0,
-                            'value' => Request::getString('badgecontent') ?? 'none',
+                            'value' => Request::getString('badgecontent', 'none'),
                             'type' => 'text'];
         $options[] = ['name' => 'badgecolor',
                             'valid' => Request::hasVar('badgecolor', 'POST') ? 1 : 0,
-                            'value' => Request::getString('badgecolor') ?? '',
+                            'value' => Request::getString('badgecolor'),
                             'type' => 'color'];
         $options[] = ['name' => 'badgefontcolor',
                             'valid' => Request::hasVar('badgefontcolor', 'POST') ? 1 : 0,
-                            'value' => Request::getString('badgefontcolor') ?? '#eeeeee',
+                            'value' => Request::getString('badgefontcolor', '#eeeeee'),
                             'type' => 'color'];
         $options[] = ['name' => 'showyear',
                             'valid' => Request::hasVar('showyear', 'POST') ? 1 : 0,
-                            'value' => Request::getString('showyear') ?? 'none',
+                            'value' => Request::getString('showyear', 'none'),
                             'type' => 'text'];
         $options[] = ['name' => 'linecolor',
                             'valid' => Request::hasVar('linecolor', 'POST') ? 1 : 0,
-                            'value' => Request::getString('linecolor') ?? '',
+                            'value' => Request::getString('linecolor'),
                             'type' => 'color'];
         $options[] = ['name' => 'borderwidth',
                             'valid' => Request::hasVar('borderwidth', 'POST') ? 1 : 0,
-                            'value' => Request::getString('borderwidth') ?? '1px',
+                            'value' => Request::getString('borderwidth', '1px'),
                             'type' => 'text'];
         $options[] = ['name' => 'borderstyle',
                             'valid' => Request::hasVar('borderstyle', 'POST') ? 1 : 0,
-                            'value' => Request::getString('borderstyle') ?? 'solid',
+                            'value' => Request::getString('borderstyle', 'solid'),
                             'type' => 'text'];
         $options[] = ['name' => 'bordercolor',
                             'valid' => Request::hasVar('bordercolor', 'POST') ? 1 : 0,
-                            'value' => Request::getString('bordercolor') ?? '#eeeeee',
+                            'value' => Request::getString('bordercolor', '#eeeeee'),
                             'type' => 'color'];
         $options[] = ['name' => 'borderradius',
                             'valid' => Request::hasVar('borderradius', 'POST') ? 1 : 0,
-                            'value' => Request::getString('borderradius') ?? '5px',
+                            'value' => Request::getString('borderradius', '5px'),
                             'type' => 'text'];
         $options[] = ['name' => 'boxshadow',
                             'valid' => Request::hasVar('boxshadow_h', 'POST') ? 1 : 0,
-                            'value' => (Request::getString('boxshadow_h') ?? '5px')
-                                . ' ' . (Request::getString('boxshadow_v') ?? '5px')
-                                . ' ' . (Request::getString('boxshadow_blur') ?? '5px')
-                                . ' ' . (Request::getString('boxshadow_spread') ?? '5px')
-                                . ' ' . (Request::getString('boxshadow_color') ?? '#eeeeee'),
+                            'value' => Request::getString('boxshadow_h', '5px')
+                                . ' ' . Request::getString('boxshadow_v', '5px')
+                                . ' ' . Request::getString('boxshadow_blur', '5px')
+                                . ' ' . Request::getString('boxshadow_spread', '5px')
+                                . ' ' . Request::getString('boxshadow_color', '#eeeeee'),
                             'type' => 'text'];
         $options[] = ['name' => 'orientation',
                             'valid' => Request::hasVar('orientation', 'POST') ? 1 : 0,
-                            'value' => Request::getString('orientation') ?? '',
+                            'value' => Request::getString('orientation'),
                             'type' => 'text'];
         $options[] = ['name' => 'datesspeed',
                             'valid' => Request::hasVar('datesspeed', 'POST') ? 1 : 0,
-                            'value' => Request::getString('datesspeed') ?? '',
+                            'value' => Request::getString('datesspeed'),
                             'type' => 'text'];
         $options[] = ['name' => 'issuesspeed',
                             'valid' => Request::hasVar('issuesspeed', 'POST') ? 1 : 0,
-                            'value' => Request::getString('issuesspeed') ?? '',
+                            'value' => Request::getString('issuesspeed'),
                             'type' => 'text'];
         $options[] = ['name' => 'issuestransparency',
                             'valid' => Request::hasVar('issuestransparency', 'POST') ? 1 : 0,
-                            'value' => Request::getString('issuestransparency') ?? '',
+                            'value' => Request::getString('issuestransparency'),
                             'type' => 'text'];
         $options[] = ['name' => 'issuestransparencyspeed',
                             'valid' => Request::hasVar('issuestransparencyspeed', 'POST') ? 1 : 0,
-                            'value' => Request::getString('issuestransparencyspeed') ?? '',
+                            'value' => Request::getString('issuestransparencyspeed'),
                             'type' => 'text'];
         $options[] = ['name' => 'autoplay',
                             'valid' => Request::hasVar('autoplay', 'POST') ? 1 : 0,
@@ -234,11 +234,11 @@ switch ($op) {
                             'type' => 'bool'];
         $options[] = ['name' => 'autoplaydirection',
                             'valid' => Request::hasVar('autoplaydirection', 'POST') ? 1 : 0,
-                            'value' => Request::getString('autoplaydirection') ?? '',
+                            'value' => Request::getString('autoplaydirection'),
                             'type' => 'text'];
         $options[] = ['name' => 'autoplaypause',
                             'valid' => Request::hasVar('autoplaypause', 'POST') ? 1 : 0,
-                            'value' => Request::getString('autoplaypause') ?? '',
+                            'value' => Request::getString('autoplaypause'),
                             'type' => 'text'];
         $options[] = ['name' => 'arrowkeys',
                             'valid' => Request::hasVar('arrowkeys', 'POST') ? 1 : 0,
@@ -250,7 +250,7 @@ switch ($op) {
                             'type' => 'text'];
         $options[] = ['name' => 'fadein',
                             'valid' => Request::hasVar('fadein', 'POST') ? 1 : 0,
-                            'value' => Request::getString('fadein') ?? 'appear',
+                            'value' => Request::getString('fadein', 'appear'),
                             'type' => 'text'];
 
         $templatesObj->setVar('tpl_options', serialize($options));
