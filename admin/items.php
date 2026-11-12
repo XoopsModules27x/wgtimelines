@@ -27,7 +27,7 @@ declare(strict_types=1);
 use Xmf\Request;
 use XoopsModules\Wgtimelines;
 
-include __DIR__ . '/header.php';
+include_once __DIR__ . '/header.php';
 // It recovered the value of argument op in URL$
 $op     = Request::getString('op', 'list');
 $ui     = Request::getString('ui', 'admin');
@@ -63,8 +63,8 @@ switch($op) {
         $GLOBALS['xoTheme']->addScript(\WGTIMELINES_URL . '/assets/js/sortable-items.js');
         $start = Request::getInt('start');
         $limit = Request::getInt('limit', $helper->getConfig('adminpager'));
-        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->displayNavigation('items.php'));
-        $adminObject->addItemButton(\_AM_WGTIMELINES_ITEM_ADD, 'items.php?op=new&amp;tl_id=' . $tl_id);
+        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->renderNavigation('items.php'));
+        $adminObject->addItemButton(\_AM_WGTIMELINES_ITEM_ADD, 'items.php?op=new&tl_id=' . $tl_id);
         $GLOBALS['xoopsTpl']->assign('buttons', $adminObject->renderButton());
         $timeline_obj = $timelinesHandler->get($tl_id);
         $critItems = new \CriteriaCompo();
@@ -107,7 +107,7 @@ switch($op) {
             }
         } else {
             if ($tl_id > 0) {
-                $currentTl = ($tl_id == 0) ? \_AM_WGTIMELINES_ITEM_NONE : $timelinesHandler->get($tl_id)->getVar('tl_name');
+                $currentTl = $timelinesHandler->get($tl_id)->getVar('tl_name');
                 $GLOBALS['xoopsTpl']->assign('error', \_AM_WGTIMELINES_THEREARENT_ITEMS . $currentTl);
             }
         }
@@ -115,7 +115,7 @@ switch($op) {
     break;
     case 'new':
         $templateMain = 'wgtimelines_admin_items.tpl';
-        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->displayNavigation('items.php'));
+        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->renderNavigation('items.php'));
         $adminObject->addItemButton(\_AM_WGTIMELINES_ITEMS_LIST, 'items.php', 'list');
         $GLOBALS['xoopsTpl']->assign('buttons', $adminObject->renderButton());
         // Get Form
@@ -128,7 +128,7 @@ switch($op) {
     break;
     case 'editcopy':
         $templateMain = 'wgtimelines_admin_items.tpl';
-        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->displayNavigation('items.php'));
+        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->renderNavigation('items.php'));
         $adminObject->addItemButton(\_AM_WGTIMELINES_ITEMS_LIST, 'items.php', 'list');
         $GLOBALS['xoopsTpl']->assign('buttons', $adminObject->renderButton());
         // Get Form
@@ -168,17 +168,17 @@ switch($op) {
             $itemsObj->setVar('item_image', 'blank.gif');
         } else {
             include_once \XOOPS_ROOT_PATH . '/class/uploader.php';
-            $fileName = $_FILES['attachedfile']['name'];
+            $uploadFile0   = Request::getArray('xoops_upload_file')[0];
+            $fileName      = $_FILES['attachedfile']['name'];
             $imageMimetype = $_FILES['attachedfile']['type'];
             $uploaderErrors = '';
             $uploader = new \XoopsMediaUploader(\WGTIMELINES_UPLOAD_IMAGE_PATH . '/items/',
                 $helper->getConfig('mimetypes'),
                 $helper->getConfig('maxsize'), null, null);
-            if ($uploader->fetchMedia($_POST['xoops_upload_file'][0])) {
+            if ($uploader->fetchMedia($uploadFile0)) {
                 $extension = \preg_replace('/^.+\.([^.]+)$/sU', '', $fileName);
-                $imgName = mb_substr(\str_replace(' ', '', $_POST['item_title']), 0, 20) . '_' . $extension;
+                $imgName = mb_substr(\str_replace(' ', '', Request::getString('item_title')), 0, 20) . '_' . $extension;
                 $uploader->setPrefix($imgName);
-                $uploader->fetchMedia($_POST['xoops_upload_file'][0]);
                 if (!$uploader->upload()) {
                     $uploaderErrors = $uploader->getErrors();
                 } else {
@@ -231,7 +231,7 @@ switch($op) {
     break;
     case 'edit':
         $templateMain = 'wgtimelines_admin_items.tpl';
-        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->displayNavigation('items.php'));
+        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->renderNavigation('items.php'));
         $adminObject->addItemButton(\_AM_WGTIMELINES_ITEM_ADD, 'items.php?op=new');
         $adminObject->addItemButton(\_AM_WGTIMELINES_ITEMS_LIST, 'items.php', 'list');
         $GLOBALS['xoopsTpl']->assign('buttons', $adminObject->renderButton());
@@ -243,7 +243,7 @@ switch($op) {
     break;
     case 'delete':
         $itemsObj = $itemsHandler->get($itemId);
-        if(isset($_REQUEST['ok']) && 1 == $_REQUEST['ok']) {
+        if(1 == Request::getInt('ok')) {
             if(!$GLOBALS['xoopsSecurity']->check()) {
                 \redirect_header('items.php', 3, \implode(', ', $GLOBALS['xoopsSecurity']->getErrors()));
             }
@@ -286,4 +286,4 @@ switch($op) {
         }
         break;
 }
-include __DIR__ . '/footer.php';
+include_once __DIR__ . '/footer.php';

@@ -88,7 +88,7 @@ class MigrateHelper
         $skipWords = ['CREATE DATABASE ', 'CREATE VIEW ', 'INSERT INTO ', 'SELECT ', 'DELETE ', 'UPDATE ', 'ALTER ', 'DROP '];
         $options = '';
         // read remaining lines line by line and create new schema
-        foreach ($lines as $key => $value) {
+        foreach ($lines as $value) {
             $line = \trim($value);
             foreach ($skipWords as $skipWord) {
                 if ($skipWord === \mb_strtoupper(\substr($line, 0, \strlen($skipWord)))) {
@@ -146,7 +146,7 @@ class MigrateHelper
             foreach ($table as $lkey => $line) {
                 if ('keys' == $lkey) {
                     $schema[] = $level1 . "keys:\n";
-                    foreach ($line as $kkey => $kvalue) {
+                    foreach ($line as $kvalue) {
                         foreach ($kvalue as $kkey2 => $kvalue2) {
                             $schema[] = $level2 . $kkey2 . ":\n";
                             $schema[] = $level3 . 'columns: ' . $kvalue2['columns'] . "\n";
@@ -157,7 +157,7 @@ class MigrateHelper
                     $schema[] = $level1 . 'options: ' . $line . "\n";
                 } else {
                     $schema[] = $level1 . 'columns: ' . "\n";
-                    foreach ($line as $kkey => $kvalue) {
+                    foreach ($line as $kvalue) {
                         $schema[] = $level2 . '-' . "\n";
                         foreach ($kvalue as $kkey2 => $kvalue2) {
                             $schema[] = $level3 . $kkey2 . ": " . $kvalue2 . "\n";

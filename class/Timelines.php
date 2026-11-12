@@ -56,7 +56,7 @@ class Timelines extends \XoopsObject
         $this->initVar('tl_online', \XOBJ_DTYPE_INT);
         $this->initVar('tl_submitter', \XOBJ_DTYPE_INT);
         $this->initVar('tl_date_create', \XOBJ_DTYPE_INT);
-        $this->initVar('dohtml', \XOBJ_DTYPE_INT, 1, false);
+        $this->initVar('dohtml', \XOBJ_DTYPE_INT, 1);
     }
 
     /**
@@ -107,7 +107,7 @@ class Timelines extends \XoopsObject
         $editorConfigs['width'] = '100%';
         $editorConfigs['height'] = '200px';
         $editorConfigs['editor'] = $helper->getConfig('wgtimelines_editor');
-        $form->addElement(new \XoopsFormEditor(\_AM_WGTIMELINES_TIMELINE_DESC, 'tl_desc', $editorConfigs), false);
+        $form->addElement(new \XoopsFormEditor(\_AM_WGTIMELINES_TIMELINE_DESC, 'tl_desc', $editorConfigs));
         // Form Image
         $imageDirectory = '/uploads/wgtimelines/images/timelines';
         if ($this->isNew()) {
@@ -119,7 +119,7 @@ class Timelines extends \XoopsObject
                 $imageSelect->addOption("$image1", $image1);
             }
             $imageSelect->setExtra("onchange='showImgSelected(\"image1\", \"tl_image\", \"".$imageDirectory . '", "", "' . \XOOPS_URL . "\")'");
-            $imageTray->addElement($imageSelect, false);
+            $imageTray->addElement($imageSelect);
             $imageTray->addElement(new \XoopsFormLabel('', "<br><img src='".\XOOPS_URL . "$imageDirectory/$tlImage' name='image1' id='image1' alt='$tlImage' style='max-width:100px;' />"));
             // Form File
             $fileSelectTray = new \XoopsFormElementTray('', '<br>');
@@ -161,9 +161,9 @@ class Timelines extends \XoopsObject
         $form->addElement(new \XoopsFormRadioYN(\_AM_WGTIMELINES_TIMELINE_MAGNIFIC . '<br>' . \_AM_WGTIMELINES_TIMELINE_MAGNIFIC_DESC, 'tl_magnific', $tlMagnific));
         // Form Text tlExpired
         $tlExpired = $this->isNew() ? 0 : $this->getVar('tl_expired');
-        $tlExpiredSelect = new \XoopsFormSelect(_CO_WGTIMELINES_TIMELINE_EXPIRED, 'tl_expired', $tlExpired);
-        $tlExpiredSelect->addOption(Constants::TIMELINE_EXPIRED_SHOW, _CO_TIMELINE_EXPIRED_SHOW);
-        $tlExpiredSelect->addOption(Constants::TIMELINE_EXPIRED_HIDE, _CO_TIMELINE_EXPIRED_HIDE);
+        $tlExpiredSelect = new \XoopsFormSelect(\_CO_WGTIMELINES_TIMELINE_EXPIRED, 'tl_expired', $tlExpired);
+        $tlExpiredSelect->addOption(Constants::TIMELINE_EXPIRED_SHOW, \_CO_TIMELINE_EXPIRED_SHOW);
+        $tlExpiredSelect->addOption(Constants::TIMELINE_EXPIRED_HIDE, \_CO_TIMELINE_EXPIRED_HIDE);
         $form->addElement($tlExpiredSelect, true);
         // Form Radio Yes/No tl_reads
         $tlShowReads = $this->isNew() ? 0 : $this->getVar('tl_showreads');
@@ -210,8 +210,8 @@ class Timelines extends \XoopsObject
         $ret['expired'] = $this->getVar('tl_expired');
         $ret['showreads'] = $this->getVar('tl_showreads');
         $ret['expired_text'] = match ($this->getVar('tl_expired')) {
-            Constants::TIMELINE_EXPIRED_HIDE => _CO_TIMELINE_EXPIRED_HIDE,
-            default => _CO_TIMELINE_EXPIRED_SHOW,
+            Constants::TIMELINE_EXPIRED_HIDE => \_CO_TIMELINE_EXPIRED_HIDE,
+            default => \_CO_TIMELINE_EXPIRED_SHOW,
         };
         $ret['online'] = $this->getVar('tl_online');
         $ret['submitter'] = \XoopsUser::getUnameFromId($this->getVar('tl_submitter'));

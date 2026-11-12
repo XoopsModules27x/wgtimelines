@@ -22,6 +22,12 @@
 $moduleDirName      = \basename(\dirname(__DIR__, 2));
 $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 
+\define('_CO_WGTIMELINES_TIMELINE_EXPIRED', 'Abgelaufene Einträge');
+\define('_CO_WGTIMELINES_TIMELINE_EXPIRED_DESC', "Wenn Sie 'Datum/Uhrzeit' verwenden, dann können sie abgelaufene Einträge ausblenden");
+\define('_CO_TIMELINE_EXPIRED_SHOW', 'Weiterhin anzeigen');
+\define('_CO_TIMELINE_EXPIRED_HIDE', 'Nicht mehr anzeigen');
+\define('_CO_WGTIMELINES_ADMIN', 'Administation');
+
 \define('_CO_WGTIMELINES_GDLIBSTATUS', 'GD library support: ');
 \define('_CO_WGTIMELINES_GDLIBVERSION', 'GD Library version: ');
 \define('_CO_WGTIMELINES_GDOFF', "<span style='font-weight: bold;'>Deaktivieren</span> (Keine Vorschaubilder verfügbar)");

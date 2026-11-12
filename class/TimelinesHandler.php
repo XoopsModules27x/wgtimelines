@@ -46,7 +46,7 @@ class TimelinesHandler extends \XoopsPersistableObjectHandler
     }
 
     /**
-     * @param $isNew
+     * @param bool $isNew
      *
      * @return Object
      */
@@ -58,14 +58,14 @@ class TimelinesHandler extends \XoopsPersistableObjectHandler
     /**
      * retrieve a field
      *
-     * @param $i field id
+     * @param $id
      * @param $fields
      * @return mixed reference to the <a href='psi_element://Get'>Get</a> object
      *                object
      */
-    public function get($i = null, $fields = null): mixed
+    public function get($id = null, $fields = null): mixed
     {
-        return parent::get($i, $fields);
+        return parent::get($id, $fields);
     }
 
     /**

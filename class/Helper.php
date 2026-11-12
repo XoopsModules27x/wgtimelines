@@ -20,31 +20,23 @@ namespace XoopsModules\Wgtimelines;
  * @copyright      module for xoops
  * @license        GPL 3.0 or later
  * @package        wgtimelines
- * @since          1.0
- * @min_xoops      2.5.7
  * @author         goffy (wedega.com) - Email:<webmaster@wedega.com> - Website:<https://xoops.wedega.com>
  * @version        $Id: 1.0 helper.php 13070 Sat 2016-10-01 05:42:17Z XOOPS Development Team $
  */
+
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
 
 /**
  * Class Helper
  */
 class Helper extends \Xmf\Module\Helper
 {
+    public $debug;
 
     /**
-     * @var string
+     * @param bool $debug
      */
-    public $debug;
-    /**
-     * @var array
-     */
-    protected array $debugArray = [];
-    /**
-    *  @protected function constructor class
-    *  @param mixed $debug
-    */
-    public function __construct(mixed $debug)
+    public function __construct(bool $debug = false)
     {
         $this->debug   = $debug;
         $moduleDirName = \basename(\dirname(__DIR__));
@@ -52,11 +44,11 @@ class Helper extends \Xmf\Module\Helper
     }
 
     /**
-     * @static function getInstance
-     * @param mixed $debug
-     * @return Helper
+     * @param bool $debug
+     *
+     * @return \XoopsModules\Wgtimelines\Helper
      */
-    public static function getInstance(mixed $debug = false): Helper
+    public static function getInstance(bool $debug = false): Helper
     {
         static $instance;
         if (null === $instance) {
@@ -67,15 +59,11 @@ class Helper extends \Xmf\Module\Helper
     }
 
     /**
-     * @static function getModule
-     * @return string|null
+     * @return string
      */
-    public function &getModule(): ?string
+    public function getDirname(): string
     {
-        if ($this->module == null) {
-            $this->initModule();
-        }
-        return $this->module;
+        return $this->dirname;
     }
 
     /**
@@ -85,10 +73,8 @@ class Helper extends \Xmf\Module\Helper
      *
      * @return bool|\XoopsObjectHandler|\XoopsPersistableObjectHandler
      */
-    public function getHandler($name)
+    public function getHandler($name): \XoopsObjectHandler|bool|\XoopsPersistableObjectHandler
     {
-        $ret = false;
-
         $class = __NAMESPACE__ . '\\' . \ucfirst($name) . 'Handler';
         if (!\class_exists($class)) {
             throw new \RuntimeException("Class '$class' not found");
@@ -98,77 +84,32 @@ class Helper extends \Xmf\Module\Helper
         $helper = self::getInstance();
         $ret    = new $class($db, $helper);
         $this->addLog("Getting handler '$name'");
+
         return $ret;
     }
-
-    /**
-    *  @static function initModule
-    */
-/*     public function initModule()
-    {
-        global $xoopsModule;
-        if (isset($xoopsModule) && \is_object($xoopsModule) && $xoopsModule->getVar('dirname') == $this->dirname) {
-            $this->module = $xoopsModule;
-        } else {
-            $hModule = \xoops_getHandler('module');
-            $this->module = $hModule->getByDirname($this->dirname);
-        }
-        $this->addLog('INIT MODULE');
-    } */
-    /**
-    *  @static function initConfig
-    */
-/*     public function initConfig()
-    {
-        $this->addLog('INIT CONFIG');
-        $hModConfig = \xoops_getHandler('config');
-        $this->config = $hModConfig->getConfigsByCat(0, $this->getModule()->getVar('mid'));
-    } */
-    /**
-    *  @static function initHandler
-    *  @param string $name
-    */
-/*     public function initHandler($name)
-    {
-        $this->addLog('INIT ' . $name . ' HANDLER');
-        $this->handler[$name . '_handler'] = xoops_getModuleHandler($name, $this->dirname);
-    } */
-    /**
-    *  @static function addLog
-    *  @param string $log
-    */
-/*     public function addLog($log)
-    {
-        if ($this->debug) {
-            if (\is_object($GLOBALS['xoopsLogger'])) {
-                $GLOBALS['xoopsLogger']->addExtra($this->module->name(), $log);
-            }
-        }
-    } */
-
     /**
      * truncateHtml can truncate a string up to a number of characters while preserving whole words and HTML tags
      * www.gsdesign.ro/blog/cut-html-string-without-breaking-the-tags
      * www.cakephp.org
      *
      * @param string $text         String to truncate.
-     * @param integer $length       Length of returned string, including ellipsis.
+     * @param int $length       Length of returned string, including ellipsis.
      * @param string $ending       Ending to be appended to the trimmed string.
-     * @param boolean $exact        If false, $text will not be cut mid-word
-     * @param boolean $considerHtml If true, HTML tags would be handled correctly
+     * @param bool $exact        If false, $text will not be cut mid-word
+     * @param bool $considerHtml If true, HTML tags would be handled correctly
      *
      * @return string Trimmed string.
      */
-    public function truncateHtml(string $text, int $length = 200, string $ending = '...', bool $exact = false, bool $considerHtml = true): string
+    public static function truncateHtml(string $text, int $length = 100, string $ending = '...', bool $exact = false, bool $considerHtml = true): string
     {
         if ($considerHtml) {
             // if the plain text is shorter than the maximum length, return the whole text
-            if (\strlen(\preg_replace('/<.*?' . '>/', '', $text)) <= $length) {
+            if (\mb_strlen(\preg_replace('/<.*?' . '>/', '', $text)) <= $length) {
                 return $text;
             }
             // splits all html-tags to scanable lines
             \preg_match_all('/(<.+?' . '>)?([^<>]*)/s', $text, $lines, PREG_SET_ORDER);
-            $total_length = \strlen($ending);
+            $total_length = \mb_strlen($ending);
             $open_tags    = [];
             $truncate     = '';
             foreach ($lines as $line_matchings) {
@@ -180,20 +121,20 @@ class Helper extends \Xmf\Module\Helper
                         // if tag is a closing tag
                     } elseif (\preg_match('/^<\s*\/([^\s]+?)\s*>$/s', $line_matchings[1], $tag_matchings)) {
                         // delete tag from $open_tags list
-                        $pos = \array_search($tag_matchings[1], $open_tags);
-                        if ($pos !== false) {
+                        $pos = \array_search($tag_matchings[1], $open_tags, true);
+                        if (false !== $pos) {
                             unset($open_tags[$pos]);
                         }
                         // if tag is an opening tag
                     } elseif (\preg_match('/^<\s*([^\s>!]+).*?' . '>$/s', $line_matchings[1], $tag_matchings)) {
                         // add tag to the beginning of $open_tags list
-                        \array_unshift($open_tags, strtolower($tag_matchings[1]));
+                        \array_unshift($open_tags, \mb_strtolower($tag_matchings[1]));
                     }
                     // add html-tag to $truncate'd text
                     $truncate .= $line_matchings[1];
                 }
                 // calculate the length of the plain text part of the line; handle entities as one character
-                $content_length = \strlen(\preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', ' ', $line_matchings[2]));
+                $content_length = \mb_strlen(\preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', ' ', $line_matchings[2]));
                 if ($total_length + $content_length > $length) {
                     // the number of characters which are left
                     $left            = $length - $total_length;
@@ -202,41 +143,40 @@ class Helper extends \Xmf\Module\Helper
                     if (\preg_match_all('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', $line_matchings[2], $entities, PREG_OFFSET_CAPTURE)) {
                         // calculate the real length of all entities in the legal range
                         foreach ($entities[0] as $entity) {
-                            if ($entity[1] + 1 - $entities_length <= $left) {
+                            if ($left >= $entity[1] + 1 - $entities_length) {
                                 $left--;
-                                $entities_length += \strlen($entity[0]);
+                                $entities_length += \mb_strlen($entity[0]);
                             } else {
                                 // no more characters left
                                 break;
                             }
                         }
                     }
-                    $truncate .= \substr($line_matchings[2], 0, $left + $entities_length);
+                    $truncate .= mb_substr($line_matchings[2], 0, $left + $entities_length);
                     // maximum lenght is reached, so get off the loop
                     break;
-                } else {
-                    $truncate .= $line_matchings[2];
-                    $total_length += $content_length;
                 }
+                $truncate     .= $line_matchings[2];
+                $total_length += $content_length;
+
                 // if the maximum length is reached, get off the loop
                 if ($total_length >= $length) {
                     break;
                 }
             }
         } else {
-            if (\strlen($text) <= $length) {
+            if (\mb_strlen($text) <= $length) {
                 return $text;
-            } else {
-                $truncate = \substr($text, 0, $length - \strlen($ending));
             }
+            $truncate = mb_substr($text, 0, $length - \mb_strlen($ending));
         }
         // if the words shouldn't be cut in the middle...
         if (!$exact) {
             // ...search the last occurance of a space...
-            $spacepos = strrpos($truncate, ' ');
+            $spacepos = \mb_strrpos($truncate, ' ');
             if (isset($spacepos)) {
                 // ...and cut the text in this position
-                $truncate = \substr($truncate, 0, $spacepos);
+                $truncate = mb_substr($truncate, 0, $spacepos);
             }
         }
         // add the defined ending to the text

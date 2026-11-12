@@ -65,7 +65,7 @@ require_once __DIR__ . '/common.php';
 \define('_MI_WGTIMELINES_BREADCRUMBS_DESC', 'Please define, whether breadcrumbs should be shown on user side or not');
 \define('_MI_WGTIMELINES_WELCOME', 'Welcome message');
 \define('_MI_WGTIMELINES_WELCOME_DESC', 'This welcome message will be shown on the top of your timeline');
-\define('_MI_WGTIMELINES_WELCOME_DEFAULT', 'Welcome to timeline on ' . $xoopsConfig['sitename']);
+\define('_MI_WGTIMELINES_WELCOME_DEFAULT', 'Welcome to timeline on ' . $GLOBALS['xoopsConfig']['sitename']);
 \define('_MI_WGTIMELINES_TIMELINE_NAME', 'Show name timeline');
 \define('_MI_WGTIMELINES_TIMELINE_NAME_DESC', 'Please decide, whether the name of the timeline should be shown on the top of the timeline');
 \define('_MI_WGTIMELINES_STARTPAGE', 'Start page');

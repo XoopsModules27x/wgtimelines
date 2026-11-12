@@ -29,7 +29,6 @@ trait ServerStats
     public static function getServerStats(): string
     {
         $moduleDirName      = \basename(\dirname(__DIR__, 2));
-        $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
         \xoops_loadLanguage('common', $moduleDirName);
         $html = '';
         //        $sql   = 'SELECT metavalue';

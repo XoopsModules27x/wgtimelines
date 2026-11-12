@@ -20,6 +20,8 @@ declare(strict_types=1);
  * @author       XOOPS Development Team
  */
 
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
+
 /**
  * @param $val
  * @return float|int

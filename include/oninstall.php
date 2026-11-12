@@ -24,6 +24,8 @@ declare(strict_types=1);
  * @version        $Id: 1.0 install.php 13070 Sat 2016-10-01 05:42:17Z XOOPS Development Team $
  */
 
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
+
 use XoopsModules\Wgtimelines;
 use XoopsModules\Wgtimelines\Common;
 
@@ -69,7 +71,7 @@ function xoops_module_install_wgtimelines(\XoopsModule $module): bool|string
     $helper->loadLanguage('common');
 
     //  ---  CREATE FOLDERS ---------------
-    if ($configurator->uploadFolders && \is_array($configurator->uploadFolders)) {
+    if ($configurator->uploadFolders) {
         //    foreach (\array_keys($GLOBALS['uploadFolders']) as $i) {
         foreach (\array_keys($configurator->uploadFolders) as $i) {
             $utility::createFolder($configurator->uploadFolders[$i]);
@@ -77,7 +79,7 @@ function xoops_module_install_wgtimelines(\XoopsModule $module): bool|string
     }
 
     //  ---  COPY blank.gif FILES ---------------
-    if ($configurator->copyBlankFiles && \is_array($configurator->copyBlankFiles)) {
+    if ($configurator->copyBlankFiles) {
         $file = \dirname(__DIR__) . '/assets/images/blank.gif';
         foreach (\array_keys($configurator->copyBlankFiles) as $i) {
             $dest = $configurator->copyBlankFiles[$i] . '/blank.gif';

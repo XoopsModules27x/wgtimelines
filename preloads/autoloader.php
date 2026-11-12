@@ -1,4 +1,8 @@
 <?php
+/**
+ * @copyright   XOOPS Project (https://xoops.org)
+ * @license     GPL-2.0-or-later (https://www.gnu.org/licenses/gpl-2.0.html)
+ */
 
 /**
  * @see http://www.php-fig.org/psr/psr-4/examples/
@@ -26,7 +30,7 @@ spl_autoload_register(static function ($class) {
     $file = $baseDir . \str_replace('\\', '/', $relativeClass) . '.php';
 
     // if the file exists, require it
-    if (\file_exists($file)) {
+    if (\file_exists($file) && \is_file($file)) {
         require $file;
     }
 });

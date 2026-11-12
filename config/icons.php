@@ -1,4 +1,10 @@
 <?php
+/**
+ * @copyright   XOOPS Project (https://xoops.org)
+ * @license     GPL-2.0-or-later (https://www.gnu.org/licenses/gpl-2.0.html)
+ */
+
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
 
 function getIcons(): object
 {

@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 use Xmf\Request;
 
-include __DIR__ . '/header.php';
+include_once __DIR__ . '/header.php';
 // It recovered the value of argument op in URL$
 $op = Request::getString('op', 'list');
 // Request tpl_id
@@ -82,7 +82,7 @@ switch ($op) {
     break;
     case 'new':
         $templateMain = 'wgtimelines_admin_templates.tpl';
-        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->displayNavigation('templates.php'));
+        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->renderNavigation('templates.php'));
         $adminObject->addItemButton(\_AM_WGTIMELINES_TEMPLATES_LIST, 'templates.php', 'list');
         $GLOBALS['xoopsTpl']->assign('buttons', $adminObject->renderButton());
         // Get Form
@@ -109,144 +109,148 @@ switch ($op) {
 
         $options = [];
         $options[] = ['name' => 'tabletype',
-                            'valid' => isset($_POST['tabletype']) ? 1 : 0,
-                            'value' => $_POST['tabletype'] ?? '',
+                            'valid' => Request::hasVar('tabletype', 'POST') ? 1 : 0,
+                            'value' => Request::getString('tabletype'),
                             'type' => 'text'];
         $options[] = ['name' => 'panel_pos',
-                            'valid' => isset($_POST['panel_pos']) ? 1 : 0,
-                            'value' => $_POST['panel_pos'] ?? '',
+                            'valid' => Request::hasVar('panel_pos', 'POST') ? 1 : 0,
+                            'value' => Request::getString('panel_pos'),
                             'type' => 'text'];
         $options[] = ['name' => 'panel_pos_single',
-                            'valid' => isset($_POST['panel_pos_single']) ? 1 : 0,
-                            'value' => $_POST['panel_pos_single'] ?? 'left',
+                            'valid' => Request::hasVar('panel_pos_single', 'POST') ? 1 : 0,
+                            'value' => Request::getString('panel_pos_single', 'left'),
                             'type' => 'text'];
         $options[] = ['name' => 'panel_imgpos',
-                            'valid' => isset($_POST['panel_imgpos']) ? 1 : 0,
-                            'value' => $_POST['panel_imgpos'] ?? '',
+                            'valid' => Request::hasVar('panel_imgpos', 'POST') ? 1 : 0,
+                            'value' => Request::getString('panel_imgpos'),
                             'type' => 'text'];
         $options[] = ['name' => 'imgstyle',
-                            'valid' => isset($_POST['imgstyle']) ? 1 : 0,
-                            'value' => $_POST['imgstyle'] ?? '',
+                            'valid' => Request::hasVar('imgstyle', 'POST') ? 1 : 0,
+                            'value' => Request::getString('imgstyle'),
                             'type' => 'text'];
         $options[] = ['name' => 'bgcolor',
-                            'valid' => isset($_POST['bgcolor']) ? 1 : 0,
-                            'value' => $_POST['bgcolor'] ?? '',
+                            'valid' => Request::hasVar('bgcolor', 'POST') ? 1 : 0,
+                            'value' => Request::getString('bgcolor'),
                             'type' => 'color'];
         $options[] = ['name' => 'fontcolor',
-                            'valid' => isset($_POST['fontcolor']) ? 1 : 0,
-                            'value' => $_POST['fontcolor'] ?? '',
+                            'valid' => Request::hasVar('fontcolor', 'POST') ? 1 : 0,
+                            'value' => Request::getString('fontcolor'),
                             'type' => 'color'];
         $options[] = ['name' => 'bgcolor2',
-                            'valid' => isset($_POST['bgcolor2']) ? 1 : 0,
-                            'value' => $_POST['bgcolor2'] ?? '',
+                            'valid' => Request::hasVar('bgcolor2', 'POST') ? 1 : 0,
+                            'value' => Request::getString('bgcolor2'),
                             'type' => 'color'];
         $options[] = ['name' => 'fontcolor2',
-                            'valid' => isset($_POST['fontcolor2']) ? 1 : 0,
-                            'value' => $_POST['fontcolor2'] ?? '',
+                            'valid' => Request::hasVar('fontcolor2', 'POST') ? 1 : 0,
+                            'value' => Request::getString('fontcolor2'),
                             'type' => 'color'];
         $options[] = ['name' => 'bgcolor3',
-                            'valid' => isset($_POST['bgcolor3']) ? 1 : 0,
-                            'value' => $_POST['bgcolor3'] ?? '',
+                            'valid' => Request::hasVar('bgcolor3', 'POST') ? 1 : 0,
+                            'value' => Request::getString('bgcolor3'),
                             'type' => 'color'];
         $options[] = ['name' => 'fontcolor3',
-                            'valid' => isset($_POST['fontcolor3']) ? 1 : 0,
-                            'value' => $_POST['fontcolor3'] ?? '',
+                            'valid' => Request::hasVar('fontcolor3', 'POST') ? 1 : 0,
+                            'value' => Request::getString('fontcolor3'),
                             'type' => 'color'];
         $options[] = ['name' => 'bgcolor4',
-                            'valid' => isset($_POST['bgcolor4']) ? 1 : 0,
-                            'value' => $_POST['bgcolor4'] ?? '',
+                            'valid' => Request::hasVar('bgcolor4', 'POST') ? 1 : 0,
+                            'value' => Request::getString('bgcolor4'),
                             'type' => 'color'];
         $options[] = ['name' => 'fontcolor4',
-                            'valid' => isset($_POST['fontcolor4']) ? 1 : 0,
-                            'value' => $_POST['fontcolor4'] ?? '',
+                            'valid' => Request::hasVar('fontcolor4', 'POST') ? 1 : 0,
+                            'value' => Request::getString('fontcolor4'),
                             'type' => 'color'];
         $options[] = ['name' => 'badgestyle',
-                            'valid' => isset($_POST['badgestyle']) ? 1 : 0,
-                            'value' => $_POST['badgestyle'] ?? '',
+                            'valid' => Request::hasVar('badgestyle', 'POST') ? 1 : 0,
+                            'value' => Request::getString('badgestyle'),
                             'type' => 'text'];
         $options[] = ['name' => 'badgecontent',
-                            'valid' => isset($_POST['badgecontent']) ? 1 : 0,
-                            'value' => $_POST['badgecontent'] ?? 'none',
+                            'valid' => Request::hasVar('badgecontent', 'POST') ? 1 : 0,
+                            'value' => Request::getString('badgecontent', 'none'),
                             'type' => 'text'];
         $options[] = ['name' => 'badgecolor',
-                            'valid' => isset($_POST['badgecolor']) ? 1 : 0,
-                            'value' => $_POST['badgecolor'] ?? '',
+                            'valid' => Request::hasVar('badgecolor', 'POST') ? 1 : 0,
+                            'value' => Request::getString('badgecolor'),
                             'type' => 'color'];
         $options[] = ['name' => 'badgefontcolor',
-                            'valid' => isset($_POST['badgefontcolor']) ? 1 : 0,
-                            'value' => $_POST['badgefontcolor'] ?? '#eeeeee',
+                            'valid' => Request::hasVar('badgefontcolor', 'POST') ? 1 : 0,
+                            'value' => Request::getString('badgefontcolor', '#eeeeee'),
                             'type' => 'color'];
         $options[] = ['name' => 'showyear',
-                            'valid' => isset($_POST['showyear']) ? 1 : 0,
-                            'value' => $_POST['showyear'] ?? 'none',
+                            'valid' => Request::hasVar('showyear', 'POST') ? 1 : 0,
+                            'value' => Request::getString('showyear', 'none'),
                             'type' => 'text'];
         $options[] = ['name' => 'linecolor',
-                            'valid' => isset($_POST['linecolor']) ? 1 : 0,
-                            'value' => $_POST['linecolor'] ?? '',
+                            'valid' => Request::hasVar('linecolor', 'POST') ? 1 : 0,
+                            'value' => Request::getString('linecolor'),
                             'type' => 'color'];
         $options[] = ['name' => 'borderwidth',
-                            'valid' => isset($_POST['borderwidth']) ? 1 : 0,
-                            'value' => $_POST['borderwidth'] ?? '1px',
+                            'valid' => Request::hasVar('borderwidth', 'POST') ? 1 : 0,
+                            'value' => Request::getString('borderwidth', '1px'),
                             'type' => 'text'];
         $options[] = ['name' => 'borderstyle',
-                            'valid' => isset($_POST['borderstyle']) ? 1 : 0,
-                            'value' => $_POST['borderstyle'] ?? 'solid',
+                            'valid' => Request::hasVar('borderstyle', 'POST') ? 1 : 0,
+                            'value' => Request::getString('borderstyle', 'solid'),
                             'type' => 'text'];
         $options[] = ['name' => 'bordercolor',
-                            'valid' => isset($_POST['bordercolor']) ? 1 : 0,
-                            'value' => $_POST['bordercolor'] ?? '#eeeeee',
+                            'valid' => Request::hasVar('bordercolor', 'POST') ? 1 : 0,
+                            'value' => Request::getString('bordercolor', '#eeeeee'),
                             'type' => 'color'];
         $options[] = ['name' => 'borderradius',
-                            'valid' => isset($_POST['borderradius']) ? 1 : 0,
-                            'value' => $_POST['borderradius'] ?? '5px',
+                            'valid' => Request::hasVar('borderradius', 'POST') ? 1 : 0,
+                            'value' => Request::getString('borderradius', '5px'),
                             'type' => 'text'];
         $options[] = ['name' => 'boxshadow',
-                            'valid' => isset($_POST['boxshadow_h']) ? 1 : 0,
-                            'value' => ($_POST['boxshadow_h'] ?? '5px') . ' ' . ($_POST['boxshadow_v'] ?? '5px') . ' ' . ($_POST['boxshadow_blur'] ?? '5px') . ' ' . ($_POST['boxshadow_spread'] ?? '5px') . ' ' . ($_POST['boxshadow_color'] ?? '#eeeeee'),
+                            'valid' => Request::hasVar('boxshadow_h', 'POST') ? 1 : 0,
+                            'value' => Request::getString('boxshadow_h', '5px')
+                                . ' ' . Request::getString('boxshadow_v', '5px')
+                                . ' ' . Request::getString('boxshadow_blur', '5px')
+                                . ' ' . Request::getString('boxshadow_spread', '5px')
+                                . ' ' . Request::getString('boxshadow_color', '#eeeeee'),
                             'type' => 'text'];
         $options[] = ['name' => 'orientation',
-                            'valid' => isset($_POST['orientation']) ? 1 : 0,
-                            'value' => $_POST['orientation'] ?? '',
+                            'valid' => Request::hasVar('orientation', 'POST') ? 1 : 0,
+                            'value' => Request::getString('orientation'),
                             'type' => 'text'];
         $options[] = ['name' => 'datesspeed',
-                            'valid' => isset($_POST['datesspeed']) ? 1 : 0,
-                            'value' => $_POST['datesspeed'] ?? '',
+                            'valid' => Request::hasVar('datesspeed', 'POST') ? 1 : 0,
+                            'value' => Request::getString('datesspeed'),
                             'type' => 'text'];
         $options[] = ['name' => 'issuesspeed',
-                            'valid' => isset($_POST['issuesspeed']) ? 1 : 0,
-                            'value' => $_POST['issuesspeed'] ?? '',
+                            'valid' => Request::hasVar('issuesspeed', 'POST') ? 1 : 0,
+                            'value' => Request::getString('issuesspeed'),
                             'type' => 'text'];
         $options[] = ['name' => 'issuestransparency',
-                            'valid' => isset($_POST['issuestransparency']) ? 1 : 0,
-                            'value' => $_POST['issuestransparency'] ?? '',
+                            'valid' => Request::hasVar('issuestransparency', 'POST') ? 1 : 0,
+                            'value' => Request::getString('issuestransparency'),
                             'type' => 'text'];
         $options[] = ['name' => 'issuestransparencyspeed',
-                            'valid' => isset($_POST['issuestransparencyspeed']) ? 1 : 0,
-                            'value' => $_POST['issuestransparencyspeed'] ?? '',
+                            'valid' => Request::hasVar('issuestransparencyspeed', 'POST') ? 1 : 0,
+                            'value' => Request::getString('issuestransparencyspeed'),
                             'type' => 'text'];
         $options[] = ['name' => 'autoplay',
-                            'valid' => isset($_POST['autoplay']) ? 1 : 0,
-                            'value' => (isset($_POST['autoplay']) && $_POST['autoplay'] == 1) ? 'true' : 'false',
+                            'valid' => Request::hasVar('autoplay', 'POST') ? 1 : 0,
+                            'value' => (1 == Request::getInt('autoplay')) ? 'true' : 'false',
                             'type' => 'bool'];
         $options[] = ['name' => 'autoplaydirection',
-                            'valid' => isset($_POST['autoplaydirection']) ? 1 : 0,
-                            'value' => $_POST['autoplaydirection'] ?? '',
+                            'valid' => Request::hasVar('autoplaydirection', 'POST') ? 1 : 0,
+                            'value' => Request::getString('autoplaydirection'),
                             'type' => 'text'];
         $options[] = ['name' => 'autoplaypause',
-                            'valid' => isset($_POST['autoplaypause']) ? 1 : 0,
-                            'value' => $_POST['autoplaypause'] ?? '',
+                            'valid' => Request::hasVar('autoplaypause', 'POST') ? 1 : 0,
+                            'value' => Request::getString('autoplaypause'),
                             'type' => 'text'];
         $options[] = ['name' => 'arrowkeys',
-                            'valid' => isset($_POST['arrowkeys']) ? 1 : 0,
-                            'value' => (isset($_POST['arrowkeys']) && $_POST['arrowkeys'] == 1) ? 'true' : 'false',
+                            'valid' => Request::hasVar('arrowkeys', 'POST') ? 1 : 0,
+                            'value' => (1 == Request::getInt('arrowkeys')) ? 'true' : 'false',
                             'type' => 'bool'];
         $options[] = ['name' => 'startat',
-                            'valid' => isset($_POST['startat']) ? 1 : 0,
-                            'value' => (isset($_POST['startat']) && $_POST['startat'] > 0) ? $_POST['startat'] : '1',
+                            'valid' => Request::hasVar('startat', 'POST') ? 1 : 0,
+                            'value' => Request::getInt('startat') > 0 ? Request::getInt('startat') : 1,
                             'type' => 'text'];
         $options[] = ['name' => 'fadein',
-                            'valid' => isset($_POST['fadein']) ? 1 : 0,
-                            'value' => $_POST['fadein'] ?? 'appear',
+                            'valid' => Request::hasVar('fadein', 'POST') ? 1 : 0,
+                            'value' => Request::getString('fadein', 'appear'),
                             'type' => 'text'];
 
         $templatesObj->setVar('tpl_options', serialize($options));
@@ -271,25 +275,30 @@ switch ($op) {
         }
         $options = [];
         // Set Vars
-        $templatesObj->setVar('tpl_name', $_POST['tpl_name']);
-        $templatesObj->setVar('tpl_desc', $_POST['tpl_desc']);
-        $templatesObj->setVar('tpl_file', $_POST['tpl_file']);
+        $templatesObj->setVar('tpl_name', Request::getString('tpl_name'));
+        $templatesObj->setVar('tpl_desc', Request::getString('tpl_desc'));
+        $templatesObj->setVar('tpl_file', Request::getString('tpl_file'));
 
-        for ($i = 1; $i <= $_POST['counter']; $i++) {
-            if (!$_POST['name_'.$i] == '') {
-                $options[] = ['name' => $_POST['name_' . $i], 'valid' => $_POST['valid_' . $i], 'value' => $_POST['value_' . $i], 'type' => $_POST['type_' . $i]];
-                $templatesObj->setVar($_POST['name_' . $i], $_POST['value_' . $i]);
+        for ($i = 1; $i <= Request::getInt('counter'); $i++) {
+            if (!Request::getString('name_'.$i) == '') {
+                $options[] = [
+                    'name' => Request::getString('name_' . $i),
+                    'valid' => Request::getString('valid_' . $i),
+                    'value' => Request::getString('value_' . $i),
+                    'type' => Request::getString('type_' . $i)
+                ];
+                $templatesObj->setVar(Request::getString('name_' . $i), Request::getString('value_' . $i));
             }
         }
         $templatesObj->setVar('tpl_options', serialize($options));
-        $templatesObj->setVar('tpl_version', $_POST['tpl_version']);
-        $templatesObj->setVar('tpl_author', $_POST['tpl_author']);
-        $tplDate_create = date_create_from_format(_SHORTDATESTRING, $_POST['tpl_date_create']);
+        $templatesObj->setVar('tpl_version', Request::getString('tpl_version'));
+        $templatesObj->setVar('tpl_author', Request::getString('tpl_author'));
+        $tplDate_create = date_create_from_format(_SHORTDATESTRING, Request::getString('tpl_date_create'));
         $templatesObj->setVar('tpl_date_create', $tplDate_create->getTimestamp());
 
         // Insert Data
         if ($templatesHandler->insert($templatesObj)) {
-            if ($_POST['addopt'] > 0) {
+            if (Request::getInt('addopt') > 0) {
                 \redirect_header('templates.php?op=edit-master&tpl_id=' . $tplId, 2, \_AM_WGTIMELINES_FORM_OK);
             } else {
                 \redirect_header('templates.php?op=edit&tpl_id=' . $tplId, 2, \_AM_WGTIMELINES_FORM_OK);
@@ -304,7 +313,7 @@ switch ($op) {
     case 'edit':
     case 'edit-master':
         $templateMain = 'wgtimelines_admin_templates.tpl';
-        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->displayNavigation('templates.php'));
+        $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->renderNavigation('templates.php'));
         $adminObject->addItemButton(\_AM_WGTIMELINES_TEMPLATES_LIST, 'templates.php', 'list');
         if ($op === 'edit-master') {
             $adminObject->addItemButton(\_AM_WGTIMELINES_TEMPLATE_ADD, 'templates.php?op=new');
@@ -323,7 +332,7 @@ switch ($op) {
     case 'update':
     case 'reset':
         $templatesObj = $templatesHandler->get($tplId);
-        if (isset($_REQUEST['ok']) && 1 == $_REQUEST['ok']) {
+        if (1 == Request::getString('ok')) {
             if (!$GLOBALS['xoopsSecurity']->check()) {
                 \redirect_header('templates.php', 3, \implode(', ', $GLOBALS['xoopsSecurity']->getErrors()));
             }
@@ -349,4 +358,4 @@ switch ($op) {
 
     break;
 }
-include __DIR__ . '/footer.php';
+include_once __DIR__ . '/footer.php';

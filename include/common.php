@@ -24,6 +24,8 @@ declare(strict_types=1);
  * @version        $Id: 1.0 common.php 13070 Sat 2016-10-01 05:42:18Z XOOPS Development Team $
  */
 
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
+
 if (!\defined('WGTIMELINES_PATH')) {
     if (!\defined('XOOPS_ICONS32_PATH')) {
         \define('XOOPS_ICONS32_PATH', \XOOPS_ROOT_PATH . '/Frameworks/moduleclasses/icons/32');

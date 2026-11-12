@@ -28,7 +28,7 @@ use Xmf\Request;
 use XoopsModules\Wgtimelines;
 use XoopsModules\Wgtimelines\Constants;
 
-include __DIR__ . '/header.php';
+include_once __DIR__ . '/header.php';
 $GLOBALS['xoopsOption']['template_main'] = 'wgtimelines_admin_image_editor.tpl';
 
 require_once \XOOPS_ROOT_PATH . '/header.php';
@@ -189,16 +189,19 @@ switch ($op) {
         imagefilledrectangle($tmp, 0, 0, $maxwidth, $maxheight, $imgBg);
 
         $final = XOOPS_UPLOAD_PATH . '/wgtimelines/temp/' . $target;
-        \unlink($final);
+        if (\is_file($final)) {
+            \unlink($final);
+        }
         \imagejpeg($tmp, $final);
-        \imagedestroy($tmp);
 
         $imgTemp = XOOPS_UPLOAD_PATH . '/wgtimelines/temp/' . $uid . 'imgTemp';
 
         $imgHandler = new Wgtimelines\Resizer();
         if (4 === $type) {
             for ($i = 1; $i <= 4; $i++) {
-                \unlink($imgTemp . $i . '.jpg');
+                if (\is_file($imgTemp . $i . '.jpg')) {
+                    \unlink($imgTemp . $i . '.jpg');
+                }
                 $imgHandler->sourceFile    = $images[$i]['file'];
                 $imgHandler->endFile       = $imgTemp . $i . '.jpg';
                 $imgHandler->imageMimetype = $images[$i]['mimetype'];
@@ -215,7 +218,9 @@ switch ($op) {
                 $imgHandler->sourceFile = $imgTemp . $i . '.jpg';
                 $imgHandler->mergePos   = $i;
                 $imgHandler->mergeImage();
-                \unlink($imgTemp . $i . '.jpg');
+                if (\is_file($imgTemp . $i . '.jpg')) {
+                    \unlink($imgTemp . $i . '.jpg');
+                }
             }
         }
         if (6 === $type) {
@@ -235,7 +240,9 @@ switch ($op) {
                 $imgHandler->sourceFile = $imgTemp . $i . '.jpg';
                 $imgHandler->mergePos   = $i;
                 $imgHandler->mergeImage();
-                \unlink($imgTemp . $i . '.jpg');
+                if (\is_file($imgTemp . $i . '.jpg')) {
+                    \unlink($imgTemp . $i . '.jpg');
+                }
             }
         }
 
@@ -257,7 +264,9 @@ switch ($op) {
         $imgHandler->maxHeight     = $maxheight;
         $ret                       = $imgHandler->resizeImage();
 
-        \unlink($imgFinal);
+        if (\is_file($imgFinal)) {
+            \unlink($imgFinal);
+        }
         break;
     case 'saveImageSelected':
         // save image selected from list of available images in upload folder
@@ -304,15 +313,15 @@ switch ($op) {
     case 'uploadImage':
         // Set Vars
         require_once \XOOPS_ROOT_PATH . '/class/uploader.php';
+        $uploadFile0    = Request::getArray('xoops_upload_file')[0];
         $fileName       = $_FILES['attachedfile']['name'];
         $imageMimetype  = $_FILES['attachedfile']['type'];
         $uploaderErrors = '';
         $uploader       = new \XoopsMediaUploader($imgPath, $mimetypes, $maxsize, null, null);
-        if ($uploader->fetchMedia($_POST['xoops_upload_file'][0])) {
+        if ($uploader->fetchMedia($uploadFile0)) {
             $extension = \preg_replace('/^.+\.([^.]+)$/sU', '', $fileName);
             $imgName   = 'image_' . $itemId . '.' . $extension;
             $uploader->setPrefix($imgName);
-            $uploader->fetchMedia($_POST['xoops_upload_file'][0]);
             if (!$uploader->upload()) {
                 $uploaderErrors = $uploader->getErrors();
             } else {
@@ -346,7 +355,7 @@ switch ($op) {
         }
         // Get Form
         $GLOBALS['xoopsTpl']->assign('error', $imageObj->getHtmlErrors());
-        $form = $imageObj->getFormUploadImage($imageOrigin, $imageId);
+        $form = getFormUploadImage($imageOrigin, $imageId);
         $GLOBALS['xoopsTpl']->assign('form', $form->render());
         break;
         
@@ -383,7 +392,7 @@ $GLOBALS['xoopsTpl']->assign('panel_type', $helper->getConfig('panel_type'));
 // Description
 // $utility::getMetaDescription(\_AM_WGTIMELINES_ALBUMS);
 
-include __DIR__ . '/footer.php';
+include_once __DIR__ . '/footer.php';
 
 /**
  * @public function getFormUploadAlbumimage:

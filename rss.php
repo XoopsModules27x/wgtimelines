@@ -24,7 +24,9 @@ declare(strict_types=1);
  * @version        $Id: 1.0 rss.php 13070 Sat 2016-10-01 05:42:18Z XOOPS Development Team $
  */
 
-$cid = wgtimelines_CleanVars($_GET, 'cid', 0);
+use Xmf\Request;
+
+$cid = Request::getInt('cid', 0, 'GET');
 include_once \XOOPS_ROOT_PATH.'/class/template.php';
 if (\function_exists('mb_http_output')) {
     mb_http_output('pass');
@@ -33,8 +35,8 @@ if (\function_exists('mb_http_output')) {
 //$helper->getConfig('utf8') = false;
 
 $tpl = new \XoopsTpl();
-$tpl->xoops_setCaching(2); //1 = Cache global, 2 = Cache individual (for template)
-$tpl->xoops_setCacheTime($wgtimelines->geConfig('timecacherss')*60); // Time of the cache on seconds
+$tpl->caching(2); //1 = Cache global, 2 = Cache individual (for template)
+$tpl->cache_lifetime($wgtimelines->geConfig('timecacherss')*60); // Time of the cache on seconds
 $categories = wgtimelinesMyGetItemIds('wgtimelines_view', 'wgtimelines');
 $criteria = new \CriteriaCompo();
 
@@ -53,7 +55,7 @@ $criteria->setOrder('DESC');
 $templatesArr = $templatesHandler->getAll($criteria);
 unset($criteria);
 
-if (!$tpl->is_cached('db:wgtimelines_rss.tpl', $cid)) {
+if (!$tpl->isCached('db:wgtimelines_rss.tpl', $cid)) {
     $tpl->assign('channel_title', htmlspecialchars($title, ENT_QUOTES));
     $tpl->assign('channel_link', \XOOPS_URL.'/');
     $tpl->assign('channel_desc', htmlspecialchars($xoopsConfig['slogan'], ENT_QUOTES));

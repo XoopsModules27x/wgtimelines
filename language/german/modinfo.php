@@ -65,7 +65,7 @@ require_once __DIR__ . '/common.php';
 \define('_MI_WGTIMELINES_BREADCRUMBS_DESC', 'Definieren Sie bitte, ob eine Breadcrumb-Navigation angezeigt werden soll');
 \define('_MI_WGTIMELINES_WELCOME', 'Willkommensnachricht');
 \define('_MI_WGTIMELINES_WELCOME_DESC', 'Diese Willkommensnachricht wird vor Ihrer Zeitreihe/Chronik angezeigt');
-\define('_MI_WGTIMELINES_WELCOME_DEFAULT', 'Willkommen bei der Zeitreihe auf ' . $xoopsConfig['sitename']);
+\define('_MI_WGTIMELINES_WELCOME_DEFAULT', 'Willkommen bei der Zeitreihe auf ' . $GLOBALS['xoopsConfig']['sitename']);
 \define('_MI_WGTIMELINES_TIMELINE_NAME', 'Name Zeitreihe anzeigen');
 \define('_MI_WGTIMELINES_TIMELINE_NAME_DESC', 'Bitte wählen Sie, ob der Name der Zeitreiche auf der Userseite angezeigt werden soll');
 \define('_MI_WGTIMELINES_STARTPAGE', 'Startseite');
