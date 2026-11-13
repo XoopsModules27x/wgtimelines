@@ -162,8 +162,8 @@ class Timelines extends \XoopsObject
         // Form Text tlExpired
         $tlExpired = $this->isNew() ? 0 : $this->getVar('tl_expired');
         $tlExpiredSelect = new \XoopsFormSelect(\_CO_WGTIMELINES_TIMELINE_EXPIRED, 'tl_expired', $tlExpired);
-        $tlExpiredSelect->addOption(Constants::TIMELINE_EXPIRED_SHOW, \_CO_TIMELINE_EXPIRED_SHOW);
-        $tlExpiredSelect->addOption(Constants::TIMELINE_EXPIRED_HIDE, \_CO_TIMELINE_EXPIRED_HIDE);
+        $tlExpiredSelect->addOption(Constants::TIMELINE_EXPIRED_SHOW, \_CO_WGTIMELINES_TIMELINE_EXPIRED_SHOW);
+        $tlExpiredSelect->addOption(Constants::TIMELINE_EXPIRED_HIDE, \_CO_WGTIMELINES_TIMELINE_EXPIRED_HIDE);
         $form->addElement($tlExpiredSelect, true);
         // Form Radio Yes/No tl_reads
         $tlShowReads = $this->isNew() ? 0 : $this->getVar('tl_showreads');
@@ -210,8 +210,8 @@ class Timelines extends \XoopsObject
         $ret['expired'] = $this->getVar('tl_expired');
         $ret['showreads'] = $this->getVar('tl_showreads');
         $ret['expired_text'] = match ($this->getVar('tl_expired')) {
-            Constants::TIMELINE_EXPIRED_HIDE => \_CO_TIMELINE_EXPIRED_HIDE,
-            default => \_CO_TIMELINE_EXPIRED_SHOW,
+            Constants::TIMELINE_EXPIRED_HIDE => \_CO_WGTIMELINES_TIMELINE_EXPIRED_HIDE,
+            default => \_CO_WGTIMELINES_TIMELINE_EXPIRED_SHOW,
         };
         $ret['online'] = $this->getVar('tl_online');
         $ret['submitter'] = \XoopsUser::getUnameFromId($this->getVar('tl_submitter'));
