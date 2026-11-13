@@ -61,9 +61,9 @@ class RatingsHandler extends \XoopsPersistableObjectHandler
      *
      * @param $id
      * @param $fields
-     * @return mixed reference to the {@link Get} object
+     * @return \XoopsObject|null reference to the {@link Get} object
      */
-    public function get($id = null, $fields = null): mixed
+    public function get($id = null, $fields = null): ?\XoopsObject
     {
         return parent::get($id, $fields);
     }
