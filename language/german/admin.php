@@ -194,7 +194,8 @@ require_once __DIR__ . '/common.php';
 \define('_AM_WGTIMELINES_ITEM_READS', 'Gelesen');
 \define('_AM_WGTIMELINES_ITEM_YEAR_ICON_DESC', "Wird nur verwendet, wenn die Option '".\_AM_WGTIMELINES_TEMPLATE_BADGECONTENT . '\' entsprechend gesetzt wurde');
 \define('_AM_WGTIMELINES_ITEM_NONE', 'Ohne');
-
+\define('_AM_WGTIMELINES_ITEM_ONLINE', 'Online, klicke um Offline zu setzen');
+\define('_AM_WGTIMELINES_ITEM_OFFLINE', 'Offline, klicke um Online zu setzen');
 // General
 \define('_AM_WGTIMELINES_FORM_UPLOAD', 'Datei hochladen');
 \define('_AM_WGTIMELINES_FORM_IMAGE_PATH', 'Dateien in %s ');
@@ -237,7 +238,10 @@ require_once __DIR__ . '/common.php';
 \define('_AM_WGTIMELINES_IMG_EDITOR_CURRENT2', 'Quelle für aktuelles Bild');
 \define('_AM_WGTIMELINES_IMG_EDITOR_RESXY', 'Auflösung');
 \define('_AM_WGTIMELINES_IMG_EDITOR_NOIMAGE', 'Derzeit ist kein Bild zugeordnet');
+\define('_AM_WGTIMELINES_IMG_EDITOR_TIMELINE', "Bildbearbeitung für Zeitreihe '%s'");
+\define('_AM_WGTIMELINES_IMG_EDITOR_ITEM', "Bildbearbeitung für Eintrag '%s'");
 
 \define('_AM_WGTIMELINES_FORM_ERROR_INVALID_ID', 'Invalid ID');
 \define('_AM_WGTIMELINES_FORM_UPLOAD_IMG', 'Neues Bild hochladen');
 \define('_AM_WGTIMELINES_ERROR_DELETE', 'Fehler beim Löschen');
+\define('_AM_WGTIMELINES_INVALID_PARAM', 'Ungültiger Parameter');

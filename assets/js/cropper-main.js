@@ -215,6 +215,11 @@ window.onload = function () {
                     formData.append('imageOrigin', $("#imageOriginCrop").val());
                     formData.append('croppedImage', imgBase);
                     formData.append('form_key', window.FORM_KEY);
+                    // XOOPS security token
+                    formData.append(
+                        'XOOPS_TOKEN_REQUEST',
+                        document.getElementById('btnCropCreate').getAttribute('data-token')
+                    );
 
                     $.ajax('image_editor.php', {
                         method: "POST",

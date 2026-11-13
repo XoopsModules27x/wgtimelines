@@ -24,7 +24,7 @@
     <{if $timelines_count|default:false}>
     <tbody id="timelines-list"><{foreach item=timeline from=$timelines_list|default:null}>
         <tr class="even" id="torder_<{$timeline.id}>" >
-            <td class="center"><img src="<{$wgtimelines_icons_url}>/16/up_down.png" alt="drag&drop" class="icon-sortable"/></td>
+            <td class="center"><i class="icon-sortable fa-solid fa-up-down-left-right"></i></td>
             <td class="center"><{$timeline.name}></td>
             <td class="left"><{$timeline.desc_admin}></td>
             <td class="center"><img src="<{$wgtimelines_upload_url}>/images/timelines/<{$timeline.image}>" alt="<{$timeline.name}>" style="max-width:50px;" /></td>
@@ -34,36 +34,45 @@
             <td class="center"><{$timeline.datetime_text}></td>
             <td class="center">
                 <{if $timeline.magnific|default:0 == 1}>
-                    <img src="<{xoModuleIcons16 'on.png'}>" alt="<{$smarty.const._YES}>" />
+                    <i class="icon-sortable fa-regular fa-circle-check"></i>
                 <{else}>
-                    <img src="<{xoModuleIcons16 'off.png'}>" alt="<{$smarty.const._NO}>" />
+                    <i class="icon-sortable fa-regular fa-circle-xmark"></i>
                 <{/if}>
             </td>
             <td class="center"><{$timeline.expired_text}></td>
             <td class="center">
                 <{if $timeline.showreads|default:0 == 1}>
-            <img src="<{xoModuleIcons16 'on.png'}>" alt="<{$smarty.const._YES}>" />
+                    <i class="icon-sortable fa-regular fa-circle-check"></i>
                 <{else}>
-            <img src="<{xoModuleIcons16 'off.png'}>" alt="<{$smarty.const._NO}>" />
+                    <i class="icon-sortable fa-regular fa-circle-xmark"></i>
                 <{/if}>
             </td>
             <td class="center">
-                <a href="timelines.php?op=set_onoff&amp;tl_id=<{$timeline.id}>" title="<{$timeline.online}>">
-                    <{if $timeline.online|default:0 == 1}>
-                        <img src="<{xoModuleIcons16 'on.png'}>" alt="<{$smarty.const._YES}>" /></a>
-                    <{else}>
-                        <img src="<{xoModuleIcons16 'off.png'}>" alt="<{$smarty.const._NO}>" /></a>
-                    <{/if}>
+                <form action='timelines.php' method='post' style='display:inline;'>
+                    <{$wgtimelines_form_token}>
+                    <input type='hidden' name='op' value='set_onoff'>
+                    <input type='hidden' name='tl_id' value='<{$timeline.id}>'>
+                    <input type='hidden' name='start' value='<{$start}>'>
+                    <input type='hidden' name='limit' value='<{$limit}>'>
+                    <span class='xo-buttons'>
+                        <{if $timeline.online == 1}>
+                            <button class='' aria-label="<{$smarty.const._AM_WGTIMELINES_ITEM_ONLINE}>" title="<{$smarty.const._AM_WGTIMELINES_ITEM_ONLINE}>">
+                                <i class='fa fa-eye'></i>
+                            </button>
+                        <{else}>
+                            <button class='' aria-label="<{$smarty.const._AM_WGTIMELINES_ITEM_OFFLINE}>" title="<{$smarty.const._AM_WGTIMELINES_ITEM_OFFLINE}>">
+                                <i class='fa fa-eye-slash'></i>
+                            </button>
+                        <{/if}>
+                    </span>
+                </form>
             </td>
             <td class="center"><{$timeline.submitter}></td>
             <td class="center"><{$timeline.date_create}></td>
-            <td class="center width5">
-                <a href="timelines.php?op=edit&amp;tl_id=<{$timeline.id}>" title="<{$smarty.const._EDIT}>">
-                    <img src="<{xoModuleIcons16 'edit.png'}>" alt="<{$smarty.const._EDIT}>" /></a>
-                <a href="image_editor.php?op=edit_timeline&amp;tl_id=<{$timeline.id}>" title="<{$smarty.const._AM_WGTIMELINES_IMG_EDITOR}>">
-                    <img src="<{$wgtimelines_icons_url}>/16/image_editor.png" alt="<{$smarty.const._AM_WGTIMELINES_IMG_EDITOR}>" /></a>
-                <a href="timelines.php?op=delete&amp;tl_id=<{$timeline.id}>" title="<{$smarty.const._DELETE}>">
-                    <img src="<{xoModuleIcons16 'delete.png'}>" alt="<{$smarty.const._DELETE}>" /></a>
+            <td class="center width5 xo-buttons">
+                <a href="timelines.php?op=edit&amp;tl_id=<{$timeline.id}>" title="<{$smarty.const._EDIT}>"><i class='fa fa-edit'></i></a>
+                <a href="image_editor.php?op=edit_timeline&amp;tl_id=<{$timeline.id}>" title="<{$smarty.const._AM_WGTIMELINES_IMG_EDITOR}>"><i class='fa fa-image'></i></a>
+                <a href="timelines.php?op=delete&amp;tl_id=<{$timeline.id}>" title="<{$smarty.const._DELETE}>"><i class='fa fa-trash'></i></a>
             </td>
         </tr>
     <{/foreach}>
@@ -85,3 +94,37 @@
 <{/if}>
 <br></br />
 <!-- Footer --><{include file='db:wgtimelines_admin_footer.tpl'}>
+
+
+<input type="hidden" id="xoopsSortToken" value="<{$wgtimelines_btn_token|default:''|escape}>">
+
+<script>
+    $(document).ready(function () {
+
+        function saveItemOrder(element) {
+            var list = element.sortable("serialize");
+            var token = $("#xoopsSortToken").val();
+
+            $.post("timelines.php?op=order&start=<{$start}>", list + "&XOOPS_TOKEN_REQUEST=" + encodeURIComponent(token))
+                .fail(function (xhr) {
+                    console.error("Error when sorting:", xhr.responseText);
+                });
+        }
+
+        $("#sortable-timelines > tbody").sortable({
+            items: "tr:has(td)",
+            opacity: 0.6,
+            cursor: "move",
+
+            update: function (event, ui) {
+                saveItemOrder($(this));
+            },
+
+            receive: function (event, ui) {
+                saveItemOrder($(this));
+            }
+
+        }).disableSelection();
+
+    });
+</script>

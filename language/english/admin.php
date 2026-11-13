@@ -194,6 +194,8 @@ require_once __DIR__ . '/common.php';
 \define('_AM_WGTIMELINES_ITEM_READS', 'Reads');
 \define('_AM_WGTIMELINES_ITEM_YEAR_ICON_DESC', "Will be only used, if option '".\_AM_WGTIMELINES_TEMPLATE_BADGECONTENT . '\' is set corresponding');
 \define('_AM_WGTIMELINES_ITEM_NONE', 'None');
+\define('_AM_WGTIMELINES_ITEM_ONLINE', 'Online, click to set offline');
+\define('_AM_WGTIMELINES_ITEM_OFFLINE', 'Offline, click to set online');
 // General
 \define('_AM_WGTIMELINES_FORM_UPLOAD', 'Upload file');
 \define('_AM_WGTIMELINES_FORM_IMAGE_PATH', 'Files in %s ');
@@ -236,7 +238,10 @@ require_once __DIR__ . '/common.php';
 \define('_AM_WGTIMELINES_IMG_EDITOR_CURRENT2', 'Source of current image');
 \define('_AM_WGTIMELINES_IMG_EDITOR_RESXY', 'Resolution');
 \define('_AM_WGTIMELINES_IMG_EDITOR_NOIMAGE', 'Currently there is no image linked');
+\define('_AM_WGTIMELINES_IMG_EDITOR_TIMELINE', "Image editor for timeline '%s'");
+\define('_AM_WGTIMELINES_IMG_EDITOR_ITEM', "Image editor for item '%s'");
 
 \define('_AM_WGTIMELINES_FORM_ERROR_INVALID_ID', 'Invalid ID');
 \define('_AM_WGTIMELINES_FORM_UPLOAD_IMG', 'Upload new image');
 \define('_AM_WGTIMELINES_ERROR_DELETE', 'Error when deleting');
+\define('_AM_WGTIMELINES_INVALID_PARAM', 'Invalid parameter');

@@ -33,13 +33,17 @@ $op     = Request::getString('op', 'list');
 $ui     = Request::getString('ui', 'admin');
 $itemId = Request::getInt('item_id');
 $tl_id  = Request::getInt('tl_id');
-    
+
 $GLOBALS['xoTheme']->addStylesheet(\WGTIMELINES_URL . '/assets/css/admin/glyphicons.css');
 
 switch($op) {
     case 'list':
     default:
         $templateMain = 'wgtimelines_admin_items.tpl';
+
+        $GLOBALS['xoopsTpl']->assign('wgtimelines_form_token', $GLOBALS['xoopsSecurity']->getTokenHTML());
+        $GLOBALS['xoopsTpl']->assign('wgtimelines_btn_token', $GLOBALS['xoopsSecurity']->createToken());
+
         // create form for selection of available timelines
         $timelinesCount = $timelinesHandler->getCountTimelines();
         include_once(\XOOPS_ROOT_PATH."/class/xoopsformloader.php");
@@ -58,15 +62,19 @@ switch($op) {
         $timeline_select->setextra('onchange="document.forms.form_filter.submit()"');
         $form_select->addElement($timeline_select);
         $GLOBALS['xoopsTpl']->assign('form_select', $form_select->render());
-        
+
         // show details of selected timeline
-        $GLOBALS['xoTheme']->addScript(\WGTIMELINES_URL . '/assets/js/sortable-items.js');
         $start = Request::getInt('start');
         $limit = Request::getInt('limit', $helper->getConfig('adminpager'));
+        $GLOBALS['xoopsTpl']->assign('start', $start);
+        $GLOBALS['xoopsTpl']->assign('limit', $limit);
         $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->renderNavigation('items.php'));
         $adminObject->addItemButton(\_AM_WGTIMELINES_ITEM_ADD, 'items.php?op=new&tl_id=' . $tl_id);
         $GLOBALS['xoopsTpl']->assign('buttons', $adminObject->renderButton());
-        $timeline_obj = $timelinesHandler->get($tl_id);
+        $timelineObj = $timelinesHandler->get($tl_id);
+        if (!\is_object($timelineObj)) {
+            \redirect_header('items.php', 3, \_AM_WGTIMELINES_INVALID_PARAM);
+        }
         $critItems = new \CriteriaCompo();
         $critItems->add(new \Criteria('item_tl_id', $tl_id));
         $itemsCount = $itemsHandler->getCount($critItems);
@@ -79,13 +87,13 @@ switch($op) {
         $GLOBALS['xoopsTpl']->assign('wgtimelines_url', \WGTIMELINES_URL);
         $GLOBALS['xoopsTpl']->assign('wgtimelines_icons_url', \WGTIMELINES_ICONS_URL);
         $GLOBALS['xoopsTpl']->assign('wgtimelines_upload_url', \WGTIMELINES_UPLOAD_URL);
-        
+
         // Table view items
         if($itemsCount > 0) {
             $nb_items_tl = 0;
             $timeline_id_prev = 0;
             foreach(\array_keys($itemsAll) as $i) {
-                $item = $itemsAll[$i]->getValuesItems($timeline_obj);
+                $item = $itemsAll[$i]->getValuesItems($timelineObj);
                 // vars for sortable
                 if ($timeline_id_prev == $item['item_tl_id']) {
                     $item['new_timeline'] = 0;
@@ -102,7 +110,7 @@ switch($op) {
             // Display Navigation
             if($itemsCount > $limit) {
                 include_once \XOOPS_ROOT_PATH .'/class/pagenav.php';
-                $pagenav = new \XoopsPageNav($itemsCount, $limit, $start, 'start', 'op=list&limit=' . $limit);
+                $pagenav = new \XoopsPageNav($itemsCount, $limit, $start, 'start', 'op=list&limit=' . $limit . '&tl_id=' . $tl_id);
                 $GLOBALS['xoopsTpl']->assign('pagenav', $pagenav->renderNav());
             }
         } else {
@@ -111,7 +119,7 @@ switch($op) {
                 $GLOBALS['xoopsTpl']->assign('error', \_AM_WGTIMELINES_THEREARENT_ITEMS . $currentTl);
             }
         }
-        
+
     break;
     case 'new':
         $templateMain = 'wgtimelines_admin_items.tpl';
@@ -152,8 +160,14 @@ switch($op) {
     case 'save':
     case 'save_copy':
         // Security Check
+        if (!$GLOBALS['xoopsSecurity']->check()) {
+            \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
+        }
         if(isset($itemId)) {
             $itemsObj = $itemsHandler->get($itemId);
+            if (!\is_object($itemsObj)) {
+                \redirect_header('items.php', 3, \_AM_WGTIMELINES_INVALID_PARAM);
+            }
         } else {
             $itemsObj = $itemsHandler->create();
         }
@@ -237,12 +251,18 @@ switch($op) {
         $GLOBALS['xoopsTpl']->assign('buttons', $adminObject->renderButton());
         // Get Form
         $itemsObj = $itemsHandler->get($itemId);
+        if (!\is_object($itemsObj)) {
+            \redirect_header('items.php', 3, \_AM_WGTIMELINES_INVALID_PARAM);
+        }
         $form = $itemsObj->getFormItems(false, $ui);
         $GLOBALS['xoopsTpl']->assign('form', $form->render());
 
     break;
     case 'delete':
         $itemsObj = $itemsHandler->get($itemId);
+        if (!\is_object($itemsObj)) {
+            \redirect_header('items.php', 3, \_AM_WGTIMELINES_INVALID_PARAM);
+        }
         if(1 == Request::getInt('ok')) {
             if(!$GLOBALS['xoopsSecurity']->check()) {
                 \redirect_header('items.php', 3, \implode(', ', $GLOBALS['xoopsSecurity']->getErrors()));
@@ -263,8 +283,17 @@ switch($op) {
 
     break;
     case 'set_onoff':
+        // Security Check
+        if (!$GLOBALS['xoopsSecurity']->check()) {
+            \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
+        }
+        $GLOBALS['xoopsTpl']->assign('wgtimelines_form_token', $GLOBALS['xoopsSecurity']->getTokenHTML());
+        $GLOBALS['xoopsTpl']->assign('wgtimelines_btn_token', $GLOBALS['xoopsSecurity']->createToken());
         if ($itemId > 0) {
             $itemsObj = $itemsHandler->get($itemId);
+            if (!\is_object($itemsObj)) {
+                \redirect_header('items.php', 3, \_AM_WGTIMELINES_INVALID_PARAM);
+            }
             // get Var team_online
             $item_online = ($itemsObj->getVar('item_online') == 1) ? '0' : '1';
             // Set Var team_online
@@ -278,10 +307,20 @@ switch($op) {
         break;
 
     case 'order':
+        // Security Check
+        if (!$GLOBALS['xoopsSecurity']->check()) {
+            \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
+        }
+        $start = Request::getInt('start');
+        $GLOBALS['xoopsTpl']->assign('wgtimelines_form_token', $GLOBALS['xoopsSecurity']->getTokenHTML());
+        $GLOBALS['xoopsTpl']->assign('wgtimelines_btn_token', $GLOBALS['xoopsSecurity']->createToken());
         $iorder = Request::getArray('iorder');
         for ($i = 0, $iMax = \count($iorder); $i < $iMax; $i++){
             $itemsObj = $itemsHandler->get($iorder[$i]);
-            $itemsObj->setVar('item_weight',$i+1);
+            if (!\is_object($itemsObj)) {
+                \redirect_header('items.php', 3, \_AM_WGTIMELINES_INVALID_PARAM);
+            }
+            $itemsObj->setVar('item_weight',$start + $i + 1);
             $itemsHandler->insert($itemsObj);
         }
         break;

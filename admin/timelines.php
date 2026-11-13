@@ -36,9 +36,14 @@ $tlId = Request::getInt('tl_id');
 switch($op) {
     case 'list':
     default:
-        $GLOBALS['xoTheme']->addScript(\WGTIMELINES_URL . '/assets/js/sortable-timelines.js');
+        $GLOBALS['xoopsTpl']->assign('wgtimelines_form_token', $GLOBALS['xoopsSecurity']->getTokenHTML());
+        $GLOBALS['xoopsTpl']->assign('wgtimelines_btn_token', $GLOBALS['xoopsSecurity']->createToken());
+
         $start = Request::getInt('start');
         $limit = Request::getInt('limit', $helper->getConfig('adminpager'));
+        $GLOBALS['xoopsTpl']->assign('start', $start);
+        $GLOBALS['xoopsTpl']->assign('limit', $limit);
+
         $templateMain = 'wgtimelines_admin_timelines.tpl';
         $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->renderNavigation('timelines.php'));
         $adminObject->addItemButton(\_AM_WGTIMELINES_TIMELINE_ADD, 'timelines.php?op=new');
@@ -99,8 +104,14 @@ switch($op) {
 
     break;
     case 'save':
+        if(!$GLOBALS['xoopsSecurity']->check()) {
+            \redirect_header('timelines.php', 3, \implode(', ', $GLOBALS['xoopsSecurity']->getErrors()));
+        }
         if(isset($tlId)) {
             $timelinesObj = $timelinesHandler->get($tlId);
+            if (!\is_object($timelinesObj)) {
+                \redirect_header('timelines.php', 3, \_AM_WGTIMELINES_INVALID_PARAM);
+            }
         } else {
             $timelinesObj = $timelinesHandler->create();
         }
@@ -196,6 +207,9 @@ switch($op) {
         $GLOBALS['xoopsTpl']->assign('buttons', $adminObject->renderButton());
         // Get Form
         $timelinesObj = $timelinesHandler->get($tlId);
+        if (!\is_object($timelinesObj)) {
+            \redirect_header('timelines.php', 3, \_AM_WGTIMELINES_INVALID_PARAM);
+        }
         $form = $timelinesObj->getFormTimelines();
         $GLOBALS['xoopsTpl']->assign('form', $form->render());
         $GLOBALS['xoopsTpl']->assign('timelines_list', false);
@@ -203,6 +217,9 @@ switch($op) {
     break;
     case 'delete':
         $timelinesObj = $timelinesHandler->get($tlId);
+        if (!\is_object($timelinesObj)) {
+            \redirect_header('timelines.php', 3, \_AM_WGTIMELINES_INVALID_PARAM);
+        }
         if(1 == Request::getString('ok')) {
             if(!$GLOBALS['xoopsSecurity']->check()) {
                 \redirect_header('timelines.php', 3, \implode(', ', $GLOBALS['xoopsSecurity']->getErrors()));
@@ -229,8 +246,17 @@ switch($op) {
 
     break;
     case 'set_onoff':
+        // Security Check
+        if (!$GLOBALS['xoopsSecurity']->check()) {
+            \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
+        }
+        $GLOBALS['xoopsTpl']->assign('wgtimelines_form_token', $GLOBALS['xoopsSecurity']->getTokenHTML());
+        $GLOBALS['xoopsTpl']->assign('wgtimelines_btn_token', $GLOBALS['xoopsSecurity']->createToken());
         if ($tlId > 0) {
             $timelinesObj = $timelinesHandler->get($tlId);
+            if (!\is_object($timelinesObj)) {
+                \redirect_header('timelines.php', 3, \_AM_WGTIMELINES_INVALID_PARAM);
+            }
             // get Var team_online
             $tl_online = ($timelinesObj->getVar('tl_online') == 1) ? '0' : '1';
             // Set Var team_online
@@ -244,11 +270,19 @@ switch($op) {
         break;
 
     case 'order':
+        if(!$GLOBALS['xoopsSecurity']->check()) {
+            \redirect_header('timelines.php', 3, \implode(', ', $GLOBALS['xoopsSecurity']->getErrors()));
+        }
+        $start = Request::getInt('start');
+        $GLOBALS['xoopsTpl']->assign('wgtimelines_form_token', $GLOBALS['xoopsSecurity']->getTokenHTML());
+        $GLOBALS['xoopsTpl']->assign('wgtimelines_btn_token', $GLOBALS['xoopsSecurity']->createToken());
         $torder = Request::getArray('torder');
-        echo "torder:$echo";
         for ($i = 0, $iMax = \count($torder); $i < $iMax; $i++){
             $timelinesObj = $timelinesHandler->get($torder[$i]);
-            $timelinesObj->setVar('tl_weight',$i+1);
+            if (!\is_object($timelinesObj)) {
+                \redirect_header('timelines.php', 3, \_AM_WGTIMELINES_INVALID_PARAM);
+            }
+            $timelinesObj->setVar('tl_weight',$start + $i + 1);
             $timelinesHandler->insert($timelinesObj);
         }
         break;
