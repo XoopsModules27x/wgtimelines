@@ -101,7 +101,7 @@ class ModuleFeedback extends \XoopsObject
         $configHandler           = \xoops_getHandler('config');
         $config                  = &$configHandler->getConfigsByCat(0, $module->getVar('mid'));
         $editorConfigs['editor'] = $config['general_editor'];
-        $editor                  = new \XoopsFormEditor(\constant('_CO_WGTIMELINES_FB_TYPE_CONTENT'), 'fb_content', $editorConfigs);
+        $editor                  = new \XoopsFormEditor(\_CO_WGTIMELINES_FB_TYPE_CONTENT, 'fb_content', $editorConfigs);
         $form->addElement($editor, true);
 
         $form->addElement(new \XoopsFormHidden('op', 'send'));

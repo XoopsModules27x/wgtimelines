@@ -24,8 +24,8 @@ $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 
 \define('_CO_WGTIMELINES_TIMELINE_EXPIRED', 'Expired items');
 \define('_CO_WGTIMELINES_TIMELINE_EXPIRED_DESC', "If you use 'date/time' then you can hide expired items");
-\define('_CO_TIMELINE_EXPIRED_SHOW', 'Continue showing them');
-\define('_CO_TIMELINE_EXPIRED_HIDE', 'Hide them');
+\define('_CO_WGTIMELINES_TIMELINE_EXPIRED_SHOW', 'Continue showing them');
+\define('_CO_WGTIMELINES_TIMELINE_EXPIRED_HIDE', 'Hide them');
 \define('_CO_WGTIMELINES_ADMIN', 'Administation');
 
 \define('_CO_WGTIMELINES_GDLIBSTATUS', 'GD library support: ');

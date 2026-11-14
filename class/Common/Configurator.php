@@ -36,6 +36,7 @@ class Configurator
     public array $oldFiles        = [];
     public array $oldFolders      = [];
     public array $renameTables    = [];
+    public array $renameColumns   = [];
     public array $moduleStats     = [];
     public string $modCopyright;
 
@@ -55,6 +56,7 @@ class Configurator
         $this->oldFiles        = $config->oldFiles;
         $this->oldFolders      = $config->oldFolders;
         $this->renameTables    = $config->renameTables;
+        $this->renameColumns   = $config->renameColumns ?? [];
         $this->moduleStats     = $config->moduleStats;
         $this->modCopyright    = $config->modCopyright;
     }
