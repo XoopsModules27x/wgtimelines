@@ -31,12 +31,12 @@ class Resizer
 {
     public string $sourceFile    = '';
     public string $endFile       = '';
-    public int $maxWidth      = 0;
-    public int $maxHeight     = 0;
+    public int $maxWidth         = 0;
+    public int $maxHeight        = 0;
     public string $imageMimetype = '';
-    public int $jpgQuality    = 90;
-    public int $mergeType     = 0;
-    public int $mergePos      = 0;
+    public int $jpgQuality       = 90;
+    public int $mergeType        = 0;
+    public int $mergePos         = 0;
 
     /**
      * resize image if size exceed given width/height
