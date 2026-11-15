@@ -15,13 +15,10 @@ declare(strict_types=1);
 /**
  * wgTimelines module for xoops
  *
- * @copyright      module for xoops
+ * @copyright      XOOPS Project https://xoops.org/
  * @license        GPL 3.0 or later
  * @package        wgtimelines
- * @since          1.0
- * @min_xoops      2.5.7
- * @author         goffy (wedega.com) - Email:<webmaster@wedega.com> - Website:<https://xoops.wedega.com>
- * @version        $Id: 1.0 timelines.php 13070 Sat 2016-10-01 05:42:13Z XOOPS Development Team $
+ * @author         Goffy (wedega.com) - Email:<webmaster@wedega.com> - Website:<https://xoops.wedega.com>
  */
 
 use XoopsModules\Wgtimelines;
@@ -275,9 +272,7 @@ switch($op) {
         if(!$GLOBALS['xoopsSecurity']->check()) {
             \redirect_header('timelines.php', 3, \implode(', ', $GLOBALS['xoopsSecurity']->getErrors()));
         }
-        $start = Request::getInt('start');
-        $GLOBALS['xoopsTpl']->assign('wgtimelines_form_token', $GLOBALS['xoopsSecurity']->getTokenHTML());
-        $GLOBALS['xoopsTpl']->assign('wgtimelines_btn_token', $GLOBALS['xoopsSecurity']->createToken());
+        $start  = Request::getInt('start');
         $torder = Request::getArray('torder');
         for ($i = 0, $iMax = \count($torder); $i < $iMax; $i++){
             $timelinesObj = $timelinesHandler->get($torder[$i]);
@@ -287,6 +282,8 @@ switch($op) {
             $timelinesObj->setVar('tl_weight',$start + $i + 1);
             $timelinesHandler->insert($timelinesObj);
         }
+        $GLOBALS['xoopsTpl']->assign('wgtimelines_form_token', $GLOBALS['xoopsSecurity']->getTokenHTML());
+        $GLOBALS['xoopsTpl']->assign('wgtimelines_btn_token', $GLOBALS['xoopsSecurity']->createToken());
         break;
 }
 include_once __DIR__ . '/footer.php';

@@ -13,15 +13,12 @@ declare(strict_types=1);
 */
 
 /**
- * wgTeams module for xoops
+ * wgTimelines module for xoops
  *
- * @copyright      module for xoops
+ * @copyright      XOOPS Project https://xoops.org/
  * @license        GPL 2.0 or later
  * @package        wgtimelines
- * @since          1.0
- * @min_xoops      2.5.9
- * @author         Wedega - Email:<webmaster@wedega.com> - Website:<https://wedega.com>
- * @version        $Id: 1.0 albums.php 1 Mon 2018-03-19 10:04:50Z XOOPS Project (www.xoops.org) $
+ * @author         Goffy (wedega.com) - Email:<webmaster@wedega.com> - Website:<https://xoops.wedega.com>
  */
 
 use Xmf\Request;
@@ -101,8 +98,8 @@ if ($imageClass === Constants::IMAGECLASS_ITEM) {
 }
 
 $imgCurrent['img_name'] = $imageObj->getVar($fieldObj);
-$imgCurrent['src'] = $imgUrl . $imageObj->getVar($fieldObj);
-$imgCurrent['origin'] = $imageClass;
+$imgCurrent['src']      = $imgUrl . $imageObj->getVar($fieldObj);
+$imgCurrent['origin']   = $imageClass;
 $images = [];
 if ('blank.gif' !== $imageObj->getVar($fieldObj)) {
     $GLOBALS['xoopsTpl']->assign('no_blank', true);

@@ -15,13 +15,10 @@ declare(strict_types=1);
 /**
  * wgTimelines module for xoops
  *
- * @copyright      module for xoops
+ * @copyright      XOOPS Project https://xoops.org/
  * @license        GPL 3.0 or later
  * @package        wgtimelines
- * @since          1.0
- * @min_xoops      2.5.7
- * @author         goffy (wedega.com) - Email:<webmaster@wedega.com> - Website:<https://xoops.wedega.com>
- * @version        $Id: 1.0 index.php 13070 Sat 2016-10-01 05:42:16Z XOOPS Development Team $
+ * @author         Goffy (wedega.com) - Email:<webmaster@wedega.com> - Website:<https://xoops.wedega.com>
  */
 
 use XoopsModules\Wgtimelines;
@@ -61,20 +58,14 @@ foreach(\array_keys($folder) as $i) {
 $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->renderNavigation('index.php'));
 
 //------------- Test Data ----------------------------
-
 if ($helper->getConfig('displaySampleButton')) {
     \xoops_loadLanguage('admin/modulesadmin', 'system');
     require \dirname(__DIR__) . '/testdata/index.php';
-
     $adminObject->addItemButton(\_CO_WGTIMELINES_LOAD_SAMPLEDATA, '__DIR__ . /../../testdata/index.php?op=load');
-
     $adminObject->addItemButton(\_CO_WGTIMELINES_SAVE_SAMPLEDATA, '__DIR__ . /../../testdata/index.php?op=save');
-
     //    $adminObject->addItemButton(\constant('_CO_WGTIMELINES_EXPORT_SCHEMA'), '__DIR__ . /../../testdata/index.php?op=exportschema', 'add');
-
-    $adminObject->displayButton('left', '');
+    $GLOBALS['xoopsTpl']->assign('buttons',  $adminObject->renderButton('left'));
 }
-
 //------------- End Test Data ----------------------------
 
 $GLOBALS['xoopsTpl']->assign('index', $adminObject->renderIndex());

@@ -16,7 +16,7 @@ namespace XoopsModules\Wgtimelines\Common;
  * Class to compare current DB table structure with sql/mysql.sql
  *
  * @category  Migrate Helper
- * @author    Goffy <webmmaster@wedega.com>
+ * @author    Goffy (wedega.com) - Email:<webmaster@wedega.com> - Website:<https://xoops.wedega.com>
  * @copyright 2021 XOOPS Project (https://xoops.org)
  * @license   GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
  * @link      https://xoops.org
