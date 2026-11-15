@@ -12,11 +12,9 @@
 /**
  * feedback plugin for xoops modules
  *
- * @copyright      module for xoops
+ * @copyright      XOOPS Project https://xoops.org/
  * @license        GPL 2.0 or later
  * @package        general
- * @since          1.0
- * @min_xoops      2.5.9
  * @author         XOOPS - Website:<https://xoops.org>
  */
 

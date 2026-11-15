@@ -13,13 +13,11 @@ declare(strict_types=1);
 */
 
 /**
- * wgBlocks module for xoops
+ * wgTimelines module for xoops
  *
  * @copyright    2021 XOOPS Project (https://xoops.org)
  * @license      GPL 2.0 or later
- * @package      wgblocks
- * @since        1.0
- * @min_xoops    2.5.11 Beta1
+ * @package      wgtimelines
  * @author       Goffy - Wedega.com - Email:webmaster@wedega.com - Website:https://xoops.wedega.com
  */
 

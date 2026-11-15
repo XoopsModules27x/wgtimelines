@@ -17,13 +17,10 @@ namespace XoopsModules\Wgtimelines;
 /**
  * wgTimelines module for xoops
  *
- * @copyright      module for xoops
+ * @copyright      XOOPS Project https://xoops.org/
  * @license        GPL 3.0 or later
  * @package        wgtimelines
- * @since          1.0
- * @min_xoops      2.5.7
- * @author         TDM XOOPS - Email:<info@email.com> - Website:<http://xoops.org>
- * @version        $Id: 1.0 ratings.php 13070 Wed 2016-12-14 22:22:34Z XOOPS Development Team $
+ * @author         Goffy (wedega.com) - Email:<webmaster@wedega.com> - Website:<https://xoops.wedega.com>
  */
 
 use XoopsModules\Wgtimelines;

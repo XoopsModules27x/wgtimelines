@@ -15,13 +15,10 @@ declare(strict_types=1);
 /**
  * wgTimelines module for xoops
  *
- * @copyright      module for xoops
+ * @copyright      XOOPS Project https://xoops.org/
  * @license        GPL 3.0 or later
  * @package        wgtimelines
- * @since          1.0
- * @min_xoops      2.5.7
- * @author         goffy (wedega.com) - Email:<webmaster@wedega.com> - Website:<https://xoops.wedega.com>
- * @version        $Id: 1.0 items.php 13070 Mon 2016-12-05 18:41:23Z XOOPS Development Team $
+ * @author         Goffy (wedega.com) - Email:<webmaster@wedega.com> - Website:<https://xoops.wedega.com>
  */
 
 use XoopsModules\Wgtimelines\Helper;

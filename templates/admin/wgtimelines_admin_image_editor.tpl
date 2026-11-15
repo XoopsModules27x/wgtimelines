@@ -32,11 +32,14 @@
     .ie-radios label { margin-right:15px; cursor:pointer; }
 
     /* buttons */
-    .ie-btn, .ie-scope .btn { display:inline-block; padding:6px 12px; margin:2px; font-size:14px; line-height:1.4; text-align:center; text-decoration:none; cursor:pointer;
+    .ie-scope .btn { display:inline-block; padding:6px 12px; margin:2px; font-size:14px; line-height:1.4; text-align:center; text-decoration:none; cursor:pointer;
         border:1px solid var(--ie-border); border-radius:4px; background:var(--ie-muted); color:#333; vertical-align:middle; }
-    .ie-btn:hover, .ie-scope .btn:hover { background:#e6e6e6; }
+    .ie-scope .btn:hover { background:#e6e6e6; }
     .ie-scope .btn.active, .ie-scope label.btn.active { background:var(--ie-accent); border-color:var(--ie-accent); color:#fff; }
     .ie-scope .btn.disabled, .ie-scope .btn[disabled], .ie-scope .btn:disabled { opacity:.5; pointer-events:none; cursor:not-allowed; }
+
+    .ie-btn.disabled, .ie-btn[disabled], .ie-btn:disabled { opacity:.5; pointer-events:none; cursor:not-allowed; }
+
     .ie-btn-group { display:inline-flex; flex-wrap:nowrap; margin:3px 4px; }
     .ie-btn-group .btn { margin:0 -1px 0 0; border-radius:0; }
     .ie-btn-group .btn:first-child { border-radius:4px 0 0 4px; }
@@ -63,9 +66,14 @@
     .ie-modal-title { margin:0; font-size:18px; }
     .ie-modal-close { background:none; border:0; font-size:26px; line-height:1; cursor:pointer; color:#666; }
     .ie-modal-body input[type=image] { border:2px solid transparent; }
+
+    /* header */
+    .ie-header {
+        padding:10px;
+    }
 </style>
 
-<h3><{$image_info|default:''}></h3>
+<h3 class="ie-header center"><{$image_info|default:''}></h3>
 <div id='imghandler' class='ie-scope'>
     <ul class='ie-tabs' id='ie-tabs'>
         <li class='active'><a id='navtab_main'   href='#1'><{$smarty.const._AM_WGTIMELINES_IMG_EDITOR_CURRENT}></a></li>
@@ -85,7 +93,7 @@
             <{else}>
             <p class='imageeditor-no_image'><{$smarty.const._AM_WGTIMELINES_IMG_EDITOR_NOIMAGE}></p>
             <{/if}>
-            <input type='button' class='btn <{$btn_style}>' value='<{$smarty.const._CANCEL}>' onclick='history.go(-1);return true;'>
+            <input type='button' class='' value='<{$smarty.const._CANCEL}>' onclick='history.go(-1);return true;'>
         </div>
 
         <!-- *************** Tab for select image of albums ***************-->
@@ -110,8 +118,8 @@
                     <input type='hidden' name='<{$imageOrigin}>' id='<{$imageOrigin}>' value='<{$imageId}>'>
                     <input type='hidden' name='image_id' id='image_id' value='<{$imgCurrent.img_name}>'>
                     <input type='hidden' name='op' id='op' value='saveImageSelected'>
-                    <input type='submit' class='btn <{$btn_style}> disabled' name='btnApplySelected' id='btnApplySelected' value='<{$smarty.const._AM_WGTIMELINES_IMG_EDITOR_APPLY}>'>
-                    <input type='button' class='btn <{$btn_style}>' value='<{$smarty.const._CANCEL}>' onclick='history.go(-1);return true;'>
+                    <input type='submit' class='ie-btn disabled' name='btnApplySelected' id='btnApplySelected' value='<{$smarty.const._AM_WGTIMELINES_IMG_EDITOR_APPLY}>'>
+                    <input type='button' class='ie-btn' value='<{$smarty.const._CANCEL}>' onclick='history.go(-1);return true;'>
                     <{$wgtimelines_form_token|default:false}>
                 </form>
             </div>
@@ -163,8 +171,8 @@
                     <input type='hidden' name='op' value='saveGrid'>
                     <input type='hidden' name='gridImgFinal' id='gridImgFinal' value=''>
                     <input type='hidden' name='<{$imageOrigin}>' value='<{$imageId}>'>
-                    <input type='submit' class='btn <{$btn_style}> disabled' name='btnApplyGrid' id='btnApplyGrid' value='<{$smarty.const._AM_WGTIMELINES_IMG_EDITOR_APPLY}>'>
-                    <input type='button' class='btn <{$btn_style}>' value='<{$smarty.const._CANCEL}>' onclick='history.go(-1);return true;'>
+                    <input type='submit' class='ie-btn disabled' name='btnApplyGrid' id='btnApplyGrid' value='<{$smarty.const._AM_WGTIMELINES_IMG_EDITOR_APPLY}>'>
+                    <input type='button' class='ie-btn' value='<{$smarty.const._CANCEL}>' onclick='history.go(-1);return true;'>
                     <{$wgtimelines_form_token|default:false}>
                 </form>
             </div>
@@ -228,15 +236,15 @@
                         <button type='button' class='btn imageeditor-btn-crop <{$btn_style}>' data-method='scaleX' data-option='-1' title='<{$smarty.const._AM_WGTIMELINES_IMG_EDITOR_CROP_FLIP_HORIZONTAL}>'><span class='fa fa-arrows-h'></span></button>
                         <button type='button' class='btn imageeditor-btn-crop <{$btn_style}>' data-method='scaleY' data-option='-1' title='<{$smarty.const._AM_WGTIMELINES_IMG_EDITOR_CROP_FLIP_VERTICAL}>'><span class='fa fa-arrows-v'></span></button>
                     </div>
+                    <div style="display:none" class="btn-group">
+                        <label class="btn <{$btn_style|default:''}> btn-upload" for="inputImage" title="<{$smarty.const._UPLOAD}>">
+                            <input type="file" class="sr-only" id="inputImage" name="file" accept="image/*">
+                            <span class="docs-tooltip" data-toggle="tooltip" title="<{$smarty.const._UPLOAD}>"><span class="fa fa-upload"></span></span>
+                        </label>
+                    </div>
 
                     <div class='ie-btn-group'>
                         <button type='button' class='btn imageeditor-btn-crop <{$btn_style}>' data-method='reset' title='<{$smarty.const._RESET}>'><span class='fa fa-refresh'></span></button>
-                    </div>
-                    <div class='ie-btn-group'>
-                        <label class='btn <{$btn_style}> btn-upload' for='inputImage' title='<{$smarty.const._UPLOAD}>'>
-                            <input type='file' class='sr-only' id='inputImage' name='file' accept='image/*'>
-                            <span class='fa fa-upload'></span>
-                        </label>
                     </div>
 
                     <div class='ie-btn-block-group btn-group-crop'>

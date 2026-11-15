@@ -15,24 +15,22 @@ declare(strict_types=1);
 /**
  * wgTimelines module for xoops
  *
+ * @copyright      XOOPS Project https://xoops.org/
+ * @license        GPL 3.0 or later
+ * @package        wgtimelines
+ * @author         Goffy (wedega.com) - Email:<webmaster@wedega.com> - Website:<https://xoops.wedega.com>
+ */
+
+defined('XOOPS_ROOT_PATH') || exit('Restricted access');
+
+/* search callback functions
  * @param $queryarray
  * @param $andor
  * @param $limit
  * @param $offset
  * @param $userid
  * @return array
- * @copyright      module for xoops
- * @license        GPL 3.0 or later
- * @package        wgtimelines
- * @since          1.0
- * @min_xoops      2.5.7
- * @author         goffy (wedega.com) - Email:<webmaster@wedega.com> - Website:<https://xoops.wedega.com>
- * @version        $Id: 1.0 search.inc.php 13070 Sat 2016-10-01 05:42:17Z XOOPS Development Team $
  */
-
-defined('XOOPS_ROOT_PATH') || exit('Restricted access');
-
-// search callback functions
 function wgtimelines_search($queryarray, $andor, $limit, $offset, $userid): array
 {
     global $xoopsDB;
