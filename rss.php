@@ -66,9 +66,9 @@ if (!$tpl->isCached('db:wgtimelines_rss.tpl', $cid)) {
     $tpl->assign('channel_generator', 'XOOPS - ' . htmlspecialchars($xoopsModule->getVar('tpl_tabletype'), ENT_QUOTES));
     $tpl->assign('channel_language', _LANGCODE);
     if ( _LANGCODE === 'fr' ) {
-        $tpl->assign('docs', 'http://www.scriptol.fr/rss/RSS-2.0.html');
+        $tpl->assign('docs', 'https://www.scriptol.fr/rss/RSS-2.0.html');
     } else {
-        $tpl->assign('docs', 'http://cyber.law.harvard.edu/rss/rss.html');
+        $tpl->assign('docs', 'https://cyber.law.harvard.edu/rss/rss.html');
     }
     $tpl->assign('image_url', \XOOPS_URL . $xoopsModuleConfig['logorss']);
     $dimention = \getimagesize(\XOOPS_ROOT_PATH . $xoopsModuleConfig['logorss']);

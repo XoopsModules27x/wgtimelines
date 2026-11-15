@@ -140,13 +140,15 @@ switch($op) {
                 // resize image
                 $maxwidth  = (int)$helper->getConfig('maxwidth_imgeditor');
                 $maxheight = (int)$helper->getConfig('maxheight_imgeditor');
-                $imgHandler                = new Wgtimelines\Resizer();
-                $imgHandler->sourceFile    = \WGTIMELINES_UPLOAD_PATH . '/images/timelines/' . $savedFilename;
-                $imgHandler->endFile       = \WGTIMELINES_UPLOAD_PATH . '/images/timelines/' . $savedFilename;
-                $imgHandler->imageMimetype = $imageMimetype;
-                $imgHandler->maxWidth      = $maxwidth;
-                $imgHandler->maxHeight     = $maxheight;
-                $result                    = $imgHandler->resizeImage();
+                if ($maxwidth > 0 && $maxheight > 0) {
+                    $imgHandler                = new Wgtimelines\Resizer();
+                    $imgHandler->sourceFile    = \WGTIMELINES_UPLOAD_PATH . '/images/timelines/' . $savedFilename;
+                    $imgHandler->endFile       = \WGTIMELINES_UPLOAD_PATH . '/images/timelines/' . $savedFilename;
+                    $imgHandler->imageMimetype = $imageMimetype;
+                    $imgHandler->maxWidth      = $maxwidth;
+                    $imgHandler->maxHeight     = $maxheight;
+                    $result                    = $imgHandler->resizeImage();
+                }
                 $timelinesObj->setVar('tl_image', $savedFilename);
             }
         } else {
