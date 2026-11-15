@@ -236,6 +236,12 @@
                         <button type='button' class='btn imageeditor-btn-crop <{$btn_style}>' data-method='scaleX' data-option='-1' title='<{$smarty.const._AM_WGTIMELINES_IMG_EDITOR_CROP_FLIP_HORIZONTAL}>'><span class='fa fa-arrows-h'></span></button>
                         <button type='button' class='btn imageeditor-btn-crop <{$btn_style}>' data-method='scaleY' data-option='-1' title='<{$smarty.const._AM_WGTIMELINES_IMG_EDITOR_CROP_FLIP_VERTICAL}>'><span class='fa fa-arrows-v'></span></button>
                     </div>
+                    <div style="display:none" class="btn-group">
+                        <label class="btn <{$btn_style|default:''}> btn-upload" for="inputImage" title="<{$smarty.const._UPLOAD}>">
+                            <input type="file" class="sr-only" id="inputImage" name="file" accept="image/*">
+                            <span class="docs-tooltip" data-toggle="tooltip" title="<{$smarty.const._UPLOAD}>"><span class="fa fa-upload"></span></span>
+                        </label>
+                    </div>
 
                     <div class='ie-btn-group'>
                         <button type='button' class='btn imageeditor-btn-crop <{$btn_style}>' data-method='reset' title='<{$smarty.const._RESET}>'><span class='fa fa-refresh'></span></button>
