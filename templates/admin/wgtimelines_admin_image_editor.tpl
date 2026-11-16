@@ -314,7 +314,7 @@
                 <div class='ie-modal-body'>
                     <{foreach item=image from=$images|default:null}>
                     <{if $image.group|default:false}><h4 class='ie-modal-title'><{$image.group}></h4><{/if}>
-                <input class='imgGrid<{$m}>' type='image' src='<{$image.src}>?v=<{$imageVersion}>' alt='<{$image.name}>'
+                <input class='imgGrid<{$m}>' type='image' src='<{$image.src}>' alt='<{$image.name}>'
                        style='padding:3px;max-height:150px;max-width:200px' value='<{$image.name}>' onclick='return selectGridImage(this, <{$m}>)'>
                     <{/foreach}>
                 </div>

@@ -188,7 +188,7 @@ switch($op) {
             $uploaderErrors = '';
             $uploader = new \XoopsMediaUploader(\WGTIMELINES_UPLOAD_IMAGE_PATH . '/items/',
                 $helper->getConfig('img_mimetypes'),
-                $helper->getConfig('img_maxsize'), null, null);
+                $helper->getConfig('img_maxsize'), $helper->getConfig('img_maxwidth'), $helper->getConfig('img_maxheight'));
             if ($uploader->fetchMedia($uploadFile0)) {
                 $extension = \preg_replace('/^.+\.([^.]+)$/sU', '', $fileName);
                 $imgName = mb_substr(\str_replace(' ', '', Request::getString('item_title')), 0, 20) . '_' . $extension;

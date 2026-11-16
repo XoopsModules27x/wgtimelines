@@ -249,5 +249,6 @@ require_once __DIR__ . '/common.php';
 \define('_AM_WGTIMELINES_IMG_MAXWIDTH', 'Maximale Breite');
 \define('_AM_WGTIMELINES_IMG_MAXHEIGHT', 'Maximale Höhe');
 \define('_AM_WGTIMELINES_IMG_EDITOR_UPLOAD', 'Bedingungen für Bilderupload');
-\define('_AM_WGTIMELINES_IMG_EDITOR_NOIMAGE', 'Derzeit kein Bild ausgewählt');
-
+\define('_AM_WGTIMELINES_ERROR_SAVE_IE', 'Fehler beim Speichern des bearbeiteten Bildes');
+\define('_AM_WGTIMELINES_IMG_EDITOR_RESIZE', 'Bild automatisch verkleinern');
+\define('_AM_WGTIMELINES_IMG_EDITOR_RESIZE_DESC', 'Bild automatisch auf Standardwerte (Breite max. %w px / Höhe max. %h px) verkleinern: ');

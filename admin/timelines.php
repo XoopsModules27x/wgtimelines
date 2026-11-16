@@ -127,7 +127,7 @@ switch($op) {
         $uploaderErrors = '';
         $uploader = new \XoopsMediaUploader(\WGTIMELINES_UPLOAD_IMAGE_PATH.'/timelines/',
                                             $helper->getConfig('img_mimetypes'),
-                                            $helper->getConfig('img_maxsize'), null, null);
+                                            $helper->getConfig('img_maxsize'), $helper->getConfig('img_maxwidth'), $helper->getConfig('img_maxheight'));
         if ($uploader->fetchMedia($uploadFile0)) {
             $extension = \preg_replace('/^.+\.([^.]+)$/sU', '', $fileName);
             $imgName   = mb_substr(\str_replace(' ', '', Request::getString('tl_name')), 0, 20) . '_' . $extension;
@@ -140,7 +140,7 @@ switch($op) {
                 // resize image
                 $imgMaxwidthIE  = (int)$helper->getConfig('img_maxwidth_ie');
                 $imgMaxheightIE = (int)$helper->getConfig('img_maxheight_ie');
-                if ($imgMaxwidth > 0 && $imgMaxheight > 0) {
+                if ($imgMaxwidthIE > 0 && $imgMaxheightIE > 0) {
                     $imgHandler                = new Wgtimelines\Resizer();
                     $imgHandler->sourceFile    = \WGTIMELINES_UPLOAD_PATH . '/images/timelines/' . $savedFilename;
                     $imgHandler->endFile       = \WGTIMELINES_UPLOAD_PATH . '/images/timelines/' . $savedFilename;

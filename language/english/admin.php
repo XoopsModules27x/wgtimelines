@@ -249,4 +249,6 @@ require_once __DIR__ . '/common.php';
 \define('_AM_WGTIMELINES_IMG_MAXWIDTH', 'Maximum width');
 \define('_AM_WGTIMELINES_IMG_MAXHEIGHT', 'Maximum height');
 \define('_AM_WGTIMELINES_IMG_EDITOR_UPLOAD', 'Conditions for uploading images');
-\define('_AM_WGTIMELINES_IMG_EDITOR_NOIMAGE', 'Currently no image selected');
+\define('_AM_WGTIMELINES_ERROR_SAVE_IE', 'Error when saving edited image');
+\define('_AM_WGTIMELINES_IMG_EDITOR_RESIZE', 'Resize image automatically');
+\define('_AM_WGTIMELINES_IMG_EDITOR_RESIZE_DESC', 'Resize image automatically to default dimension (width max. %w px / height max. %h px): ');

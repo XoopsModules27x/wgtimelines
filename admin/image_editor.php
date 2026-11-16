@@ -320,7 +320,7 @@ switch ($op) {
             \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
         }
         $imgTempGrid = Request::getString('gridImgFinal');
-        $ret = \rename($imgTempGrid, $imgFinal);
+        \rename($imgTempGrid, $imgFinal);
         // Set Vars
         $imageObj->setVar($fieldObj, $imgName);
         $imageObj->setVar($submObj, $uid);
@@ -337,10 +337,14 @@ switch ($op) {
         if (!$GLOBALS['xoopsSecurity']->check()) {
             \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
         }
-        if (\is_file($imgFinal)) {
-            \unlink($imgFinal);
+        if (\is_file($imgTemp)) {
+            if (\is_file($imgFinal)) {
+                \unlink($imgFinal);
+            }
+            \rename($imgTemp, $imgFinal);
+        } else {
+            \redirect_header($redir, 2, \_AM_WGTIMELINES_ERROR_SAVE_IE);
         }
-        $ret = \rename($imgTemp, $imgFinal);
         // Set Vars
         $imageObj->setVar($fieldObj, $imgName);
         $imageObj->setVar($submObj, $uid);
@@ -457,16 +461,23 @@ function getFormUploadImage($imageOrigin, $imageId): XoopsThemeForm
     $form = new \XoopsThemeForm('', 'formuploadimmage', 'image_editor.php', 'post', true);
     $form->setExtra('enctype="multipart/form-data"');
     // upload new image
-    $imageTray3      = new \XoopsFormElementTray(\_AM_WGTIMELINES_FORM_UPLOAD_IMG, '<br>');
+    $imageTray1      = new \XoopsFormElementTray(\_AM_WGTIMELINES_FORM_UPLOAD_IMG, '<br>');
     $imageFileSelect = new \XoopsFormFile('', 'attachedfile', $helper->getConfig('img_maxsize'));
-    $imageTray3->addElement($imageFileSelect);
-    $form->addElement($imageTray3);
+    $imageTray1->addElement($imageFileSelect);
+    $form->addElement($imageTray1);
 
     $cond = \_AM_WGTIMELINES_IMG_MAXSIZE . ': ' . ($helper->getConfig('img_maxsize') / 1048576) . ' ' . \_AM_WGTIMELINES_SIZE_MB . '<br>';
     $cond .= \_AM_WGTIMELINES_IMG_MAXWIDTH . ': ' . $helper->getConfig('img_maxwidth') . ' px<br>';
     $cond .= \_AM_WGTIMELINES_IMG_MAXHEIGHT . ': ' . $helper->getConfig('img_maxheight') . ' px<br>';
     $cond .= \_AM_WGTIMELINES_IMG_MIMETYPES . ': ' . \implode(', ', $helper->getConfig('img_mimetypes')) . '<br>';
     $form->addElement(new \XoopsFormLabel(_AM_WGTIMELINES_IMG_EDITOR_UPLOAD, $cond));
+
+    $imageTray3      = new \XoopsFormElementTray(\_AM_WGTIMELINES_IMG_EDITOR_RESIZE, '');
+    $resizeinfo = \str_replace('%w', (string)$helper->getConfig('img_maxwidth_ie'), \_AM_WGTIMELINES_IMG_EDITOR_RESIZE_DESC);
+    $resizeinfo = \str_replace('%h', (string)$helper->getConfig('img_maxheight_ie'), $resizeinfo);
+    $imageTray3->addElement(new \XoopsFormLabel($resizeinfo, ''));
+    $imageTray3->addElement(new \XoopsFormRadioYN('', 'img_resize', 1));
+    $form->addElement($imageTray3);
 
     $form->addElement(new \XoopsFormHidden($imageOrigin, $imageId));
     $form->addElement(new \XoopsFormHidden('op', 'uploadImage'));
