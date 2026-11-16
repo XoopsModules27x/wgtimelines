@@ -27,7 +27,7 @@
             <td class="center"><i class="icon-sortable fa-solid fa-up-down-left-right"></i></td>
             <td class="center"><{$timeline.name}></td>
             <td class="left"><{$timeline.desc_admin}></td>
-            <td class="center"><img src="<{$wgtimelines_upload_url}>/images/timelines/<{$timeline.image}>" alt="<{$timeline.name}>" style="max-width:50px;" /></td>
+            <td class="center"><img src="<{$wgtimelines_upload_url}>/images/timelines/<{$timeline.image}>?v=<{$imageVersion}>" alt="<{$timeline.name}>" style="max-width:50px;" /></td>
             <td class="center"><{$timeline.template}></td>
             <td class="center"><{$timeline.sortby_text}></td>
             <td class="center"><{$timeline.limit}></td>

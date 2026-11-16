@@ -82,7 +82,11 @@ if ($imageClass === Constants::IMAGECLASS_ITEM) {
     $nameObj  = 'item_title';
     $fieldObj = 'item_image';
     $submObj  = 'item_submitter';
-    $imageInfo    = \sprintf(\_AM_WGTIMELINES_IMG_EDITOR_ITEM, $imageObj->getVar('item_title'));
+    $imageInfo = htmlspecialchars(
+        sprintf(_AM_WGTIMELINES_IMG_EDITOR_ITEM, $imageObj->getVar('item_title')),
+        ENT_QUOTES | ENT_SUBSTITUTE,
+        'UTF-8'
+    );
 } else {
     $imgName  = 'timeline' . $imageId . '.jpg';
     $imageDir = '/uploads/wgtimelines/images/timelines/';
@@ -94,7 +98,11 @@ if ($imageClass === Constants::IMAGECLASS_ITEM) {
     $nameObj  = 'tl_name';
     $fieldObj = 'tl_image';
     $submObj  = 'tl_submitter';
-    $imageInfo    = \sprintf(\_AM_WGTIMELINES_IMG_EDITOR_TIMELINE, $imageObj->getVar('tl_name'));
+    $imageInfo = htmlspecialchars(
+        sprintf(_AM_WGTIMELINES_IMG_EDITOR_TIMELINE, $imageObj->getVar('tl_name')),
+        ENT_QUOTES | ENT_SUBSTITUTE,
+        'UTF-8'
+    );
 }
 
 $imgCurrent['img_name'] = $imageObj->getVar($fieldObj);
@@ -139,6 +147,10 @@ $GLOBALS['xoopsTpl']->assign('wgtimelines_upload_url', \WGTIMELINES_UPLOAD_URL);
 $GLOBALS['xoopsTpl']->assign('wgtimelines_upload_path', \WGTIMELINES_UPLOAD_PATH);
 $GLOBALS['xoopsTpl']->assign('wgtimelines_upload_image_url', $imgUrl);
 $GLOBALS['xoopsTpl']->assign('gridtarget', $imgName);
+$GLOBALS['xoopsTpl']->assign('gridtarget_json', json_encode(
+    $imgName,
+    JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+));
 $GLOBALS['xoopsTpl']->assign('imgCurrent', $imgCurrent);
 $GLOBALS['xoopsTpl']->assign('imageId', $imageId);
 $GLOBALS['xoopsTpl']->assign('imageOrigin', $imageOrigin);
@@ -154,12 +166,21 @@ $GLOBALS['xoopsTpl']->assign('show_breadcrumbs', $helper->getConfig('show_breadc
 $xoBreadcrumbs[] = ['title' => \_AM_WGTIMELINES_IMG_EDITOR];
 
 // get config for images
-$maxwidth  = $helper->getConfig('maxwidth_imgeditor');
-$maxheight = $helper->getConfig('maxheight_imgeditor');
-$maxsize   = $helper->getConfig('maxsize');
-$mimetypes = $helper->getConfig('mimetypes');
+$imgMaxwidth  = (int)$helper->getConfig('img_maxwidth');
+$imgMaxheight = (int)$helper->getConfig('img_maxheight');
+$imgMaxsize   = (int)$helper->getConfig('img_maxsize');
+if (0 == $imgMaxwidth || 0 == $imgMaxheight || 0 == $imgMaxsize) {
+    \redirect_header($redir, 3, \_AM_WGTIMELINES_INVALID_PARAM_IMG);
+}
+$imgMaxwidthIE  = (int)$helper->getConfig('img_maxwidth_ie');
+$imgMaxheightIE = (int)$helper->getConfig('img_maxheight_ie');
+$imgMimetypes   = $helper->getConfig('img_mimetypes');
+
+// force reload of images, e.g. after cropping
+$GLOBALS['xoopsTpl']->assign('imageVersion', time());
 
 switch ($op) {
+
     case 'creategrid':
         if (!$GLOBALS['xoopsSecurity']->check()) {
             \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
@@ -173,14 +194,7 @@ switch ($op) {
         $src[5] = Request::getString('src5');
         $src[6] = Request::getString('src6');
         $target = Request::getString('target');
-        // replace thumbs dir by dir for medium images, only for wggallery
-        // $src[1] = \str_replace('/thumbs/', '/medium/', $src[1]);
-        // $src[2] = \str_replace('/thumbs/', '/medium/', $src[2]);
-        // $src[3] = \str_replace('/thumbs/', '/medium/', $src[3]);
-        // $src[4] = \str_replace('/thumbs/', '/medium/', $src[4]);
-        // $src[5] = \str_replace('/thumbs/', '/medium/', $src[5]);
-        // $src[6] = \str_replace('/thumbs/', '/medium/', $src[6]);
-        
+
         $images = [];
         for ($i = 1; $i <= 6; $i++) {
             if ('' !== $src[$i]) {
@@ -189,10 +203,15 @@ switch ($op) {
             }
         }
 
+        // if width/height for images in image editor is defined in preferences
+        // then use it, else use max width/height for upload
+        $imgMaxwidthUse  = $imgMaxwidthIE > 0 ? $imgMaxwidthIE : $imgMaxwidth;
+        $imgMaxheightUse = $imgMaxheightIE > 0 ? $imgMaxheightIE : $imgMaxheight;
+
         // create basic image
-        $tmp   = \imagecreatetruecolor($maxwidth, $maxheight);
+        $tmp   = \imagecreatetruecolor($imgMaxwidthUse, $imgMaxheightUse);
         $imgBg = imagecolorallocate($tmp, 0, 0, 0);
-        imagefilledrectangle($tmp, 0, 0, $maxwidth, $maxheight, $imgBg);
+        imagefilledrectangle($tmp, 0, 0, $imgMaxwidthUse, $imgMaxheightUse, $imgBg);
 
         $final = XOOPS_UPLOAD_PATH . '/wgtimelines/temp/' . $target;
         if (\is_file($final)) {
@@ -211,15 +230,15 @@ switch ($op) {
                 $imgHandler->sourceFile    = $images[$i]['file'];
                 $imgHandler->endFile       = $imgTemp . $i . '.jpg';
                 $imgHandler->imageMimetype = $images[$i]['mimetype'];
-                $imgHandler->maxWidth      = (int)\round($maxwidth / 2 - 1);
-                $imgHandler->maxHeight     = (int)\round($maxheight / 2 - 1);
+                $imgHandler->maxWidth      = (int)\round($imgMaxwidthUse / 2 - 1);
+                $imgHandler->maxHeight     = (int)\round($imgMaxheightUse / 2 - 1);
                 $imgHandler->jpgQuality    = 90;
                 $imgHandler->resizeAndCrop();
             }
             $imgHandler->mergeType = 4;
             $imgHandler->endFile   = $final;
-            $imgHandler->maxWidth  = $maxwidth;
-            $imgHandler->maxHeight = $maxheight;
+            $imgHandler->maxWidth  = $imgMaxwidthUse;
+            $imgHandler->maxHeight = $imgMaxheightUse;
             for ($i = 1; $i <= 4; $i++) {
                 $imgHandler->sourceFile = $imgTemp . $i . '.jpg';
                 $imgHandler->mergePos   = $i;
@@ -234,14 +253,14 @@ switch ($op) {
                 $imgHandler->sourceFile    = $images[$i]['file'];
                 $imgHandler->endFile       = $imgTemp . $i . '.jpg';
                 $imgHandler->imageMimetype = $images[$i]['mimetype'];
-                $imgHandler->maxWidth      = (int)\round($maxwidth / 3 - 1);
-                $imgHandler->maxHeight     = (int)\round($maxheight / 2 - 1);
+                $imgHandler->maxWidth      = (int)\round($imgMaxwidthUse / 3 - 1);
+                $imgHandler->maxHeight     = (int)\round($imgMaxheightUse / 2 - 1);
                 $imgHandler->resizeAndCrop();
             }
             $imgHandler->mergeType = 6;
             $imgHandler->endFile   = $final;
-            $imgHandler->maxWidth  = $maxwidth;
-            $imgHandler->maxHeight = $maxheight;
+            $imgHandler->maxWidth  = $imgMaxwidthUse;
+            $imgHandler->maxHeight = $imgMaxheightUse;
             for ($i = 1; $i <= 6; $i++) {
                 $imgHandler->sourceFile = $imgTemp . $i . '.jpg';
                 $imgHandler->mergePos   = $i;
@@ -251,31 +270,29 @@ switch ($op) {
                 }
             }
         }
-        break; 
+        break;
 
     case 'cropimage':
         // Security Check
         if (!$GLOBALS['xoopsSecurity']->check()) {
             \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
         }
-        // save base64_image and resize to maxwidth/maxheight
+        // save base64_image and resize to img_maxwidth/img_maxheight
         $base64_image_content = Request::getString('croppedImage');
         if (\preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_image_content, $result)) {
             $type = $result[2];
             \file_put_contents($imgTemp, base64_decode(\str_replace($result[1], '', $base64_image_content), true));
         }
-
-        $imgHandler                = new Wgtimelines\Resizer();
-        $imgHandler->sourceFile    = $imgTemp;
-        $imgHandler->endFile       = $imgTemp;
-        $imgHandler->imageMimetype = 'image/jpeg';
-        $imgHandler->maxWidth      = $maxwidth;
-        $imgHandler->maxHeight     = $maxheight;
-        $ret                       = $imgHandler->resizeImage();
-
-        if (\is_file($imgFinal)) {
-            \unlink($imgFinal);
+        if ($imgMaxwidthIE > 0 && $imgMaxheightIE > 0) {
+            $imgHandler                = new Wgtimelines\Resizer();
+            $imgHandler->sourceFile    = $imgTemp;
+            $imgHandler->endFile       = $imgTemp;
+            $imgHandler->imageMimetype = 'image/jpeg';
+            $imgHandler->maxWidth      = $imgMaxwidthIE;
+            $imgHandler->maxHeight     = $imgMaxheightIE;
+            $ret                       = $imgHandler->resizeImage();
         }
+
         break;
     case 'saveImageSelected':
         // save image selected from list of available images in upload folder
@@ -290,20 +307,20 @@ switch ($op) {
         $imageObj->setVar($fieldObj, $image_id);
         $imageObj->setVar($submObj, $uid);
         // Insert Data
-        if ($imageHandler->insert($imageObj)) {  
+        if ($imageHandler->insert($imageObj)) {
             \redirect_header($redir, 2, \_AM_WGTIMELINES_FORM_OK);
         }
         $GLOBALS['xoopsTpl']->assign('error', $imageObj->getHtmlErrors());
         break;
-        
+
     case 'saveGrid':
+        // save before created grid image
         // Security Check
         if (!$GLOBALS['xoopsSecurity']->check()) {
             \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
         }
-        // save before created grid image
         $imgTempGrid = Request::getString('gridImgFinal');
-        $ret = \rename($imgTempGrid, $imgFinal);
+        \rename($imgTempGrid, $imgFinal);
         // Set Vars
         $imageObj->setVar($fieldObj, $imgName);
         $imageObj->setVar($submObj, $uid);
@@ -312,15 +329,22 @@ switch ($op) {
             \redirect_header($redir, 2, \_AM_WGTIMELINES_FORM_OK);
         }
         $GLOBALS['xoopsTpl']->assign('error', $imageObj->getHtmlErrors());
-        break;
 
+        break;
     case 'saveCrop':
+        // save before created cropped image
         // Security Check
         if (!$GLOBALS['xoopsSecurity']->check()) {
             \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
         }
-        // save before created grid image
-        $ret = \rename($imgTemp, $imgFinal);
+        if (\is_file($imgTemp)) {
+            if (\is_file($imgFinal)) {
+                \unlink($imgFinal);
+            }
+            \rename($imgTemp, $imgFinal);
+        } else {
+            \redirect_header($redir, 2, \_AM_WGTIMELINES_ERROR_SAVE_IE);
+        }
         // Set Vars
         $imageObj->setVar($fieldObj, $imgName);
         $imageObj->setVar($submObj, $uid);
@@ -332,19 +356,21 @@ switch ($op) {
 
         break;
     case 'uploadImage':
+        // Security Check
         if (!$GLOBALS['xoopsSecurity']->check()) {
-            \redirect_header('index.php', 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
+            \redirect_header($redir, 3, \implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
         }
+        $img_resize = Request::getInt('img_resize');
         // Set Vars
         require_once \XOOPS_ROOT_PATH . '/class/uploader.php';
         $uploadFile0    = Request::getArray('xoops_upload_file')[0];
         $fileName       = $_FILES['attachedfile']['name'];
         $imageMimetype  = $_FILES['attachedfile']['type'];
         $uploaderErrors = '';
-        $uploader       = new \XoopsMediaUploader($imgPath, $mimetypes, $maxsize, null, null);
+        $uploader       = new \XoopsMediaUploader($imgPath, $imgMimetypes, $imgMaxsize, $imgMaxwidth, $imgMaxheight);
         if ($uploader->fetchMedia($uploadFile0)) {
             $extension = \preg_replace('/^.+\.([^.]+)$/sU', '', $fileName);
-            $imgName   = 'image_' . $itemId . '.' . $extension;
+            $imgName   .= '.' . $extension;
             $uploader->setPrefix($imgName);
             if (!$uploader->upload()) {
                 $uploaderErrors = $uploader->getErrors();
@@ -352,17 +378,16 @@ switch ($op) {
                 $savedFilename = $uploader->getSavedFileName();
                 $imageObj->setVar($fieldObj, $savedFilename);
                 // resize image
-                $maxwidth  = $helper->getConfig('maxwidth_imgeditor');
-                $maxheight = $helper->getConfig('maxheight_imgeditor');
-                if ($maxwidth > 0 && $maxheight > 0) {
+                if (1 == $img_resize  && $imgMaxwidthIE > 0 && $imgMaxheightIE > 0) {
                     $imgHandler                = new Wgtimelines\Resizer();
                     $imgHandler->sourceFile    = $imgPath . $savedFilename;
                     $imgHandler->endFile       = $imgPath . $savedFilename;
                     $imgHandler->imageMimetype = $imageMimetype;
-                    $imgHandler->maxWidth      = $maxwidth;
-                    $imgHandler->maxHeight     = $maxheight;
+                    $imgHandler->maxWidth      = $imgMaxwidthIE;
+                    $imgHandler->maxHeight     = $imgMaxheightIE;
                     $result                    = $imgHandler->resizeImage();
                 }
+
                 $imageObj->setVar($fieldObj, $savedFilename);
                 $imageObj->setVar($submObj, $uid);
             }
@@ -372,7 +397,7 @@ switch ($op) {
             }
         }
         if ('' !== $uploaderErrors) {
-            \redirect_header($redir, $uploaderErrors);
+            \redirect_header($redir, 5, $uploaderErrors);
         }
         // Insert Data
         if ($imageHandler->insert($imageObj)) {
@@ -383,25 +408,29 @@ switch ($op) {
         $form = getFormUploadImage($imageOrigin, $imageId);
         $GLOBALS['xoopsTpl']->assign('form', $form->render());
         break;
-        
+
     case 'imghandler':
     default:
         $GLOBALS['xoTheme']->addStylesheet(\WGTIMELINES_URL . '/assets/css/cropper.min.css');
 
         $GLOBALS['xoopsTpl']->assign('nbModals', [1, 2, 3, 4, 5, 6]);
-        
+
         // get form for upload album image
         $currImage   = $imageObj->getVar($fieldObj);
         if ('' == $currImage) {
             $currImage = 'blank.gif';
         }
         $image_path = $imgPath . $currImage;
-        // get size of current album image
-        list($width, $height, $type, $attr) = \getimagesize($image_path);
+        $width = 0;
+        $height= 0;
+        if (\file_exists($image_path) && is_file($image_path)) {
+            // get size of current album image
+            [$width, $height, $type, $attr] = \getimagesize($image_path);
+        }
         $GLOBALS['xoopsTpl']->assign('image_path', $image_path);
-        $GLOBALS['xoopsTpl']->assign('albimage_width', $width);
-        $GLOBALS['xoopsTpl']->assign('albimage_height', $height);
-        
+        $GLOBALS['xoopsTpl']->assign('image_width', $width);
+        $GLOBALS['xoopsTpl']->assign('image_height', $height);
+
         $form = getFormUploadImage($imageOrigin, $imageId);
         $GLOBALS['xoopsTpl']->assign('form_uploadimage', $form->render());
 
@@ -432,9 +461,22 @@ function getFormUploadImage($imageOrigin, $imageId): XoopsThemeForm
     $form = new \XoopsThemeForm('', 'formuploadimmage', 'image_editor.php', 'post', true);
     $form->setExtra('enctype="multipart/form-data"');
     // upload new image
-    $imageTray3      = new \XoopsFormElementTray(\_AM_WGTIMELINES_FORM_UPLOAD_IMG, '<br>');
-    $imageFileSelect = new \XoopsFormFile('', 'attachedfile', $helper->getConfig('maxsize'));
-    $imageTray3->addElement($imageFileSelect);
+    $imageTray1      = new \XoopsFormElementTray(\_AM_WGTIMELINES_FORM_UPLOAD_IMG, '<br>');
+    $imageFileSelect = new \XoopsFormFile('', 'attachedfile', $helper->getConfig('img_maxsize'));
+    $imageTray1->addElement($imageFileSelect);
+    $form->addElement($imageTray1);
+
+    $cond = \_AM_WGTIMELINES_IMG_MAXSIZE . ': ' . ($helper->getConfig('img_maxsize') / 1048576) . ' ' . \_AM_WGTIMELINES_SIZE_MB . '<br>';
+    $cond .= \_AM_WGTIMELINES_IMG_MAXWIDTH . ': ' . $helper->getConfig('img_maxwidth') . ' px<br>';
+    $cond .= \_AM_WGTIMELINES_IMG_MAXHEIGHT . ': ' . $helper->getConfig('img_maxheight') . ' px<br>';
+    $cond .= \_AM_WGTIMELINES_IMG_MIMETYPES . ': ' . \implode(', ', $helper->getConfig('img_mimetypes')) . '<br>';
+    $form->addElement(new \XoopsFormLabel(_AM_WGTIMELINES_IMG_EDITOR_UPLOAD, $cond));
+
+    $imageTray3      = new \XoopsFormElementTray(\_AM_WGTIMELINES_IMG_EDITOR_RESIZE, '');
+    $resizeinfo = \str_replace('%w', (string)$helper->getConfig('img_maxwidth_ie'), \_AM_WGTIMELINES_IMG_EDITOR_RESIZE_DESC);
+    $resizeinfo = \str_replace('%h', (string)$helper->getConfig('img_maxheight_ie'), $resizeinfo);
+    $imageTray3->addElement(new \XoopsFormLabel($resizeinfo, ''));
+    $imageTray3->addElement(new \XoopsFormRadioYN('', 'img_resize', 1));
     $form->addElement($imageTray3);
 
     $form->addElement(new \XoopsFormHidden($imageOrigin, $imageId));

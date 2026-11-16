@@ -89,7 +89,7 @@
             <{if $no_blank|default:false}>
         <img id='currentImg' class='imageeditor-img center' src='<{$imgCurrent.src}>' alt='<{$imgCurrent.img_name}>'>
             <p><{$smarty.const._AM_WGTIMELINES_IMG_EDITOR_CURRENT2}>: <{$image_path}><br>
-                <{$smarty.const._AM_WGTIMELINES_IMG_EDITOR_RESXY}>: <{$albimage_width}> / <{$albimage_height}></p>
+                <{$smarty.const._AM_WGTIMELINES_IMG_EDITOR_RESXY}>: <{$image_width}> / <{$image_height}></p>
             <{else}>
             <p class='imageeditor-no_image'><{$smarty.const._AM_WGTIMELINES_IMG_EDITOR_NOIMAGE}></p>
             <{/if}>
@@ -104,13 +104,13 @@
                         <{foreach item=image from=$images|default:null name=fe_image}>
                         <{if $image.group|default:false}><h4 class='ie-modal-title'><{$image.group}></h4><{/if}>
                         <div class='imageeditor-selimages'>
-                            <input id='<{$image.name}>_image' class='imgSelect1 imageeditor-img <{if $image.selected|default:false}>imageeditor-modal-selected<{/if}>' type='image' src='<{$image.src}>' alt='<{$image.title}>' value='<{$image.name}>'>
+                            <input id='<{$image.name}>_image' class='imgSelect1 imageeditor-img <{if $image.selected|default:false}>imageeditor-modal-selected<{/if}>' type='image' src='<{$image.src}>?v=<{$imageVersion}>' alt='<{$image.title}>' value='<{$image.name}>'>
                         </div>
                         <{/foreach}>
                     </div>
                 </div>
                 <div class='ie-col-half'>
-                    <img id='ImageSelected' class='imageeditor-img' src='<{$imgCurrent.src}>' alt='<{$imgCurrent.img_name}>'>
+                    <img id='ImageSelected' class='imageeditor-img' src='<{$imgCurrent.src}>?v=<{$imageVersion}>' alt='<{$imgCurrent.img_name}>'>
                 </div>
             </div>
             <div class='center'>
@@ -185,7 +185,7 @@
             <input type='hidden' id='tokenCrop' name='XOOPS_TOKEN_REQUEST' value='<{$wgtimelines_btn_token|default:''}>'>
             <div class='container-crop'>
                 <div class='img-container'>
-                    <img id='cropImg' src='<{$imgCurrent.src}>' alt='<{$imgCurrent.img_name}>'>
+                    <img id='cropImg' src='<{$imgCurrent.src}>?v=<{$imageVersion}>' alt='<{$imgCurrent.img_name}>'>
                 </div>
             </div>
             <div id='actions'>
@@ -256,6 +256,13 @@
                             <input type="hidden" name="target" value="<{$croptarget|default:''}>">
                             <input type="hidden" name="start" value="<{$start}>">
                             <input type="hidden" name="limit" value="<{$limit}>">
+                            <input type="hidden" id="dataX">
+                            <input type="hidden" id="dataY">
+                            <input type="hidden" id="dataHeight">
+                            <input type="hidden" id="dataWidth">
+                            <input type="hidden" id="dataRotate">
+                            <input type="hidden" id="dataScaleX">
+                            <input type="hidden" id="dataScaleY">
                             <{$wgtimelines_form_token}>
                             <button type="submit" id="btnCropApply" class="btn <{$btn_style}> disabled">
                                 <{$smarty.const._AM_WGTIMELINES_IMG_EDITOR_APPLY}>
@@ -439,6 +446,7 @@
 
         function createGrid(type) {
             var gridImg = $id('gridImg');
+            var gridtarget = <{$gridtarget_json}>;
             gridImg.src = '<{$wgtimelines_url}>/assets/images/loading.gif';
 
             var params = new URLSearchParams();
@@ -449,7 +457,7 @@
             for (var i = 1; i <= type; i++) {
                 params.append('src' + i, $id('imageGrid' + i).getAttribute('src'));
             }
-            params.append('target', '<{$gridtarget}>');
+            params.append('target', gridtarget);
 
             fetch('image_editor.php', {
                 method: 'POST',
@@ -457,8 +465,8 @@
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: params.toString()
             }).then(function () {
-                gridImg.src = '<{$wgtimelines_upload_url}>/temp/<{$gridtarget}>?' + new Date().getTime();
-                $id('gridImgFinal').value = '<{$wgtimelines_upload_path}>/temp/<{$gridtarget}>';
+                gridImg.src = '<{$wgtimelines_upload_url}>/temp/' + encodeURIComponent(gridtarget) + '?' + new Date().getTime();
+                $id('gridImgFinal').value = '<{$wgtimelines_upload_path}>/temp/' + gridtarget;
                 gridImg.classList.add('imageeditor-img');
                 $id('btnApplyGrid').classList.remove('disabled');
             });

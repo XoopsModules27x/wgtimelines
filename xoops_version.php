@@ -300,9 +300,9 @@ while ($i* 1048576 <= $maxSize) {
     $i += $increment;
 }
 $modversion['config'][] = [
-    'name'        => 'maxsize',
-    'title'       => '_MI_WGTIMELINES_MAXSIZE',
-    'description' => '_MI_WGTIMELINES_MAXSIZE_DESC',
+    'name'        => 'img_maxsize',
+    'title'       => '_MI_WGTIMELINES_IMG_MAXSIZE',
+    'description' => '_MI_WGTIMELINES_IMG_MAXSIZE_DESC',
     'formtype'    => 'select',
     'valuetype'   => 'int',
     'default'     => 3145728,
@@ -311,9 +311,9 @@ $modversion['config'][] = [
 
 //Uploads : mimetypes of images
 $modversion['config'][] = [
-    'name'        => 'mimetypes',
-    'title'       => '_MI_WGTIMELINES_MIMETYPES',
-    'description' => '_MI_WGTIMELINES_MIMETYPES_DESC',
+    'name'        => 'img_mimetypes',
+    'title'       => '_MI_WGTIMELINES_IMG_MIMETYPES',
+    'description' => '_MI_WGTIMELINES_IMG_MIMETYPES_DESC',
     'formtype'    => 'select_multi',
     'valuetype'   => 'array',
     'default'     => ['image/gif', 'image/jpeg', 'image/png', 'image/jpg'],
@@ -330,28 +330,28 @@ $modversion['config'][] = [
 
 // Uploads : max width of images for upload
 $modversion['config'][] = [
-    'name'        => 'maxwidth',
-    'title'       => '_MI_WGTIMELINES_MAXWIDTH',
-    'description' => '_MI_WGTIMELINES_MAXWIDTH_DESC',
+    'name'        => 'img_maxwidth',
+    'title'       => '_MI_WGTIMELINES_IMG_MAXWIDTH',
+    'description' => '_MI_WGTIMELINES_IMG_MAXWIDTH_DESC',
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
-    'default'     => 5000,
+    'default'     => 1000,
 ];
 
 // Uploads : max height of images for upload
 $modversion['config'][] = [
-    'name'        => 'maxheight',
-    'title'       => '_MI_WGTIMELINES_MAXHEIGHT',
-    'description' => '_MI_WGTIMELINES_MAXHEIGHT_DESC',
+    'name'        => 'img_maxheight',
+    'title'       => '_MI_WGTIMELINES_IMG_MAXHEIGHT',
+    'description' => '_MI_WGTIMELINES_IMG_MAXHEIGHT_DESC',
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
-    'default'     => 5000,
+    'default'     => 1000,
 ];
 // Uploads : max width of images for upload
 $modversion['config'][] = [
-    'name'        => 'maxwidth_imgeditor',
-    'title'       => '_MI_WGTIMELINES_MAXWIDTH_IMGEDITOR',
-    'description' => '_MI_WGTIMELINES_MAXWIDTH_IMGEDITOR_DESC',
+    'name'        => 'img_maxwidth_ie',
+    'title'       => '_MI_WGTIMELINES_IMG_MAXWIDTH_IE',
+    'description' => '_MI_WGTIMELINES_IMG_MAXWIDTH_IE_DESC',
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 400,
@@ -359,9 +359,9 @@ $modversion['config'][] = [
 
 // Uploads : max height of images for upload
 $modversion['config'][] = [
-    'name'        => 'maxheight_imgeditor',
-    'title'       => '_MI_WGTIMELINES_MAXHEIGHT_IMGEDITOR',
-    'description' => '_MI_WGTIMELINES_MAXHEIGHT_IMGEDITOR_DESC',
+    'name'        => 'img_maxheight_ie',
+    'title'       => '_MI_WGTIMELINES_IMG_MAXHEIGHT_IE',
+    'description' => '_MI_WGTIMELINES_IMG_MAXHEIGHT_IE_DESC',
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 400,

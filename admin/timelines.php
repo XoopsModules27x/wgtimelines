@@ -41,6 +41,9 @@ switch($op) {
         $GLOBALS['xoopsTpl']->assign('start', $start);
         $GLOBALS['xoopsTpl']->assign('limit', $limit);
 
+        // force reload of images, e.g. after cropping
+        $GLOBALS['xoopsTpl']->assign('imageVersion', time());
+
         $templateMain = 'wgtimelines_admin_timelines.tpl';
         $GLOBALS['xoopsTpl']->assign('navigation', $adminObject->renderNavigation('timelines.php'));
         $adminObject->addItemButton(\_AM_WGTIMELINES_TIMELINE_ADD, 'timelines.php?op=new');
@@ -123,8 +126,8 @@ switch($op) {
         $imageMimetype  = $_FILES['attachedfile']['type'];
         $uploaderErrors = '';
         $uploader = new \XoopsMediaUploader(\WGTIMELINES_UPLOAD_IMAGE_PATH.'/timelines/',
-                                            $helper->getConfig('mimetypes'),
-                                            $helper->getConfig('maxsize'), null, null);
+                                            $helper->getConfig('img_mimetypes'),
+                                            $helper->getConfig('img_maxsize'), $helper->getConfig('img_maxwidth'), $helper->getConfig('img_maxheight'));
         if ($uploader->fetchMedia($uploadFile0)) {
             $extension = \preg_replace('/^.+\.([^.]+)$/sU', '', $fileName);
             $imgName   = mb_substr(\str_replace(' ', '', Request::getString('tl_name')), 0, 20) . '_' . $extension;
@@ -135,15 +138,15 @@ switch($op) {
                 $savedFilename = $uploader->getSavedFileName();
                 $timelinesObj->setVar('tl_image', $savedFilename);
                 // resize image
-                $maxwidth  = (int)$helper->getConfig('maxwidth_imgeditor');
-                $maxheight = (int)$helper->getConfig('maxheight_imgeditor');
-                if ($maxwidth > 0 && $maxheight > 0) {
+                $imgMaxwidthIE  = (int)$helper->getConfig('img_maxwidth_ie');
+                $imgMaxheightIE = (int)$helper->getConfig('img_maxheight_ie');
+                if ($imgMaxwidthIE > 0 && $imgMaxheightIE > 0) {
                     $imgHandler                = new Wgtimelines\Resizer();
                     $imgHandler->sourceFile    = \WGTIMELINES_UPLOAD_PATH . '/images/timelines/' . $savedFilename;
                     $imgHandler->endFile       = \WGTIMELINES_UPLOAD_PATH . '/images/timelines/' . $savedFilename;
                     $imgHandler->imageMimetype = $imageMimetype;
-                    $imgHandler->maxWidth      = $maxwidth;
-                    $imgHandler->maxHeight     = $maxheight;
+                    $imgHandler->maxWidth      = $imgMaxwidthIE;
+                    $imgHandler->maxHeight     = $imgMaxheightIE;
                     $result                    = $imgHandler->resizeImage();
                 }
                 $timelinesObj->setVar('tl_image', $savedFilename);

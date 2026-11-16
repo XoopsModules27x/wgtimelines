@@ -45,6 +45,9 @@ switch($op) {
         $timelinesCount = $timelinesHandler->getCountTimelines();
         include_once(\XOOPS_ROOT_PATH."/class/xoopsformloader.php");
 
+        // force reload of images, e.g. after cropping
+        $GLOBALS['xoopsTpl']->assign('imageVersion', time());
+
         $action = "";
         $action = $_SERVER["REQUEST_URI"];
 
@@ -184,8 +187,8 @@ switch($op) {
             $imageMimetype = $_FILES['attachedfile']['type'];
             $uploaderErrors = '';
             $uploader = new \XoopsMediaUploader(\WGTIMELINES_UPLOAD_IMAGE_PATH . '/items/',
-                $helper->getConfig('mimetypes'),
-                $helper->getConfig('maxsize'), null, null);
+                $helper->getConfig('img_mimetypes'),
+                $helper->getConfig('img_maxsize'), $helper->getConfig('img_maxwidth'), $helper->getConfig('img_maxheight'));
             if ($uploader->fetchMedia($uploadFile0)) {
                 $extension = \preg_replace('/^.+\.([^.]+)$/sU', '', $fileName);
                 $imgName = mb_substr(\str_replace(' ', '', Request::getString('item_title')), 0, 20) . '_' . $extension;
@@ -196,15 +199,15 @@ switch($op) {
                     $savedFilename = $uploader->getSavedFileName();
                     $itemsObj->setVar('item_image', $savedFilename);
                     // resize image
-                    $maxwidth = (int)$helper->getConfig('maxwidth_imgeditor');
-                    $maxheight = (int)$helper->getConfig('maxheight_imgeditor');
-                    if ($maxwidth > 0 && $maxheight > 0) {
+                    $imgMaxwidthIE = (int)$helper->getConfig('img_maxwidth_ie');
+                    $imgMaxheightIE = (int)$helper->getConfig('img_maxheight_ie');
+                    if ($imgMaxwidthIE > 0 && $imgMaxheightIE > 0) {
                         $imgHandler = new Wgtimelines\Resizer();
                         $imgHandler->sourceFile = \WGTIMELINES_UPLOAD_PATH . '/images/items/' . $savedFilename;
                         $imgHandler->endFile = \WGTIMELINES_UPLOAD_PATH . '/images/items/' . $savedFilename;
                         $imgHandler->imageMimetype = $imageMimetype;
-                        $imgHandler->maxWidth = $maxwidth;
-                        $imgHandler->maxHeight = $maxheight;
+                        $imgHandler->maxWidth = $imgMaxwidthIE;
+                        $imgHandler->maxHeight = $imgMaxheightIE;
                         $result = $imgHandler->resizeImage();
                     }
                     $itemsObj->setVar('item_image', $savedFilename);

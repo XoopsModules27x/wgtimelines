@@ -127,7 +127,7 @@ class Items extends \XoopsObject
             $imageTray->addElement(new \XoopsFormLabel('', "<br><img src='".\XOOPS_URL . "$imageDirectory/$itemImage' name='image1' id='image1' alt='$itemImage' style='max-width:100px;' />"));
             // Form File
             $fileSelectTray = new \XoopsFormElementTray('', '<br>');
-            $fileSelectTray->addElement(new \XoopsFormFile(\_AM_WGTIMELINES_FORM_UPLOAD_IMAGE, 'attachedfile', $helper->getConfig('maxsize')));
+            $fileSelectTray->addElement(new \XoopsFormFile(\_AM_WGTIMELINES_FORM_UPLOAD_IMAGE, 'attachedfile', $helper->getConfig('img_maxsize')));
             $fileSelectTray->addElement(new \XoopsFormLabel(''));
             $imageTray->addElement($fileSelectTray);
             $form->addElement($imageTray);

@@ -68,7 +68,7 @@
             </td>
             <td class="center"><{$item.title}></td>
             <td class=""><{$item.content_admin}></td>
-            <td class="center"><img src="<{$wgtimelines_upload_url}>/images/items/<{$item.image}>" alt="<{$item.title}>" style="max-width:100px;" /></td>
+            <td class="center"><img src="<{$wgtimelines_upload_url}>/images/items/<{$item.image}>?v=<{$imageVersion}>" alt="<{$item.title}>" style="max-width:100px;" /></td>
             <td class="center"><{$item.date_admin}></td>
             <td class="center"><{$item.year}></td>
             <td class="center"><i class='glyphicon glyphicon-<{$item.icon}>'></i></td>
