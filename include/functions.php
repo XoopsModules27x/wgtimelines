@@ -25,50 +25,6 @@ defined('XOOPS_ROOT_PATH') || exit('Restricted access');
 
 require_once \WGTIMELINES_PATH . '/preloads/autoloader.php';
 
-/***************Blocks**************
- * @param $cats
- * @return string
- */
-function wgtimelines_block_addCatSelect($cats): string
-{
-    if (\is_array($cats)) {
-        $cat_sql = '('.current($cats);
-        \array_shift($cats);
-        foreach ($cats as $cat) {
-            $cat_sql .= ','.$cat;
-        }
-        $cat_sql .= ')';
-    }
-    return $cat_sql;
-}
-
-/**
- *  Get the number of templates from the sub categories of a category or sub topics of or topic
- * @param $mytree
- * @param $templates
- * @param $entries
- * @param $cid
- * @return int
- */
-function wgtimelinesNumbersOfEntries($mytree, $templates, $entries, $cid): int
-{
-    $count = 0;
-    if (\in_array($cid, $templates)) {
-        $child = $mytree->getAllChild($cid);
-        foreach (\array_keys($entries) as $i) {
-            if ($entries[$i]->getVar('tpl_id') == $cid) {
-                $count++;
-            }
-            foreach (\array_keys($child) as $j) {
-                if ($entries[$i]->getVar('tpl_id') == $j) {
-                    $count++;
-                }
-            }
-        }
-    }
-    return $count;
-}
-
 function wgtimelinesMetaKeywords($content): void
 {
     global $xoopsTpl, $xoTheme;
